@@ -79,14 +79,14 @@ export function LoginForm() {
             Email Address
           </label>
           <div className="relative mt-1.5">
-            <Mail className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
+            <Mail className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
               required
-              className="gn-input pl-9"
+              className="gn-input pl-11"
             />
           </div>
         </div>
@@ -96,14 +96,14 @@ export function LoginForm() {
             Password
           </label>
           <div className="relative mt-1.5">
-            <Lock className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
+            <Lock className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
               required
-              className="gn-input pl-9"
+              className="gn-input pl-11"
             />
           </div>
         </div>
