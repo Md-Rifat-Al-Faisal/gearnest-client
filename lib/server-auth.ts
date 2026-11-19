@@ -11,12 +11,19 @@ export async function getCurrentSession(disableCache = false) {
   return session
 }
 
-export async function getAuthToken() {
-  const session = await getCurrentSession()
-  if (!session?.session?.token) {
-    redirect("/login")
+/**
+ * Returns the signed Better-Auth JWT token on the server side for forwarding to Express API
+ */
+export async function getServerJwtToken(): Promise<string | null> {
+  try {
+    const reqHeaders = await headers()
+    const tokenRes = await auth.api.getToken({
+      headers: reqHeaders,
+    })
+    return tokenRes?.token || null
+  } catch {
+    return null
   }
-  return session.session.token
 }
 
 export async function requireRole(allowedRole: "customer" | "owner" | "admin" | ("customer" | "owner" | "admin")[]) {
