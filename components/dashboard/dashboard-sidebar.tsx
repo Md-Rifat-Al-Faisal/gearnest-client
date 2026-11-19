@@ -17,6 +17,7 @@ import {
   ShieldAlert,
   ArrowLeft,
   ExternalLink,
+  Heart,
 } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { authClient } from "@/lib/auth-client"
@@ -106,9 +107,15 @@ export function DashboardSidebar({ user }: DashboardSidebarProps) {
 
   const renterLinks: NavLinkItem[] = [
     {
-      title: "My Rental Bookings",
-      href: "/dashboard/renter/bookings",
+      title: "My Rentals",
+      href: "/dashboard/customer/rentals",
       icon: CalendarCheck2,
+      badge: "Bookings",
+    },
+    {
+      title: "My Favorites",
+      href: "/dashboard/customer/favorites",
+      icon: Heart,
     },
     {
       title: "Browse Catalog",

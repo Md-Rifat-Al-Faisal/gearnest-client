@@ -15,6 +15,6 @@ export default async function DashboardPage() {
   } else if (role === "owner") {
     redirect("/dashboard/owner/equipment")
   } else {
-    redirect("/equipment")
+    redirect("/dashboard/customer/rentals")
   }
 }
