@@ -1,4 +1,5 @@
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"
+const FALLBACK_API = "https://gearnest-server.vercel.app"
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || FALLBACK_API
 
 /**
  * Retrieves the Better-Auth JWT token on the client side from /api/auth/token
@@ -20,6 +21,7 @@ export async function getClientAuthToken(): Promise<string | null> {
 /**
  * Fetch wrapper for making calls to the GearNest Express backend.
  * Automatically attaches Bearer token if available.
+ * If local backend (e.g. port 5000) is unreachable, seamlessly falls back to the live Vercel backend.
  */
 export async function apiRequest(endpoint: string, options: RequestInit = {}, explicitToken?: string) {
   const headers = new Headers(options.headers || {})
@@ -38,10 +40,20 @@ export async function apiRequest(endpoint: string, options: RequestInit = {}, ex
   }
 
   const cleanEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`
-  const response = await fetch(`${API_BASE}${cleanEndpoint}`, {
-    ...options,
-    headers,
-  })
 
-  return response
+  try {
+    const response = await fetch(`${API_BASE}${cleanEndpoint}`, {
+      ...options,
+      headers,
+    })
+    return response
+  } catch (err) {
+    if (API_BASE !== FALLBACK_API) {
+      return await fetch(`${FALLBACK_API}${cleanEndpoint}`, {
+        ...options,
+        headers,
+      })
+    }
+    throw err
+  }
 }

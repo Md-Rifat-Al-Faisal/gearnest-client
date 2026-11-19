@@ -65,7 +65,8 @@ function EquipmentCatalogContent() {
   const [loading, setLoading] = useState(true)
   const [fetchError, setFetchError] = useState<string | null>(null)
 
-  const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"
+  const FALLBACK_API = "https://gearnest-server.vercel.app"
+  const apiBase = process.env.NEXT_PUBLIC_API_URL || FALLBACK_API
 
   const fetchCatalog = async () => {
     try {
@@ -83,7 +84,13 @@ function EquipmentCatalogContent() {
       params.set("page", String(page))
       params.set("limit", "9")
 
-      const res = await fetch(`${apiBase}/api/equipment?${params.toString()}`)
+      let res: Response
+      try {
+        res = await fetch(`${apiBase}/api/equipment?${params.toString()}`)
+      } catch {
+        res = await fetch(`${FALLBACK_API}/api/equipment?${params.toString()}`)
+      }
+
       if (!res.ok) {
         throw new Error(`Failed to load catalog (HTTP ${res.status})`)
       }

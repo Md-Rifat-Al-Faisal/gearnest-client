@@ -161,15 +161,25 @@ export default function HomePage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [loadingFeatured, setLoadingFeatured] = useState(true)
 
-  const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"
+  const FALLBACK_API = "https://gearnest-server.vercel.app"
+  const apiBase = process.env.NEXT_PUBLIC_API_URL || FALLBACK_API
 
   useEffect(() => {
-    // 1. Fetch featured equipment with resilient error handling
-    fetch(`${apiBase}/api/equipment/featured`)
-      .then((res) => {
-        if (!res.ok) throw new Error(`HTTP ${res.status}`)
-        return res.json()
-      })
+    // Helper with automatic fallback from local to live backend
+    const resilientFetch = async (path: string) => {
+      try {
+        const res = await fetch(`${apiBase}${path}`)
+        if (res.ok) return await res.json()
+        throw new Error(`HTTP ${res.status}`)
+      } catch {
+        const fallbackRes = await fetch(`${FALLBACK_API}${path}`)
+        if (fallbackRes.ok) return await fallbackRes.json()
+        throw new Error(`Fallback HTTP ${fallbackRes.status}`)
+      }
+    }
+
+    // 1. Fetch featured equipment
+    resilientFetch("/api/equipment/featured")
       .then((data) => {
         if (data?.equipment) setFeatured(data.equipment)
       })
@@ -178,12 +188,8 @@ export default function HomePage() {
       })
       .finally(() => setLoadingFeatured(false))
 
-    // 2. Fetch customer reviews with resilient error handling
-    fetch(`${apiBase}/api/reviews`)
-      .then((res) => {
-        if (!res.ok) throw new Error(`HTTP ${res.status}`)
-        return res.json()
-      })
+    // 2. Fetch customer reviews
+    resilientFetch("/api/reviews")
       .then((data) => {
         if (data?.reviews) setReviews(data.reviews)
       })

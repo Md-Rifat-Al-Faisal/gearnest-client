@@ -18,14 +18,23 @@ export default async function EquipmentDetailsPage({
     redirect(`/login?callbackUrl=/equipment/${equipmentId}`)
   }
 
-  // 2. Fetch equipment data
-  const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"
+  // 2. Fetch equipment data with resilient local/live fallback
+  const FALLBACK_API = "https://gearnest-server.vercel.app"
+  const apiBase = process.env.NEXT_PUBLIC_API_URL || FALLBACK_API
   let equipment = null
 
   try {
-    const res = await fetch(`${apiBase}/api/equipment/${equipmentId}`, {
-      cache: "no-store",
-    })
+    let res: Response
+    try {
+      res = await fetch(`${apiBase}/api/equipment/${equipmentId}`, {
+        cache: "no-store",
+      })
+    } catch {
+      res = await fetch(`${FALLBACK_API}/api/equipment/${equipmentId}`, {
+        cache: "no-store",
+      })
+    }
+
     if (res.ok) {
       const data = await res.json()
       equipment = data.equipment
