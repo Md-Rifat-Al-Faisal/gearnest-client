@@ -1,5 +1,16 @@
 const FALLBACK_API = "https://gearnest-server.vercel.app"
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || FALLBACK_API
+
+export function getApiBaseUrl(): string {
+  // If running in browser on localhost, always target the local Express server on port 5000
+  if (
+    typeof window !== "undefined" &&
+    (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
+  ) {
+    return process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"
+  }
+  // In production (e.g. deployed on Vercel), use configured env or fallback
+  return process.env.NEXT_PUBLIC_API_URL || FALLBACK_API
+}
 
 /**
  * Retrieves the Better-Auth JWT token on the client side from /api/auth/token
@@ -40,15 +51,17 @@ export async function apiRequest(endpoint: string, options: RequestInit = {}, ex
   }
 
   const cleanEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`
+  const apiBase = getApiBaseUrl()
 
   try {
-    const response = await fetch(`${API_BASE}${cleanEndpoint}`, {
+    const response = await fetch(`${apiBase}${cleanEndpoint}`, {
       ...options,
       headers,
     })
     return response
   } catch (err) {
-    if (API_BASE !== FALLBACK_API) {
+    if (apiBase !== FALLBACK_API) {
+      console.warn(`Local backend unreachable (${apiBase}). Falling back to live API (${FALLBACK_API})...`)
       return await fetch(`${FALLBACK_API}${cleanEndpoint}`, {
         ...options,
         headers,

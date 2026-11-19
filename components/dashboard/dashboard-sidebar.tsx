@@ -60,6 +60,11 @@ export function DashboardSidebar({ user }: DashboardSidebarProps) {
 
   const ownerLinks: NavLinkItem[] = [
     {
+      title: "Overview Analytics",
+      href: "/dashboard/owner",
+      icon: LayoutDashboard,
+    },
+    {
       title: "My Equipment",
       href: "/dashboard/owner/equipment",
       icon: Boxes,
@@ -83,6 +88,11 @@ export function DashboardSidebar({ user }: DashboardSidebarProps) {
   ]
 
   const adminLinks: NavLinkItem[] = [
+    {
+      title: "Master Analytics",
+      href: "/dashboard/admin",
+      icon: LayoutDashboard,
+    },
     {
       title: "Equipment Moderation",
       href: "/dashboard/admin/equipment",
@@ -143,18 +153,18 @@ export function DashboardSidebar({ user }: DashboardSidebarProps) {
         : "bg-blue-500/10 text-blue-500 border-blue-500/20"
 
   const sidebarContent = (
-    <div className="flex flex-col h-full bg-slate-900 text-slate-100 border-r border-slate-800">
+    <div className="flex flex-col h-full bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 border-r border-slate-200 dark:border-slate-800 transition-colors">
       {/* Brand Header */}
-      <div className="p-6 border-b border-slate-800/80">
+      <div className="p-6 border-b border-slate-200 dark:border-slate-800/80">
         <Link href="/" className="flex items-center gap-2.5">
           <div className="h-9 w-9 rounded-lg bg-amber-500 flex items-center justify-center text-slate-950 shadow-md shadow-amber-500/20">
             <Wrench className="h-5 w-5 stroke-[2.5]" />
           </div>
           <div className="flex flex-col">
-            <span className="font-extrabold tracking-tight text-lg text-white">
+            <span className="font-extrabold tracking-tight text-lg text-slate-900 dark:text-white">
               Gear<span className="text-amber-500">Nest</span>
             </span>
-            <span className="text-[10px] uppercase tracking-wider font-semibold text-slate-400">
+            <span className="text-[10px] uppercase tracking-wider font-semibold text-slate-500 dark:text-slate-400">
               Workspace Console
             </span>
           </div>
@@ -169,11 +179,15 @@ export function DashboardSidebar({ user }: DashboardSidebarProps) {
 
       {/* Nav links */}
       <div className="flex-1 overflow-y-auto px-4 py-6 space-y-1.5">
-        <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 px-3 mb-2">
+        <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 px-3 mb-2">
           Navigation
         </div>
         {navLinks.map((link) => {
-          const isActive = pathname === link.href || (link.href !== "/dashboard/owner" && link.href !== "/dashboard/admin" && pathname.startsWith(link.href))
+          const isActive =
+            pathname === link.href ||
+            (link.href !== "/dashboard/owner" &&
+              link.href !== "/dashboard/admin" &&
+              pathname.startsWith(link.href))
           const Icon = link.icon
 
           return (
@@ -183,18 +197,20 @@ export function DashboardSidebar({ user }: DashboardSidebarProps) {
               onClick={() => setMobileOpen(false)}
               className={`flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
                 isActive
-                  ? "bg-amber-500 text-slate-950 font-semibold shadow-sm shadow-amber-500/30"
-                  : "text-slate-300 hover:text-white hover:bg-slate-800/60"
+                  ? "bg-amber-500 text-slate-950 font-bold shadow-xs shadow-amber-500/30"
+                  : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60"
               }`}
             >
               <div className="flex items-center gap-3">
-                <Icon className={`h-4 w-4 ${isActive ? "text-slate-950" : "text-slate-400"}`} />
+                <Icon className={`h-4 w-4 ${isActive ? "text-slate-950 font-bold" : "text-slate-400"}`} />
                 <span>{link.title}</span>
               </div>
               {link.badge && (
                 <span
                   className={`text-[10px] px-1.5 py-0.5 rounded font-bold uppercase ${
-                    isActive ? "bg-slate-950/20 text-slate-950" : "bg-slate-800 text-amber-400"
+                    isActive
+                      ? "bg-slate-950/20 text-slate-950"
+                      : "bg-slate-100 dark:bg-slate-800 text-amber-600 dark:text-amber-400 border border-slate-200 dark:border-slate-700/60"
                   }`}
                 >
                   {link.badge}
@@ -205,19 +221,19 @@ export function DashboardSidebar({ user }: DashboardSidebarProps) {
         })}
 
         <div className="pt-6">
-          <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 px-3 mb-2">
+          <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 px-3 mb-2">
             Quick Actions
           </div>
           <Link
             href="/equipment"
-            className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-slate-800/60 transition-colors"
+            className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-colors"
           >
             <ExternalLink className="h-4 w-4 text-slate-400" />
             <span>Public Catalog</span>
           </Link>
           <Link
             href="/"
-            className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-slate-300 hover:text-white hover:bg-slate-800/60 transition-colors"
+            className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-colors"
           >
             <ArrowLeft className="h-4 w-4 text-slate-400" />
             <span>Back to Home</span>
@@ -226,9 +242,9 @@ export function DashboardSidebar({ user }: DashboardSidebarProps) {
       </div>
 
       {/* User info & Logout footer */}
-      <div className="p-4 border-t border-slate-800 bg-slate-950/40">
+      <div className="p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-950/40 transition-colors">
         <div className="flex items-center gap-3 mb-3">
-          <div className="h-10 w-10 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center font-bold text-amber-400 overflow-hidden">
+          <div className="h-10 w-10 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center font-bold text-amber-600 dark:text-amber-400 overflow-hidden shrink-0">
             {user.image ? (
               <img src={user.image} alt={user.name} className="h-full w-full object-cover" />
             ) : (
@@ -236,15 +252,15 @@ export function DashboardSidebar({ user }: DashboardSidebarProps) {
             )}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-white truncate">{user.name}</p>
-            <p className="text-xs text-slate-400 truncate">{user.email}</p>
+            <p className="text-sm font-semibold text-slate-900 dark:text-white truncate">{user.name}</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{user.email}</p>
           </div>
           <ThemeToggle />
         </div>
 
         <button
           onClick={handleSignOut}
-          className="w-full flex items-center justify-center gap-2 py-2 px-3 text-xs font-semibold rounded-lg bg-slate-800/80 hover:bg-rose-500/20 hover:text-rose-400 text-slate-300 transition-colors"
+          className="w-full flex items-center justify-center gap-2 py-2 px-3 text-xs font-semibold rounded-lg bg-slate-200/70 dark:bg-slate-800/80 hover:bg-rose-500/10 dark:hover:bg-rose-500/20 text-slate-700 dark:text-slate-300 hover:text-rose-600 dark:hover:text-rose-400 transition-colors border border-slate-300/50 dark:border-transparent cursor-pointer"
         >
           <LogOut className="h-3.5 w-3.5" />
           <span>Sign Out</span>
@@ -256,11 +272,11 @@ export function DashboardSidebar({ user }: DashboardSidebarProps) {
   return (
     <>
       {/* Mobile Bar */}
-      <div className="lg:hidden flex items-center justify-between p-4 bg-slate-900 border-b border-slate-800 text-white sticky top-0 z-40">
+      <div className="lg:hidden flex items-center justify-between p-4 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white sticky top-0 z-40 transition-colors">
         <div className="flex items-center gap-2">
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="p-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white"
+            className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
             aria-label="Toggle Navigation"
           >
             {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -269,7 +285,7 @@ export function DashboardSidebar({ user }: DashboardSidebarProps) {
             <div className="h-7 w-7 rounded bg-amber-500 flex items-center justify-center text-slate-950 font-bold">
               <Wrench className="h-4 w-4" />
             </div>
-            <span className="font-bold text-base">
+            <span className="font-bold text-base text-slate-900 dark:text-white">
               Gear<span className="text-amber-500">Nest</span>
             </span>
           </Link>
@@ -290,7 +306,7 @@ export function DashboardSidebar({ user }: DashboardSidebarProps) {
           onClick={() => setMobileOpen(false)}
         >
           <div
-            className="w-72 h-full bg-slate-900"
+            className="w-72 h-full bg-white dark:bg-slate-900"
             onClick={(e) => e.stopPropagation()}
           >
             {sidebarContent}
