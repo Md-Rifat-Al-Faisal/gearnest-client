@@ -152,10 +152,15 @@ export default function NewEquipmentPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div className="md:col-span-2">
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+              <label
+                htmlFor="new-equipment-name"
+                className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+              >
                 Equipment Title / Name *
               </label>
               <input
+                id="new-equipment-name"
+                name="name"
                 type="text"
                 required
                 placeholder="e.g. Caterpillar 308 CR Mini Excavator"
@@ -166,10 +171,15 @@ export default function NewEquipmentPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+              <label
+                htmlFor="new-equipment-category"
+                className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+              >
                 Category *
               </label>
               <select
+                id="new-equipment-category"
+                name="category"
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
                 className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50"
@@ -183,10 +193,15 @@ export default function NewEquipmentPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+              <label
+                htmlFor="new-equipment-location"
+                className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+              >
                 Location (City, State / Metro) *
               </label>
               <input
+                id="new-equipment-location"
+                name="location"
                 type="text"
                 required
                 placeholder="e.g. Austin, TX"
@@ -197,10 +212,15 @@ export default function NewEquipmentPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+              <label
+                htmlFor="new-equipment-brand"
+                className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+              >
                 Manufacturer / Brand
               </label>
               <input
+                id="new-equipment-brand"
+                name="brand"
                 type="text"
                 placeholder="e.g. Caterpillar, Sony, John Deere"
                 value={brand}
@@ -210,10 +230,15 @@ export default function NewEquipmentPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+              <label
+                htmlFor="new-equipment-model"
+                className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+              >
                 Model Number / Variant
               </label>
               <input
+                id="new-equipment-model"
+                name="model"
                 type="text"
                 placeholder="e.g. 308 CR / FX6 / S650"
                 value={model}
@@ -223,10 +248,15 @@ export default function NewEquipmentPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+              <label
+                htmlFor="new-equipment-condition"
+                className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+              >
                 Condition
               </label>
               <select
+                id="new-equipment-condition"
+                name="condition"
                 value={condition}
                 onChange={(e) => setCondition(e.target.value)}
                 className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50"
@@ -240,10 +270,15 @@ export default function NewEquipmentPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+              <label
+                htmlFor="new-equipment-quantity"
+                className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+              >
                 Units Available for Rent *
               </label>
               <input
+                id="new-equipment-quantity"
+                name="availableQuantity"
                 type="number"
                 min="0"
                 required
@@ -254,10 +289,15 @@ export default function NewEquipmentPage() {
             </div>
 
             <div className="md:col-span-2">
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+              <label
+                htmlFor="new-equipment-description"
+                className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+              >
                 Detailed Description & Features
               </label>
               <textarea
+                id="new-equipment-description"
+                name="description"
                 rows={4}
                 placeholder="Describe horsepower, included accessories, boom reach, lenses, attachments, or operating specs..."
                 value={description}
@@ -277,7 +317,10 @@ export default function NewEquipmentPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+              <label
+                htmlFor="new-equipment-price"
+                className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+              >
                 Rental Price (USD) *
               </label>
               <div className="relative">
@@ -285,6 +328,8 @@ export default function NewEquipmentPage() {
                   $
                 </span>
                 <input
+                  id="new-equipment-price"
+                  name="rentalPrice"
                   type="number"
                   step="0.01"
                   min="0"
@@ -298,10 +343,15 @@ export default function NewEquipmentPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+              <label
+                htmlFor="new-equipment-rental-type"
+                className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+              >
                 Rental Billing Period *
               </label>
               <select
+                id="new-equipment-rental-type"
+                name="rentalType"
                 value={rentalType}
                 onChange={(e) => setRentalType(e.target.value)}
                 className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50"
@@ -315,10 +365,15 @@ export default function NewEquipmentPage() {
             </div>
 
             <div className="md:col-span-2">
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+              <label
+                htmlFor="new-equipment-rental-terms"
+                className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+              >
                 Rental Terms, Delivery, & Security Requirements
               </label>
               <textarea
+                id="new-equipment-rental-terms"
+                name="rentalTerms"
                 rows={3}
                 placeholder="e.g. Valid commercial operator license required. Fuel tank full upon dispatch. Security deposit hold applies."
                 value={rentalTerms}
@@ -338,11 +393,19 @@ export default function NewEquipmentPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5 items-start">
             <div className="space-y-3">
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
+              <label
+                htmlFor="new-equipment-file-input"
+                className="block text-xs font-semibold text-slate-700 dark:text-slate-300"
+              >
                 Upload Image File
               </label>
-              <label className="border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-amber-500 rounded-xl p-6 flex flex-col items-center justify-center cursor-pointer transition-colors text-center group">
+              <label
+                htmlFor="new-equipment-file-input"
+                className="border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-amber-500 rounded-xl p-6 flex flex-col items-center justify-center cursor-pointer transition-colors text-center group"
+              >
                 <input
+                  id="new-equipment-file-input"
+                  name="imageFile"
                   type="file"
                   accept="image/*"
                   onChange={handleFileUpload}
@@ -364,10 +427,15 @@ export default function NewEquipmentPage() {
               </label>
 
               <div className="pt-2">
-                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                <label
+                  htmlFor="new-equipment-image-url"
+                  className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1"
+                >
                   Or enter Direct Image URL
                 </label>
                 <input
+                  id="new-equipment-image-url"
+                  name="image"
                   type="url"
                   placeholder="https://..."
                   value={image}

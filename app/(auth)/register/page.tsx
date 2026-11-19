@@ -29,12 +29,17 @@ export default function RegisterPage() {
   const handleGoogleSignUp = async () => {
     try {
       setGoogleLoading(true)
-      await signIn.social({
+      const res = await signIn.social({
         provider: "google",
         callbackURL: "/equipment",
       })
-    } catch {
-      toast.error("Failed to initialize Google sign-in")
+      if (res?.error) {
+        toast.error(res.error.message || "Failed to initialize Google sign-in")
+        setGoogleLoading(false)
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Failed to initialize Google sign-in"
+      toast.error(msg)
       setGoogleLoading(false)
     }
   }
@@ -173,13 +178,19 @@ export default function RegisterPage() {
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Name */}
         <div>
-          <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+          <label
+            htmlFor="register-name"
+            className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300"
+          >
             Full Name <span className="text-rose-500">*</span>
           </label>
           <div className="relative mt-1.5">
             <User className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
             <input
+              id="register-name"
+              name="name"
               type="text"
+              autoComplete="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Alex Walker"
@@ -191,13 +202,19 @@ export default function RegisterPage() {
 
         {/* Email */}
         <div>
-          <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+          <label
+            htmlFor="register-email"
+            className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300"
+          >
             Email Address <span className="text-rose-500">*</span>
           </label>
           <div className="relative mt-1.5">
             <Mail className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
             <input
+              id="register-email"
+              name="email"
               type="email"
+              autoComplete="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="alex@example.com"
@@ -209,7 +226,10 @@ export default function RegisterPage() {
 
         {/* Profile Photo */}
         <div>
-          <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+          <label
+            htmlFor="register-file-input"
+            className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300"
+          >
             Profile Photo (ImgBB Upload or Direct URL)
           </label>
           <div className="mt-1.5 flex items-center gap-3">
@@ -226,7 +246,10 @@ export default function RegisterPage() {
               </div>
             )}
             <div className="flex flex-1 items-center gap-2">
-              <label className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-medium text-slate-700 shadow-sm transition-colors hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200">
+              <label
+                htmlFor="register-file-input"
+                className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-medium text-slate-700 shadow-sm transition-colors hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
+              >
                 {uploadingImage ? (
                   <>
                     <Loader2 className="size-3.5 animate-spin" />
@@ -239,6 +262,8 @@ export default function RegisterPage() {
                   </>
                 )}
                 <input
+                  id="register-file-input"
+                  name="profilePhotoFile"
                   type="file"
                   accept="image/*"
                   onChange={handleImageUpload}
@@ -247,6 +272,8 @@ export default function RegisterPage() {
                 />
               </label>
               <input
+                id="register-image-url"
+                name="image"
                 type="url"
                 value={image}
                 onChange={(e) => setImage(e.target.value)}
@@ -260,13 +287,19 @@ export default function RegisterPage() {
         {/* Phone & Address */}
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+            <label
+              htmlFor="register-phone"
+              className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300"
+            >
               Phone Number
             </label>
             <div className="relative mt-1.5">
               <Phone className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
               <input
+                id="register-phone"
+                name="phone"
                 type="tel"
+                autoComplete="tel"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="+1 (555) 000-0000"
@@ -275,13 +308,19 @@ export default function RegisterPage() {
             </div>
           </div>
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+            <label
+              htmlFor="register-address"
+              className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300"
+            >
               City / Address
             </label>
             <div className="relative mt-1.5">
               <MapPin className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
               <input
+                id="register-address"
+                name="address"
                 type="text"
+                autoComplete="street-address"
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
                 placeholder="Dallas, TX"
@@ -293,13 +332,19 @@ export default function RegisterPage() {
 
         {/* Password */}
         <div>
-          <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+          <label
+            htmlFor="register-password"
+            className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300"
+          >
             Password <span className="text-rose-500">*</span>
           </label>
           <div className="relative mt-1.5">
             <Lock className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
             <input
+              id="register-password"
+              name="password"
               type="password"
+              autoComplete="new-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"

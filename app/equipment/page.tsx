@@ -157,12 +157,18 @@ function EquipmentCatalogContent() {
           className="mt-6 max-w-xl flex items-center gap-2 bg-white dark:bg-slate-950/80 border border-slate-200 dark:border-slate-700 p-1.5 rounded-xl shadow-xs"
         >
           <div className="relative flex-1">
+            <label htmlFor="catalog-search" className="sr-only">
+              Search equipment catalog
+            </label>
             <Search className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
             <input
+              id="catalog-search"
+              name="search"
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search by equipment name, location, or brand..."
+              aria-label="Search equipment catalog"
               className="w-full bg-transparent pl-11 pr-3 py-2 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none"
             />
           </div>
@@ -246,11 +252,16 @@ function EquipmentCatalogContent() {
 
             {/* Price Range */}
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
+              <span className="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
                 Price Range ($)
-              </label>
+              </span>
               <div className="flex items-center gap-2">
+                <label htmlFor="catalog-min-price" className="sr-only">
+                  Minimum price
+                </label>
                 <input
+                  id="catalog-min-price"
+                  name="minPrice"
                   type="number"
                   placeholder="Min"
                   value={minPrice}
@@ -258,7 +269,12 @@ function EquipmentCatalogContent() {
                   className="w-full px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-xs focus:outline-none focus:ring-1 focus:ring-amber-500"
                 />
                 <span className="text-slate-400 text-xs">-</span>
+                <label htmlFor="catalog-max-price" className="sr-only">
+                  Maximum price
+                </label>
                 <input
+                  id="catalog-max-price"
+                  name="maxPrice"
                   type="number"
                   placeholder="Max"
                   value={maxPrice}
@@ -267,6 +283,7 @@ function EquipmentCatalogContent() {
                 />
               </div>
               <button
+                type="button"
                 onClick={() => {
                   setPage(1)
                   fetchCatalog()
@@ -279,8 +296,10 @@ function EquipmentCatalogContent() {
 
             {/* In Stock Only Checkbox */}
             <div className="pt-2 border-t border-slate-200 dark:border-slate-800">
-              <label className="flex items-center gap-2.5 cursor-pointer">
+              <label htmlFor="catalog-available-only" className="flex items-center gap-2.5 cursor-pointer">
                 <input
+                  id="catalog-available-only"
+                  name="availableOnly"
                   type="checkbox"
                   checked={availableOnly}
                   onChange={(e) => {

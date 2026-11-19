@@ -3,13 +3,34 @@ import { MongoClient } from "mongodb"
 import { mongodbAdapter } from "@better-auth/mongo-adapter"
 import { jwt } from "better-auth/plugins"
 
-const dbUri = process.env.BETTER_AUTH_DB_URI || "mongodb://localhost:27017/gearnestdb"
+const dbUri =
+  process.env.BETTER_AUTH_DB_URI ||
+  process.env.MONGODB_URI ||
+  "mongodb://localhost:27017/gearnestdb"
 const client = new MongoClient(dbUri)
 const db = client.db(process.env.DB_NAME || "gearnestdb")
 
+const getBaseURL = () => {
+  if (process.env.NODE_ENV === "production") {
+    if (process.env.BETTER_AUTH_URL && !process.env.BETTER_AUTH_URL.includes("localhost")) {
+      return process.env.BETTER_AUTH_URL
+    }
+    if (process.env.NEXT_PUBLIC_APP_URL && !process.env.NEXT_PUBLIC_APP_URL.includes("localhost")) {
+      return process.env.NEXT_PUBLIC_APP_URL
+    }
+    if (process.env.VERCEL_PROJECT_PRODUCTION_URL) {
+      return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+    }
+    if (process.env.VERCEL_URL) {
+      return `https://${process.env.VERCEL_URL}`
+    }
+  }
+  return process.env.BETTER_AUTH_URL || "http://localhost:3000"
+}
+
 export const auth = betterAuth({
   secret: process.env.BETTER_AUTH_SECRET || "gearnest_auth_secret_minimum_32_characters_long_12345",
-  baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
+  baseURL: getBaseURL(),
   emailAndPassword: {
     enabled: true,
   },

@@ -236,10 +236,15 @@ export default function AdminEditEquipmentPage({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div className="md:col-span-2">
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+              <label
+                htmlFor="admin-edit-name"
+                className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+              >
                 Equipment Title / Name *
               </label>
               <input
+                id="admin-edit-name"
+                name="name"
                 type="text"
                 required
                 value={name}
@@ -249,10 +254,15 @@ export default function AdminEditEquipmentPage({
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+              <label
+                htmlFor="admin-edit-category"
+                className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+              >
                 Category *
               </label>
               <select
+                id="admin-edit-category"
+                name="category"
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
                 className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50"
@@ -266,10 +276,15 @@ export default function AdminEditEquipmentPage({
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+              <label
+                htmlFor="admin-edit-location"
+                className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+              >
                 Location *
               </label>
               <input
+                id="admin-edit-location"
+                name="location"
                 type="text"
                 required
                 value={location}
@@ -279,10 +294,15 @@ export default function AdminEditEquipmentPage({
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+              <label
+                htmlFor="admin-edit-brand"
+                className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+              >
                 Brand
               </label>
               <input
+                id="admin-edit-brand"
+                name="brand"
                 type="text"
                 value={brand}
                 onChange={(e) => setBrand(e.target.value)}
@@ -291,10 +311,15 @@ export default function AdminEditEquipmentPage({
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+              <label
+                htmlFor="admin-edit-model"
+                className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+              >
                 Model
               </label>
               <input
+                id="admin-edit-model"
+                name="model"
                 type="text"
                 value={model}
                 onChange={(e) => setModel(e.target.value)}
@@ -303,10 +328,15 @@ export default function AdminEditEquipmentPage({
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+              <label
+                htmlFor="admin-edit-condition"
+                className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+              >
                 Condition
               </label>
               <select
+                id="admin-edit-condition"
+                name="condition"
                 value={condition}
                 onChange={(e) => setCondition(e.target.value)}
                 className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50"
@@ -320,10 +350,15 @@ export default function AdminEditEquipmentPage({
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+              <label
+                htmlFor="admin-edit-quantity"
+                className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+              >
                 Available Units
               </label>
               <input
+                id="admin-edit-quantity"
+                name="availableQuantity"
                 type="number"
                 min="0"
                 required
@@ -334,10 +369,15 @@ export default function AdminEditEquipmentPage({
             </div>
 
             <div className="md:col-span-2">
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+              <label
+                htmlFor="admin-edit-description"
+                className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+              >
                 Description
               </label>
               <textarea
+                id="admin-edit-description"
+                name="description"
                 rows={4}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
@@ -355,10 +395,15 @@ export default function AdminEditEquipmentPage({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+              <label
+                htmlFor="admin-edit-price"
+                className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+              >
                 Rental Price ($)
               </label>
               <input
+                id="admin-edit-price"
+                name="rentalPrice"
                 type="number"
                 step="0.01"
                 min="0"
@@ -370,10 +415,15 @@ export default function AdminEditEquipmentPage({
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+              <label
+                htmlFor="admin-edit-rental-type"
+                className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+              >
                 Billing Period
               </label>
               <select
+                id="admin-edit-rental-type"
+                name="rentalType"
                 value={rentalType}
                 onChange={(e) => setRentalType(e.target.value)}
                 className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50"
@@ -387,10 +437,15 @@ export default function AdminEditEquipmentPage({
             </div>
 
             <div className="md:col-span-2">
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+              <label
+                htmlFor="admin-edit-terms"
+                className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+              >
                 Rental Terms
               </label>
               <textarea
+                id="admin-edit-terms"
+                name="rentalTerms"
                 rows={3}
                 value={rentalTerms}
                 onChange={(e) => setRentalTerms(e.target.value)}
@@ -405,8 +460,13 @@ export default function AdminEditEquipmentPage({
           <h2 className="text-base font-bold text-slate-900 dark:text-white">Photo</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5 items-start">
             <div className="space-y-3">
-              <label className="border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-amber-500 rounded-xl p-5 flex flex-col items-center justify-center cursor-pointer transition-colors text-center">
+              <label
+                htmlFor="admin-edit-file-input"
+                className="border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-amber-500 rounded-xl p-5 flex flex-col items-center justify-center cursor-pointer transition-colors text-center"
+              >
                 <input
+                  id="admin-edit-file-input"
+                  name="imageFile"
                   type="file"
                   accept="image/*"
                   onChange={handleFileUpload}
@@ -426,7 +486,12 @@ export default function AdminEditEquipmentPage({
                 )}
               </label>
 
+              <label htmlFor="admin-edit-image-url" className="sr-only">
+                Direct image URL
+              </label>
               <input
+                id="admin-edit-image-url"
+                name="image"
                 type="url"
                 value={image}
                 onChange={(e) => setImage(e.target.value)}

@@ -199,10 +199,15 @@ export default function EditEquipmentPage({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div className="md:col-span-2">
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+              <label
+                htmlFor="edit-equipment-name"
+                className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+              >
                 Equipment Title / Name *
               </label>
               <input
+                id="edit-equipment-name"
+                name="name"
                 type="text"
                 required
                 value={name}
@@ -212,10 +217,15 @@ export default function EditEquipmentPage({
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+              <label
+                htmlFor="edit-equipment-category"
+                className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+              >
                 Category *
               </label>
               <select
+                id="edit-equipment-category"
+                name="category"
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
                 className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50"
@@ -229,10 +239,15 @@ export default function EditEquipmentPage({
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+              <label
+                htmlFor="edit-equipment-location"
+                className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+              >
                 Location (City, State / Metro) *
               </label>
               <input
+                id="edit-equipment-location"
+                name="location"
                 type="text"
                 required
                 value={location}
@@ -242,10 +257,15 @@ export default function EditEquipmentPage({
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+              <label
+                htmlFor="edit-equipment-brand"
+                className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+              >
                 Manufacturer / Brand
               </label>
               <input
+                id="edit-equipment-brand"
+                name="brand"
                 type="text"
                 value={brand}
                 onChange={(e) => setBrand(e.target.value)}
@@ -254,10 +274,15 @@ export default function EditEquipmentPage({
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+              <label
+                htmlFor="edit-equipment-model"
+                className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+              >
                 Model Number / Variant
               </label>
               <input
+                id="edit-equipment-model"
+                name="model"
                 type="text"
                 value={model}
                 onChange={(e) => setModel(e.target.value)}
@@ -266,10 +291,15 @@ export default function EditEquipmentPage({
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+              <label
+                htmlFor="edit-equipment-condition"
+                className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+              >
                 Condition
               </label>
               <select
+                id="edit-equipment-condition"
+                name="condition"
                 value={condition}
                 onChange={(e) => setCondition(e.target.value)}
                 className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50"
@@ -283,10 +313,15 @@ export default function EditEquipmentPage({
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+              <label
+                htmlFor="edit-equipment-quantity"
+                className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+              >
                 Units Available for Rent *
               </label>
               <input
+                id="edit-equipment-quantity"
+                name="availableQuantity"
                 type="number"
                 min="0"
                 required
@@ -297,10 +332,15 @@ export default function EditEquipmentPage({
             </div>
 
             <div className="md:col-span-2">
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+              <label
+                htmlFor="edit-equipment-description"
+                className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+              >
                 Detailed Description & Features
               </label>
               <textarea
+                id="edit-equipment-description"
+                name="description"
                 rows={4}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
@@ -319,7 +359,10 @@ export default function EditEquipmentPage({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+              <label
+                htmlFor="edit-equipment-price"
+                className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+              >
                 Rental Price (USD) *
               </label>
               <div className="relative">
@@ -327,6 +370,8 @@ export default function EditEquipmentPage({
                   $
                 </span>
                 <input
+                  id="edit-equipment-price"
+                  name="rentalPrice"
                   type="number"
                   step="0.01"
                   min="0"
@@ -339,10 +384,15 @@ export default function EditEquipmentPage({
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+              <label
+                htmlFor="edit-equipment-rental-type"
+                className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+              >
                 Rental Billing Period *
               </label>
               <select
+                id="edit-equipment-rental-type"
+                name="rentalType"
                 value={rentalType}
                 onChange={(e) => setRentalType(e.target.value)}
                 className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50"
@@ -356,10 +406,15 @@ export default function EditEquipmentPage({
             </div>
 
             <div className="md:col-span-2">
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+              <label
+                htmlFor="edit-equipment-terms"
+                className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+              >
                 Rental Terms & Security Requirements
               </label>
               <textarea
+                id="edit-equipment-terms"
+                name="rentalTerms"
                 rows={3}
                 value={rentalTerms}
                 onChange={(e) => setRentalTerms(e.target.value)}
@@ -378,11 +433,19 @@ export default function EditEquipmentPage({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5 items-start">
             <div className="space-y-3">
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
+              <label
+                htmlFor="edit-equipment-file-input"
+                className="block text-xs font-semibold text-slate-700 dark:text-slate-300"
+              >
                 Replace Photo (Upload to ImgBB)
               </label>
-              <label className="border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-amber-500 rounded-xl p-6 flex flex-col items-center justify-center cursor-pointer transition-colors text-center group">
+              <label
+                htmlFor="edit-equipment-file-input"
+                className="border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-amber-500 rounded-xl p-6 flex flex-col items-center justify-center cursor-pointer transition-colors text-center group"
+              >
                 <input
+                  id="edit-equipment-file-input"
+                  name="imageFile"
                   type="file"
                   accept="image/*"
                   onChange={handleFileUpload}
@@ -404,10 +467,15 @@ export default function EditEquipmentPage({
               </label>
 
               <div className="pt-2">
-                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                <label
+                  htmlFor="edit-equipment-image-url"
+                  className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1"
+                >
                   Or edit Image URL directly
                 </label>
                 <input
+                  id="edit-equipment-image-url"
+                  name="image"
                   type="url"
                   value={image}
                   onChange={(e) => setImage(e.target.value)}

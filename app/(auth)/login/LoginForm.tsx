@@ -52,12 +52,17 @@ export function LoginForm() {
   const handleGoogleLogin = async () => {
     try {
       setGoogleLoading(true)
-      await signIn.social({
+      const res = await signIn.social({
         provider: "google",
         callbackURL: callbackUrl,
       })
-    } catch {
-      toast.error("Failed to initialize Google login")
+      if (res?.error) {
+        toast.error(res.error.message || "Failed to initialize Google login")
+        setGoogleLoading(false)
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Failed to initialize Google login"
+      toast.error(msg)
       setGoogleLoading(false)
     }
   }
@@ -75,13 +80,19 @@ export function LoginForm() {
 
       <form onSubmit={handleEmailLogin} className="mt-6 space-y-4">
         <div>
-          <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+          <label
+            htmlFor="login-email"
+            className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300"
+          >
             Email Address
           </label>
           <div className="relative mt-1.5">
             <Mail className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
             <input
+              id="login-email"
+              name="email"
               type="email"
+              autoComplete="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
@@ -92,13 +103,19 @@ export function LoginForm() {
         </div>
 
         <div>
-          <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+          <label
+            htmlFor="login-password"
+            className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300"
+          >
             Password
           </label>
           <div className="relative mt-1.5">
             <Lock className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
             <input
+              id="login-password"
+              name="password"
               type="password"
+              autoComplete="current-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"

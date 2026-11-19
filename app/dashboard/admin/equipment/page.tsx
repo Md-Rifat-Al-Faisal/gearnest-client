@@ -173,8 +173,13 @@ export default function AdminEquipmentPage() {
       {/* Search & Filter Bar */}
       <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
         <form onSubmit={handleSearchSubmit} className="relative flex-1 max-w-md">
+          <label htmlFor="admin-equipment-search" className="sr-only">
+            Search equipment inventory
+          </label>
           <Search className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
           <input
+            id="admin-equipment-search"
+            name="search"
             type="text"
             placeholder="Search by title, owner, category, location..."
             value={search}
@@ -184,8 +189,12 @@ export default function AdminEquipmentPage() {
         </form>
 
         <div className="flex items-center gap-2">
-          <label className="text-xs font-medium text-slate-500 dark:text-slate-400">Moderation Status:</label>
+          <label htmlFor="admin-status-filter" className="text-xs font-medium text-slate-500 dark:text-slate-400">
+            Moderation Status:
+          </label>
           <select
+            id="admin-status-filter"
+            name="statusFilter"
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
             className="py-2 px-3 rounded-lg border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50 text-slate-700 dark:text-slate-200"

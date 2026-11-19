@@ -148,8 +148,13 @@ export default function OwnerEquipmentPage() {
       {/* Search & Filter Toolbar */}
       <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
         <div className="relative flex-1 max-w-md">
+          <label htmlFor="owner-equipment-search" className="sr-only">
+            Search my equipment
+          </label>
           <Search className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
           <input
+            id="owner-equipment-search"
+            name="search"
             type="text"
             placeholder="Search by equipment name, brand, or category..."
             value={search}
@@ -159,8 +164,12 @@ export default function OwnerEquipmentPage() {
         </div>
 
         <div className="flex items-center gap-2">
-          <label className="text-xs font-medium text-slate-500 dark:text-slate-400">Status:</label>
+          <label htmlFor="owner-status-filter" className="text-xs font-medium text-slate-500 dark:text-slate-400">
+            Status:
+          </label>
           <select
+            id="owner-status-filter"
+            name="statusFilter"
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
             className="py-2 px-3 rounded-lg border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50 text-slate-700 dark:text-slate-200"

@@ -261,12 +261,18 @@ export default function HomePage() {
             className="mt-10 max-w-2xl mx-auto bg-white/95 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 p-2 rounded-2xl shadow-xl shadow-slate-200/50 dark:shadow-2xl flex flex-col sm:flex-row items-center gap-2 backdrop-blur-md"
           >
             <div className="relative flex-1 w-full flex items-center">
+              <label htmlFor="hero-search" className="sr-only">
+                Search equipment catalog
+              </label>
               <Search className="pointer-events-none absolute left-4 h-5 w-5 text-slate-400" />
               <input
+                id="hero-search"
+                name="q"
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search equipment, location, or brand (e.g., CAT Excavator, Sony FX6)..."
+                aria-label="Search equipment catalog"
                 className="w-full bg-transparent pl-12 pr-4 py-3 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none"
               />
             </div>
