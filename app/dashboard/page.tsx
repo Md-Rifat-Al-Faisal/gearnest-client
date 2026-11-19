@@ -11,9 +11,9 @@ export default async function DashboardPage() {
   const role = (session.user as { role?: string }).role || "customer"
 
   if (role === "admin") {
-    redirect("/dashboard/admin/equipment")
+    redirect("/dashboard/admin")
   } else if (role === "owner") {
-    redirect("/dashboard/owner/equipment")
+    redirect("/dashboard/owner")
   } else {
     redirect("/dashboard/customer/rentals")
   }
