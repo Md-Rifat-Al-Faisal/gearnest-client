@@ -39,8 +39,10 @@ export async function POST(req: Request) {
     }
 
     // Call Express /api/bookings/initiate with the JWT Bearer token
-    const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"
-    const initiateRes = await fetch(`${apiBase}/api/bookings/initiate`, {
+    const FALLBACK_API = "https://gearnest-server.vercel.app"
+    const apiBase = process.env.NEXT_PUBLIC_API_URL || FALLBACK_API
+
+    const requestPayload = {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -55,7 +57,14 @@ export async function POST(req: Request) {
         deliveryAddress,
         notes,
       }),
-    })
+    }
+
+    let initiateRes: Response
+    try {
+      initiateRes = await fetch(`${apiBase}/api/bookings/initiate`, requestPayload)
+    } catch {
+      initiateRes = await fetch(`${FALLBACK_API}/api/bookings/initiate`, requestPayload)
+    }
 
     const initiateData = await initiateRes.json()
 

@@ -18,6 +18,7 @@ import {
   ArrowLeft,
   ExternalLink,
   Heart,
+  User,
 } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { authClient } from "@/lib/auth-client"
@@ -70,14 +71,14 @@ export function DashboardSidebar({ user }: DashboardSidebarProps) {
       icon: PackagePlus,
     },
     {
-      title: "Active Rentals",
-      href: "/dashboard/owner/bookings",
+      title: "Rental Orders",
+      href: "/dashboard/owner/rentals",
       icon: CalendarCheck2,
     },
     {
-      title: "Fleet Analytics",
-      href: "/dashboard/owner",
-      icon: LayoutDashboard,
+      title: "Partner Profile",
+      href: "/dashboard/owner/profile",
+      icon: User,
     },
   ]
 
@@ -89,8 +90,8 @@ export function DashboardSidebar({ user }: DashboardSidebarProps) {
       badge: "Review",
     },
     {
-      title: "Rental Bookings",
-      href: "/dashboard/admin/bookings",
+      title: "All Platform Rentals",
+      href: "/dashboard/admin/rentals",
       icon: CalendarCheck2,
     },
     {
@@ -99,9 +100,9 @@ export function DashboardSidebar({ user }: DashboardSidebarProps) {
       icon: Users,
     },
     {
-      title: "Master Analytics",
-      href: "/dashboard/admin",
-      icon: LayoutDashboard,
+      title: "Admin Profile",
+      href: "/dashboard/admin/profile",
+      icon: User,
     },
   ]
 
@@ -116,6 +117,11 @@ export function DashboardSidebar({ user }: DashboardSidebarProps) {
       title: "My Favorites",
       href: "/dashboard/customer/favorites",
       icon: Heart,
+    },
+    {
+      title: "My Profile",
+      href: "/dashboard/customer/profile",
+      icon: User,
     },
     {
       title: "Browse Catalog",
