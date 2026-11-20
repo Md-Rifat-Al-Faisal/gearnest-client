@@ -19,6 +19,8 @@ import {
   Star,
   DollarSign,
   ChevronRight,
+  ChevronDown,
+  HelpCircle,
   CheckCircle2,
   Package,
   Layers,
@@ -159,6 +161,29 @@ const HOW_IT_WORKS_STEPS = [
   },
 ]
 
+const FAQ_ITEMS = [
+  {
+    q: "How does equipment delivery and site pick-up work?",
+    a: "Owners offer both on-site depot pick-up and direct jobsite transport. During contract booking, specify your delivery address and arrival window, and the fleet owner arranges verified freight dispatch.",
+  },
+  {
+    q: "What insurance and certifications are required to rent heavy machinery?",
+    a: "Renters provide commercial general liability and equipment floater insurance for heavy equipment. For light equipment and electronics, platform insurance verification is automatically provided at checkout.",
+  },
+  {
+    q: "What happens if a piece of equipment experiences mechanical downtime?",
+    a: "Every rental includes 24/7 dispatch technician support. If a machine malfunctions, our certified emergency technician is deployed or an immediate replacement unit is dispatched at zero extra charge.",
+  },
+  {
+    q: "Can I extend our contract duration once equipment is already on site?",
+    a: "Yes. From your Customer Dashboard under My Rentals, you can request a rental duration extension with prorated daily or weekly rates before the current contract term ends.",
+  },
+  {
+    q: "How are owner payouts and customer security deposits processed?",
+    a: "All payments are securely handled through Stripe with automated escrow. Owners receive direct transfers upon rental completion, and customer security authorizations are released immediately after equipment check-in.",
+  },
+]
+
 export default function HomePage() {
   const router = useRouter()
   const { data: session } = useSession()
@@ -167,6 +192,7 @@ export default function HomePage() {
   const [reviews, setReviews] = useState<CustomerReview[]>([])
   const [searchQuery, setSearchQuery] = useState("")
   const [loadingFeatured, setLoadingFeatured] = useState(true)
+  const [openFaq, setOpenFaq] = useState<number | null>(0)
 
   // Contact Form State
   const [contactName, setContactName] = useState("")
@@ -526,7 +552,7 @@ export default function HomePage() {
       </section>
 
       {/* 4. HOW IT WORKS (EXTRA SECTION 1) */}
-      <section className="py-20 bg-slate-900 text-white border-b border-slate-800">
+      <section id="how-it-works" className="scroll-mt-16 py-20 bg-slate-900 text-white border-b border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-16">
             <span className="text-xs font-bold uppercase tracking-wider text-amber-400">
@@ -563,7 +589,7 @@ export default function HomePage() {
       </section>
 
       {/* 5. WHY CHOOSE US */}
-      <section className="py-20 bg-slate-50 dark:bg-slate-900/40 border-b border-slate-200 dark:border-slate-800/80">
+      <section id="why-us" className="scroll-mt-16 py-20 bg-slate-50 dark:bg-slate-900/40 border-b border-slate-200 dark:border-slate-800/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-14">
             <span className="text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-500">
@@ -607,7 +633,7 @@ export default function HomePage() {
       </section>
 
       {/* 6. CUSTOMER REVIEWS (4+ REVIEWS LOADED VIA /api/reviews) */}
-      <section className="py-20 bg-white dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800">
+      <section id="reviews" className="scroll-mt-16 py-20 bg-white dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-14">
             <span className="text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-500">
@@ -699,7 +725,7 @@ export default function HomePage() {
       </section>
 
       {/* 8. ABOUT US (MISSION, FLEET STANDARDS & STATS) */}
-      <section id="about" className="py-24 bg-slate-50/60 dark:bg-slate-900/40 border-t border-slate-200 dark:border-slate-800">
+      <section id="about" className="scroll-mt-16 py-24 bg-slate-50/60 dark:bg-slate-900/40 border-t border-slate-200 dark:border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <motion.div
@@ -795,8 +821,56 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 9. CONTACT US (SUPPORT INQUIRY & DISPATCH HOTLINE) */}
-      <section id="contact" className="py-24 bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800">
+      {/* 9. FREQUENTLY ASKED QUESTIONS (FAQ ACCORDION) */}
+      <section id="faq" className="scroll-mt-16 py-24 bg-slate-50/70 dark:bg-slate-900/40 border-t border-slate-200 dark:border-slate-800">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-14">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-500/10 px-3.5 py-1 text-xs font-bold text-amber-600 dark:text-amber-400 border border-amber-500/20">
+              <HelpCircle className="size-3.5" />
+              Contract & Fleet FAQs
+            </span>
+            <h2 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white mt-3">
+              Frequently Asked Questions
+            </h2>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">
+              Everything you need to know about machinery reservation, delivery logistics, and insurance terms.
+            </p>
+          </div>
+
+          <div className="space-y-4">
+            {FAQ_ITEMS.map((item, index) => {
+              const isOpen = openFaq === index
+              return (
+                <div
+                  key={index}
+                  className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-xs transition-colors"
+                >
+                  <button
+                    type="button"
+                    onClick={() => setOpenFaq(isOpen ? null : index)}
+                    className="w-full p-5 text-left flex items-center justify-between gap-4 font-bold text-sm sm:text-base text-slate-900 dark:text-white hover:text-amber-600 dark:hover:text-amber-400 transition-colors cursor-pointer"
+                  >
+                    <span>{item.q}</span>
+                    <ChevronDown
+                      className={`size-4 text-slate-400 shrink-0 transition-transform duration-200 ${
+                        isOpen ? "rotate-180 text-amber-500" : ""
+                      }`}
+                    />
+                  </button>
+                  {isOpen && (
+                    <div className="px-5 pb-5 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed border-t border-slate-100 dark:border-slate-800/80 pt-3">
+                      {item.a}
+                    </div>
+                  )}
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* 10. CONTACT US (SUPPORT INQUIRY & DISPATCH HOTLINE) */}
+      <section id="contact" className="scroll-mt-16 py-24 bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-14">
             <span className="text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-500">
@@ -965,6 +1039,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      <Footer />
     </div>
   )
 }

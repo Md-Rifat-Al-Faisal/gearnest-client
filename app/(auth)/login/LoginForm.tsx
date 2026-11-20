@@ -125,6 +125,48 @@ export function LoginForm() {
           </div>
         </div>
 
+        {/* Quick Fill Demo Credentials */}
+        <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 p-2.5">
+          <p className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-1.5 flex items-center justify-between">
+            <span>Quick Demo Logins (Evaluation):</span>
+          </p>
+          <div className="grid grid-cols-3 gap-1.5">
+            <button
+              type="button"
+              onClick={() => {
+                setEmail("admin@gearnest.com")
+                setPassword("Admin@123456")
+                toast.info("Admin credentials loaded")
+              }}
+              className="py-1 px-2 rounded-lg text-[11px] font-bold border border-rose-500/20 bg-rose-500/10 text-rose-600 dark:text-rose-400 hover:bg-rose-500/20 transition-colors"
+            >
+              Admin
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setEmail("owner@gearnest.com")
+                setPassword("Owner@123456")
+                toast.info("Owner credentials loaded")
+              }}
+              className="py-1 px-2 rounded-lg text-[11px] font-bold border border-amber-500/20 bg-amber-500/10 text-amber-600 dark:text-amber-400 hover:bg-amber-500/20 transition-colors"
+            >
+              Owner
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setEmail("customer@gearnest.com")
+                setPassword("Customer@123456")
+                toast.info("Customer credentials loaded")
+              }}
+              className="py-1 px-2 rounded-lg text-[11px] font-bold border border-blue-500/20 bg-blue-500/10 text-blue-600 dark:text-blue-400 hover:bg-blue-500/20 transition-colors"
+            >
+              Customer
+            </button>
+          </div>
+        </div>
+
         <button
           type="submit"
           disabled={loading}

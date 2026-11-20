@@ -21,9 +21,24 @@ export function Navbar() {
     { label: "All Equipment", href: "/equipment" },
     { label: "How It Works", href: "/#how-it-works" },
     { label: "Why Choose Us", href: "/#why-us" },
+    { label: "FAQ", href: "/#faq" },
     { label: "About Us", href: "/#about" },
     { label: "Contact Us", href: "/#contact" },
   ]
+
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (href.startsWith("/#")) {
+      const targetId = href.replace("/#", "")
+      if (pathname === "/") {
+        e.preventDefault()
+        const el = document.getElementById(targetId)
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth" })
+          window.history.pushState(null, "", href)
+        }
+      }
+    }
+  }
 
   const handleSignOut = async () => {
     try {
@@ -56,6 +71,7 @@ export function Navbar() {
               <Link
                 key={link.label}
                 href={link.href}
+                onClick={(e) => handleNavClick(e, link.href)}
                 className={`text-sm font-medium transition-colors hover:text-amber-600 dark:hover:text-amber-400 ${
                   isActive
                     ? "font-semibold text-amber-600 dark:text-amber-500"
@@ -145,7 +161,10 @@ export function Navbar() {
               <Link
                 key={link.label}
                 href={link.href}
-                onClick={() => setMobileMenuOpen(false)}
+                onClick={(e) => {
+                  setMobileMenuOpen(false)
+                  handleNavClick(e, link.href)
+                }}
                 className="rounded-md px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-900"
               >
                 {link.label}
