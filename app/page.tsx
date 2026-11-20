@@ -71,6 +71,7 @@ interface CustomerReview {
 const CATEGORIES = [
   {
     name: "Construction",
+    displayTitle: "Construction Equipment",
     icon: HardHat,
     description: "Excavators, skid steers, scissor lifts & heavy compaction",
     color: "from-amber-500/20 to-orange-500/20",
@@ -78,6 +79,7 @@ const CATEGORIES = [
   },
   {
     name: "Photography",
+    displayTitle: "Photography Equipment",
     icon: Camera,
     description: "Cinema cameras, prime lenses, studio lighting & gimbals",
     color: "from-blue-500/20 to-indigo-500/20",
@@ -85,6 +87,7 @@ const CATEGORIES = [
   },
   {
     name: "Vehicles",
+    displayTitle: "Vehicles & Transportation",
     icon: Truck,
     description: "Heavy dually haulers, extended cargo vans & flatbeds",
     color: "from-emerald-500/20 to-teal-500/20",
@@ -92,6 +95,7 @@ const CATEGORIES = [
   },
   {
     name: "Agriculture",
+    displayTitle: "Agriculture Equipment",
     icon: Tractor,
     description: "Utility tractors, rotary mowers, seeders & field loaders",
     color: "from-green-500/20 to-lime-500/20",
@@ -99,6 +103,7 @@ const CATEGORIES = [
   },
   {
     name: "Electronics",
+    displayTitle: "Electronics",
     icon: Cpu,
     description: "Thermal cameras, RTK survey drones, oscilloscopes & power hubs",
     color: "from-purple-500/20 to-pink-500/20",
@@ -106,6 +111,7 @@ const CATEGORIES = [
   },
   {
     name: "Events",
+    displayTitle: "Event Equipment",
     icon: Sparkles,
     description: "Line-array audio rigs, moving head lights & staging trusses",
     color: "from-rose-500/20 to-amber-500/20",
@@ -369,6 +375,39 @@ export default function HomePage() {
               )
             )}
           </motion.div>
+
+          {/* High-Quality Hero Showcase Image */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+            className="mt-12 relative max-w-5xl mx-auto rounded-3xl overflow-hidden border border-slate-200/80 dark:border-slate-800 shadow-2xl bg-slate-900 group"
+          >
+            <div className="relative aspect-[16/8] sm:aspect-[21/9] w-full overflow-hidden">
+              <img
+                src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=1600&q=85"
+                alt="Commercial heavy machinery fleet on job site"
+                className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-700 brightness-95"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent pointer-events-none" />
+
+              {/* Floating Verified Trust Badges */}
+              <div className="absolute top-4 left-4 sm:top-6 sm:left-6 flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-950/80 backdrop-blur-md border border-white/10 text-white text-[11px] sm:text-xs font-bold shadow-lg">
+                <ShieldCheck className="size-3.5 text-amber-400" />
+                <span>OSHA & DOT Certified Fleet</span>
+              </div>
+
+              <div className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-950/80 backdrop-blur-md border border-white/10 text-white text-[11px] sm:text-xs font-bold shadow-lg">
+                <MapPin className="size-3.5 text-emerald-400" />
+                <span>45+ Nationwide Metro Depots</span>
+              </div>
+
+              <div className="absolute bottom-4 right-4 sm:bottom-6 sm:right-6 flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/90 backdrop-blur-md text-slate-950 text-[11px] sm:text-xs font-extrabold shadow-lg">
+                <Clock className="size-3.5 text-slate-950" />
+                <span>24/7 Site Technician Support</span>
+              </div>
+            </div>
+          </motion.div>
         </div>
       </section>
 
@@ -410,7 +449,7 @@ export default function HomePage() {
                     </div>
                     <div className="flex items-center justify-between">
                       <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-amber-500 transition-colors">
-                        {cat.name}
+                        {cat.displayTitle || cat.name}
                       </h3>
                       <ChevronRight className="h-4 w-4 text-slate-400 group-hover:text-amber-500 group-hover:translate-x-1 transition-all" />
                     </div>
