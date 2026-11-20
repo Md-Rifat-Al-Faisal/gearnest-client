@@ -14,6 +14,8 @@ import {
   User,
   ShieldCheck,
   Building,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react"
 import { apiRequest } from "@/lib/api-client"
 import { toast } from "sonner"
@@ -51,6 +53,8 @@ export default function AdminRentalsPage() {
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
+  const [page, setPage] = useState(1)
+  const limit = 8
 
   const fetchRentals = async () => {
     try {
@@ -91,6 +95,9 @@ export default function AdminRentalsPage() {
 
     return matchesStatus && matchesSearch
   })
+
+  const totalPages = Math.ceil(filteredRentals.length / limit) || 1
+  const paginatedRentals = filteredRentals.slice((page - 1) * limit, page * limit)
 
   // Aggregate stats
   const totalVolume = rentals.reduce((acc, r) => acc + (r.totalAmount || 0), 0)
@@ -183,8 +190,9 @@ export default function AdminRentalsPage() {
             <p className="text-xs text-slate-500">No rental reservations match the selected search or filter.</p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
+          <>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs">
               <thead className="bg-slate-50 dark:bg-slate-800/60 text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider border-b border-slate-200 dark:border-slate-800">
                 <tr>
                   <th className="py-3 px-4">Equipment Listing</th>
@@ -196,7 +204,7 @@ export default function AdminRentalsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
-                {filteredRentals.map((rental) => {
+                {paginatedRentals.map((rental) => {
                   const startFmt = new Date(rental.startDate).toLocaleDateString(undefined, {
                     month: "short",
                     day: "numeric",
@@ -306,7 +314,44 @@ export default function AdminRentalsPage() {
               </tbody>
             </table>
           </div>
-        )}
+
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-slate-200 dark:border-slate-800 px-4 py-3.5 bg-slate-50/50 dark:bg-slate-900/50">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Showing <span className="font-semibold text-slate-900 dark:text-white">{(page - 1) * limit + 1}</span> to{" "}
+                <span className="font-semibold text-slate-900 dark:text-white">
+                  {Math.min(page * limit, filteredRentals.length)}
+                </span>{" "}
+                of <span className="font-semibold text-slate-900 dark:text-white">{filteredRentals.length}</span> platform bookings
+              </p>
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  disabled={page <= 1}
+                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                >
+                  <ChevronLeft className="h-3.5 w-3.5" />
+                  <span>Previous</span>
+                </button>
+                <div className="px-3 py-1.5 text-xs font-bold text-slate-700 dark:text-slate-300">
+                  Page {page} of {totalPages}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                  disabled={page >= totalPages}
+                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                >
+                  <span>Next</span>
+                  <ChevronRight className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            </div>
+          )}
+        </>
+      )}
       </div>
     </div>
   )

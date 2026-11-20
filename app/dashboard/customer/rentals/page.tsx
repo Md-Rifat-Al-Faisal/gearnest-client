@@ -13,6 +13,7 @@ import {
   AlertCircle,
   CreditCard,
   ChevronRight,
+  ChevronLeft,
 } from "lucide-react"
 import { apiRequest } from "@/lib/api-client"
 import { toast } from "sonner"
@@ -40,6 +41,11 @@ interface CustomerRental {
 export default function CustomerRentalsPage() {
   const [rentals, setRentals] = useState<CustomerRental[]>([])
   const [loading, setLoading] = useState(true)
+  const [page, setPage] = useState(1)
+  const limit = 5
+
+  const totalPages = Math.ceil(rentals.length / limit) || 1
+  const paginatedRentals = rentals.slice((page - 1) * limit, page * limit)
 
   const fetchRentals = async () => {
     try {
@@ -110,8 +116,9 @@ export default function CustomerRentalsPage() {
             </Link>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm">
+          <>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-sm">
               <thead className="bg-slate-50 dark:bg-slate-950/60 border-b border-slate-200 dark:border-slate-800 text-xs uppercase font-semibold text-slate-500 dark:text-slate-400">
                 <tr>
                   <th className="py-3.5 px-4">Equipment</th>
@@ -123,7 +130,7 @@ export default function CustomerRentalsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200 dark:divide-slate-800/80">
-                {rentals.map((r) => {
+                {paginatedRentals.map((r) => {
                   const startDateFormatted = new Date(r.startDate).toLocaleDateString("en-US", {
                     month: "short",
                     day: "numeric",
@@ -242,7 +249,44 @@ export default function CustomerRentalsPage() {
               </tbody>
             </table>
           </div>
-        )}
+
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-slate-200 dark:border-slate-800 px-4 py-3.5 bg-slate-50/50 dark:bg-slate-900/50">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Showing <span className="font-semibold text-slate-900 dark:text-white">{(page - 1) * limit + 1}</span> to{" "}
+                <span className="font-semibold text-slate-900 dark:text-white">
+                  {Math.min(page * limit, rentals.length)}
+                </span>{" "}
+                of <span className="font-semibold text-slate-900 dark:text-white">{rentals.length}</span> rental records
+              </p>
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  disabled={page <= 1}
+                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                >
+                  <ChevronLeft className="h-3.5 w-3.5" />
+                  <span>Previous</span>
+                </button>
+                <div className="px-3 py-1.5 text-xs font-bold text-slate-700 dark:text-slate-300">
+                  Page {page} of {totalPages}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                  disabled={page >= totalPages}
+                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                >
+                  <span>Next</span>
+                  <ChevronRight className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            </div>
+          )}
+        </>
+      )}
       </div>
     </div>
   )
