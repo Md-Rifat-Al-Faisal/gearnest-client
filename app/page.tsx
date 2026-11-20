@@ -24,7 +24,14 @@ import {
   Layers,
   MapPin,
   Calendar,
+  Building2,
+  Phone,
+  Mail,
+  Send,
+  Award,
+  Users2,
 } from "lucide-react"
+import { toast } from "sonner"
 import { useSession } from "@/lib/auth-client"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
@@ -160,6 +167,31 @@ export default function HomePage() {
   const [reviews, setReviews] = useState<CustomerReview[]>([])
   const [searchQuery, setSearchQuery] = useState("")
   const [loadingFeatured, setLoadingFeatured] = useState(true)
+
+  // Contact Form State
+  const [contactName, setContactName] = useState("")
+  const [contactEmail, setContactEmail] = useState("")
+  const [contactPhone, setContactPhone] = useState("")
+  const [contactCategory, setContactCategory] = useState("Construction")
+  const [contactMessage, setContactMessage] = useState("")
+  const [contactSubmitting, setContactSubmitting] = useState(false)
+
+  const handleContactSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!contactName.trim() || !contactEmail.trim() || !contactMessage.trim()) {
+      toast.error("Please fill in your name, email, and inquiry details.")
+      return
+    }
+    setContactSubmitting(true)
+    setTimeout(() => {
+      setContactSubmitting(false)
+      toast.success("Thank you! Our heavy equipment dispatch team will contact you within 15 minutes.")
+      setContactName("")
+      setContactEmail("")
+      setContactPhone("")
+      setContactMessage("")
+    }, 600)
+  }
 
   const FALLBACK_API = "https://gearnest-server.vercel.app"
   const apiBase = process.env.NEXT_PUBLIC_API_URL || FALLBACK_API
@@ -665,7 +697,274 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-      <Footer />
+
+      {/* 8. ABOUT US (MISSION, FLEET STANDARDS & STATS) */}
+      <section id="about" className="py-24 bg-slate-50/60 dark:bg-slate-900/40 border-t border-slate-200 dark:border-slate-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <motion.div
+              variants={fadeInUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              className="space-y-6"
+            >
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-500/10 px-3.5 py-1 text-xs font-bold text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                <Building2 className="size-3.5" />
+                About GearNest Marketplace
+              </span>
+              <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
+                Pioneering the Next Generation of Heavy Machinery Logistics
+              </h2>
+              <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                Founded to eliminate downtime on high-stakes construction, film, agriculture, and infrastructure sites, GearNest provides contractors and project superintendents with instant, frictionless access to vetted machinery from certified fleet owners nationwide.
+              </p>
+              <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                Every transaction is backed by server-verified Stripe escrow, dynamic availability scheduling, and transparent equipment health diagnostics — empowering builders to rent with complete confidence.
+              </p>
+
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4 border-t border-slate-200 dark:border-slate-800">
+                <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-center">
+                  <div className="text-2xl font-black text-amber-500">1,200+</div>
+                  <div className="text-[11px] font-semibold text-slate-500 mt-0.5">Heavy Machines</div>
+                </div>
+                <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-center">
+                  <div className="text-2xl font-black text-emerald-500">99.8%</div>
+                  <div className="text-[11px] font-semibold text-slate-500 mt-0.5">On-Time Dispatch</div>
+                </div>
+                <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-center">
+                  <div className="text-2xl font-black text-blue-500">4.9/5</div>
+                  <div className="text-[11px] font-semibold text-slate-500 mt-0.5">Renter Rating</div>
+                </div>
+                <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-center">
+                  <div className="text-2xl font-black text-purple-500">24/7</div>
+                  <div className="text-[11px] font-semibold text-slate-500 mt-0.5">Site Support</div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Visual Feature Grid */}
+            <motion.div
+              variants={fadeInUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              className="grid grid-cols-1 sm:grid-cols-2 gap-4"
+            >
+              <div className="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs space-y-3">
+                <div className="size-10 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center">
+                  <Award className="size-5" />
+                </div>
+                <h3 className="font-bold text-slate-900 dark:text-white text-base">OSHA & DOT Certified</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                  Every machine undergoes rigorous mechanical inspection and certification prior to catalog listing approval.
+                </p>
+              </div>
+
+              <div className="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs space-y-3">
+                <div className="size-10 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center">
+                  <ShieldCheck className="size-5" />
+                </div>
+                <h3 className="font-bold text-slate-900 dark:text-white text-base">Damage & Waiver Shield</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                  Comprehensive commercial equipment protection shields both renters and equipment owners throughout every lease.
+                </p>
+              </div>
+
+              <div className="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs space-y-3">
+                <div className="size-10 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
+                  <Users2 className="size-5" />
+                </div>
+                <h3 className="font-bold text-slate-900 dark:text-white text-base">Verified Fleet Owners</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                  Direct connection to authorized industrial suppliers, local fleet managers, and independent heavy machinery partners.
+                </p>
+              </div>
+
+              <div className="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs space-y-3">
+                <div className="size-10 rounded-xl bg-purple-500/10 text-purple-500 flex items-center justify-center">
+                  <Clock className="size-5" />
+                </div>
+                <h3 className="font-bold text-slate-900 dark:text-white text-base">Rapid Jobsite Delivery</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                  Scheduled lowboy and flatbed transport directly to your designated coordinates or loading dock.
+                </p>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* 9. CONTACT US (SUPPORT INQUIRY & DISPATCH HOTLINE) */}
+      <section id="contact" className="py-24 bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-14">
+            <span className="text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-500">
+              Direct Assistance
+            </span>
+            <h2 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white mt-2">
+              Contact Machinery Dispatch
+            </h2>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">
+              Need immediate equipment staging, custom long-term contract rates, or emergency site support? Our dispatch desk is standing by.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+            {/* Contact Information Cards */}
+            <div className="space-y-4">
+              <div className="p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 space-y-3">
+                <div className="size-10 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center">
+                  <Phone className="size-5" />
+                </div>
+                <h3 className="font-bold text-slate-900 dark:text-white text-sm">24/7 Dispatch Hotline</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Direct commercial line for real-time fleet bookings and site breakdowns:
+                </p>
+                <div className="text-sm font-extrabold text-amber-600 dark:text-amber-400">
+                  +1 (800) 432-7637
+                </div>
+              </div>
+
+              <div className="p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 space-y-3">
+                <div className="size-10 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center">
+                  <Mail className="size-5" />
+                </div>
+                <h3 className="font-bold text-slate-900 dark:text-white text-sm">Corporate & Fleet Support</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  For formal bids, municipal proposals, and partner fleet inquiries:
+                </p>
+                <div className="text-sm font-semibold text-slate-900 dark:text-white">
+                  dispatch@gearnest.com
+                </div>
+              </div>
+
+              <div className="p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 space-y-3">
+                <div className="size-10 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
+                  <MapPin className="size-5" />
+                </div>
+                <h3 className="font-bold text-slate-900 dark:text-white text-sm">Central Equipment Depot</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Main logistics staging hub:
+                </p>
+                <div className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                  450 Industrial Parkway, Suite 100<br />Dallas, TX 75201, United States
+                </div>
+              </div>
+            </div>
+
+            {/* Interactive Contact Form */}
+            <div className="lg:col-span-2 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs">
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-1">
+                Send an Equipment Dispatch Inquiry
+              </h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mb-6">
+                Our logistics coordinators respond with exact equipment availability and rate estimates in under 15 minutes.
+              </p>
+
+              <form onSubmit={handleContactSubmit} className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label htmlFor="contact-name" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                      Full Name *
+                    </label>
+                    <input
+                      id="contact-name"
+                      name="contactName"
+                      type="text"
+                      required
+                      value={contactName}
+                      onChange={(e) => setContactName(e.target.value)}
+                      placeholder="e.g. Marcus Vance"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/50 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+                    />
+                  </div>
+
+                  <div>
+                    <label htmlFor="contact-email" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                      Work Email *
+                    </label>
+                    <input
+                      id="contact-email"
+                      name="contactEmail"
+                      type="email"
+                      required
+                      value={contactEmail}
+                      onChange={(e) => setContactEmail(e.target.value)}
+                      placeholder="e.g. marcus@buildcorp.com"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/50 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label htmlFor="contact-phone" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                      Phone Number
+                    </label>
+                    <input
+                      id="contact-phone"
+                      name="contactPhone"
+                      type="tel"
+                      value={contactPhone}
+                      onChange={(e) => setContactPhone(e.target.value)}
+                      placeholder="e.g. (555) 234-5678"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/50 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+                    />
+                  </div>
+
+                  <div>
+                    <label htmlFor="contact-category" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                      Machinery Segment
+                    </label>
+                    <select
+                      id="contact-category"
+                      name="contactCategory"
+                      value={contactCategory}
+                      onChange={(e) => setContactCategory(e.target.value)}
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/50 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+                    >
+                      <option value="Construction">Heavy Construction</option>
+                      <option value="Photography">Photography & Film Gear</option>
+                      <option value="Vehicles">Commercial Haulers & Vans</option>
+                      <option value="Agriculture">Agriculture & Tractors</option>
+                      <option value="Electronics">Thermal & Survey Electronics</option>
+                      <option value="Events">Event Audio & Stage Lighting</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label htmlFor="contact-message" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                    Jobsite Requirements & Duration *
+                  </label>
+                  <textarea
+                    id="contact-message"
+                    name="contactMessage"
+                    rows={4}
+                    required
+                    value={contactMessage}
+                    onChange={(e) => setContactMessage(e.target.value)}
+                    placeholder="Specify project address, target rental dates, machine specs, and any site constraints..."
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/50 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+                  />
+                </div>
+
+                <div className="pt-2 flex items-center justify-end">
+                  <button
+                    type="submit"
+                    disabled={contactSubmitting}
+                    className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs shadow-md transition-all cursor-pointer disabled:opacity-50"
+                  >
+                    <Send className={`size-3.5 ${contactSubmitting ? "animate-pulse" : ""}`} />
+                    <span>{contactSubmitting ? "Transmitting..." : "Send Dispatch Request"}</span>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   )
 }

@@ -104,6 +104,16 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/#about" className="hover:text-amber-600 dark:hover:text-amber-400">
+                  About Us
+                </Link>
+              </li>
+              <li>
+                <Link href="/#contact" className="hover:text-amber-600 dark:hover:text-amber-400">
+                  Contact Support
+                </Link>
+              </li>
+              <li>
                 <Link href="/register" className="hover:text-amber-600 dark:hover:text-amber-400">
                   Become an Equipment Owner
                 </Link>

@@ -21,6 +21,8 @@ export function Navbar() {
     { label: "All Equipment", href: "/equipment" },
     { label: "How It Works", href: "/#how-it-works" },
     { label: "Why Choose Us", href: "/#why-us" },
+    { label: "About Us", href: "/#about" },
+    { label: "Contact Us", href: "/#contact" },
   ]
 
   const handleSignOut = async () => {
