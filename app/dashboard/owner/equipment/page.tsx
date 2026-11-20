@@ -15,6 +15,8 @@ import {
   Clock,
   XCircle,
   Package,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react"
 import { apiRequest } from "@/lib/api-client"
 import { toast } from "sonner"
@@ -42,6 +44,8 @@ export default function OwnerEquipmentPage() {
   const [statusFilter, setStatusFilter] = useState("all")
   const [deletingId, setDeletingId] = useState<string | null>(null)
   const [itemToDelete, setItemToDelete] = useState<EquipmentItem | null>(null)
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 6
 
   const fetchEquipment = async () => {
     try {
@@ -95,6 +99,16 @@ export default function OwnerEquipmentPage() {
     return matchesSearch && matchesStatus
   })
 
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [search, statusFilter])
+
+  const totalPages = Math.ceil(filteredEquipment.length / itemsPerPage) || 1
+  const paginatedEquipment = filteredEquipment.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  )
+
   const totalCount = equipment.length
   const approvedCount = equipment.filter((e) => e.status === "Approved").length
   const pendingCount = equipment.filter((e) => e.status === "Pending").length
@@ -139,14 +153,14 @@ export default function OwnerEquipmentPage() {
         <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs">
           <p className="text-xs font-semibold text-amber-600 dark:text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
             <Clock className="h-3.5 w-3.5" />
-            Pending Review
+            Pending Approval
           </p>
           <p className="text-2xl font-bold text-slate-900 dark:text-white mt-1">{pendingCount}</p>
         </div>
       </div>
 
-      {/* Search & Filter Toolbar */}
-      <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
+      {/* Search and Filters */}
+      <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1 max-w-md">
           <label htmlFor="owner-equipment-search" className="sr-only">
             Search my equipment
@@ -211,124 +225,171 @@ export default function OwnerEquipmentPage() {
             )}
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm">
-              <thead className="bg-slate-50 dark:bg-slate-950/60 border-b border-slate-200 dark:border-slate-800 text-xs uppercase font-semibold text-slate-500 dark:text-slate-400">
-                <tr>
-                  <th className="py-3.5 px-4">Equipment</th>
-                  <th className="py-3.5 px-4">Category</th>
-                  <th className="py-3.5 px-4">Rental Rate</th>
-                  <th className="py-3.5 px-4 text-center">Stock</th>
-                  <th className="py-3.5 px-4 text-center">Status</th>
-                  <th className="py-3.5 px-4 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-200 dark:divide-slate-800/80">
-                {filteredEquipment.map((item) => (
-                  <tr
-                    key={item._id}
-                    className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors"
-                  >
-                    <td className="py-4 px-4">
-                      <div className="flex items-center gap-3">
-                        <div className="h-14 w-14 rounded-lg bg-slate-100 dark:bg-slate-800 overflow-hidden shrink-0 border border-slate-200 dark:border-slate-700">
-                          {item.image ? (
-                            <img
-                              src={item.image}
-                              alt={item.name}
-                              className="h-full w-full object-cover"
-                            />
-                          ) : (
-                            <div className="h-full w-full flex items-center justify-center text-slate-400">
-                              <Package className="h-6 w-6" />
-                            </div>
-                          )}
-                        </div>
-                        <div className="min-w-0">
-                          <p className="font-semibold text-slate-900 dark:text-white truncate max-w-xs">
-                            {item.name}
-                          </p>
-                          <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
-                            {item.brand} {item.model && `• ${item.model}`}
-                          </p>
-                        </div>
-                      </div>
-                    </td>
-
-                    <td className="py-4 px-4 text-slate-600 dark:text-slate-300">
-                      <span className="inline-block px-2 py-0.5 rounded text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
-                        {item.category}
-                      </span>
-                    </td>
-
-                    <td className="py-4 px-4 font-semibold text-slate-900 dark:text-white">
-                      ${item.rentalPrice}{" "}
-                      <span className="text-xs font-normal text-slate-500">
-                        / {item.rentalType.toLowerCase()}
-                      </span>
-                    </td>
-
-                    <td className="py-4 px-4 text-center">
-                      <span
-                        className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-bold ${
-                          item.availableQuantity > 0
-                            ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-                            : "bg-rose-500/10 text-rose-600 dark:text-rose-400"
-                        }`}
-                      >
-                        {item.availableQuantity} available
-                      </span>
-                    </td>
-
-                    <td className="py-4 px-4 text-center">
-                      {item.status === "Approved" ? (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-                          <CheckCircle2 className="h-3 w-3" />
-                          Approved
-                        </span>
-                      ) : item.status === "Pending" ? (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
-                          <Clock className="h-3 w-3" />
-                          Pending
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20">
-                          <XCircle className="h-3 w-3" />
-                          Rejected
-                        </span>
-                      )}
-                    </td>
-
-                    <td className="py-4 px-4 text-right">
-                      <div className="flex items-center justify-end gap-1.5">
-                        <Link
-                          href={`/equipment/${item._id}`}
-                          title="View Catalog Page"
-                          className="p-1.5 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
-                        >
-                          <Eye className="h-4 w-4" />
-                        </Link>
-                        <Link
-                          href={`/dashboard/owner/equipment/${item._id}/edit`}
-                          title="Edit Equipment"
-                          className="p-1.5 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-amber-500 dark:hover:text-amber-400 transition-colors"
-                        >
-                          <Edit2 className="h-4 w-4" />
-                        </Link>
-                        <button
-                          onClick={() => setItemToDelete(item)}
-                          title="Delete Equipment"
-                          className="p-1.5 rounded-md hover:bg-rose-500/10 text-slate-500 hover:text-rose-600 dark:hover:text-rose-400 transition-colors"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
-                      </div>
-                    </td>
+          <>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-sm">
+                <thead className="bg-slate-50 dark:bg-slate-950/60 border-b border-slate-200 dark:border-slate-800 text-xs uppercase font-semibold text-slate-500 dark:text-slate-400">
+                  <tr>
+                    <th className="py-3.5 px-4">Equipment</th>
+                    <th className="py-3.5 px-4">Category</th>
+                    <th className="py-3.5 px-4">Rental Rate</th>
+                    <th className="py-3.5 px-4 text-center">Stock</th>
+                    <th className="py-3.5 px-4 text-center">Status</th>
+                    <th className="py-3.5 px-4 text-right">Actions</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody className="divide-y divide-slate-200 dark:divide-slate-800/80">
+                  {paginatedEquipment.map((item) => (
+                    <tr
+                      key={item._id}
+                      className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors"
+                    >
+                      <td className="py-4 px-4">
+                        <div className="flex items-center gap-3">
+                          <div className="h-14 w-14 rounded-lg bg-slate-100 dark:bg-slate-800 overflow-hidden shrink-0 border border-slate-200 dark:border-slate-700">
+                            {item.image ? (
+                              <img
+                                src={item.image}
+                                alt={item.name}
+                                className="h-full w-full object-cover"
+                              />
+                            ) : (
+                              <div className="h-full w-full flex items-center justify-center text-slate-400">
+                                <Package className="h-6 w-6" />
+                              </div>
+                            )}
+                          </div>
+                          <div className="min-w-0">
+                            <p className="font-semibold text-slate-900 dark:text-white truncate max-w-xs">
+                              {item.name}
+                            </p>
+                            <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
+                              {item.brand} {item.model && `• ${item.model}`}
+                            </p>
+                          </div>
+                        </div>
+                      </td>
+
+                      <td className="py-4 px-4 text-slate-600 dark:text-slate-300">
+                        <span className="inline-block px-2 py-0.5 rounded text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+                          {item.category}
+                        </span>
+                      </td>
+
+                      <td className="py-4 px-4 font-semibold text-slate-900 dark:text-white">
+                        ${item.rentalPrice}{" "}
+                        <span className="text-xs font-normal text-slate-500">
+                          / {item.rentalType.toLowerCase()}
+                        </span>
+                      </td>
+
+                      <td className="py-4 px-4 text-center">
+                        <span
+                          className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-bold ${
+                            item.availableQuantity > 0
+                              ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                              : "bg-rose-500/10 text-rose-600 dark:text-rose-400"
+                          }`}
+                        >
+                          {item.availableQuantity} available
+                        </span>
+                      </td>
+
+                      <td className="py-4 px-4 text-center">
+                        {item.status === "Approved" ? (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                            <CheckCircle2 className="h-3 w-3" />
+                            Approved
+                          </span>
+                        ) : item.status === "Pending" ? (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                            <Clock className="h-3 w-3" />
+                            Pending
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20">
+                            <XCircle className="h-3 w-3" />
+                            Rejected
+                          </span>
+                        )}
+                      </td>
+
+                      <td className="py-4 px-4 text-right">
+                        <div className="flex items-center justify-end gap-1.5">
+                          <Link
+                            href={`/equipment/${item._id}`}
+                            title="View Catalog Page"
+                            className="p-1.5 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+                          >
+                            <Eye className="h-4 w-4" />
+                          </Link>
+                          <Link
+                            href={`/dashboard/owner/equipment/${item._id}/edit`}
+                            title="Edit Equipment"
+                            className="p-1.5 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-amber-500 dark:hover:text-amber-400 transition-colors"
+                          >
+                            <Edit2 className="h-4 w-4" />
+                          </Link>
+                          <button
+                            onClick={() => setItemToDelete(item)}
+                            title="Delete Equipment"
+                            className="p-1.5 rounded-md hover:bg-rose-500/10 text-slate-500 hover:text-rose-600 dark:hover:text-rose-400 transition-colors"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div className="px-4 py-3.5 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3 bg-slate-50/50 dark:bg-slate-900/50">
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Showing{" "}
+                  <span className="font-semibold text-slate-700 dark:text-slate-300">
+                    {(currentPage - 1) * itemsPerPage + 1}
+                  </span>{" "}
+                  to{" "}
+                  <span className="font-semibold text-slate-700 dark:text-slate-300">
+                    {Math.min(currentPage * itemsPerPage, filteredEquipment.length)}
+                  </span>{" "}
+                  of{" "}
+                  <span className="font-semibold text-slate-700 dark:text-slate-300">
+                    {filteredEquipment.length}
+                  </span>{" "}
+                  equipment listings
+                </p>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                    disabled={currentPage === 1}
+                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                  >
+                    <ChevronLeft className="h-3.5 w-3.5" />
+                    <span>Previous</span>
+                  </button>
+
+                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400 px-1">
+                    Page {currentPage} of {totalPages}
+                  </span>
+
+                  <button
+                    onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                    disabled={currentPage === totalPages}
+                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                  >
+                    <span>Next</span>
+                    <ChevronRight className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+              </div>
+            )}
+          </>
         )}
       </div>
 
@@ -348,7 +409,7 @@ export default function OwnerEquipmentPage() {
 
             <p className="text-sm text-slate-600 dark:text-slate-300">
               Are you sure you want to permanently delete{" "}
-              <strong className="text-slate-900 dark:text-white">"{itemToDelete.name}"</strong>? If there are any
+              <strong className="text-slate-900 dark:text-white">&quot;{itemToDelete.name}&quot;</strong>? If there are any
               active rental bookings for this equipment, deletion will be blocked to protect ongoing rentals.
             </p>
 
