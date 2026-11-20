@@ -13,6 +13,8 @@ import {
   Mail,
   Calendar,
   ShieldAlert,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react"
 import { apiRequest } from "@/lib/api-client"
 import { authClient } from "@/lib/auth-client"
@@ -35,6 +37,8 @@ export default function AdminUsersPage() {
   const [search, setSearch] = useState("")
   const [roleFilter, setRoleFilter] = useState("all")
   const [updatingId, setUpdatingId] = useState<string | null>(null)
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 8
 
   // Current session to prevent self-demotion / self-deletion
   const { data: session } = authClient.useSession()
@@ -147,6 +151,16 @@ export default function AdminUsersPage() {
     return matchesRole && matchesSearch
   })
 
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [search, roleFilter])
+
+  const totalPages = Math.ceil(filteredUsers.length / itemsPerPage) || 1
+  const paginatedUsers = filteredUsers.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  )
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -211,128 +225,175 @@ export default function AdminUsersPage() {
             <p className="text-xs text-slate-500">No registered users match the selected criteria.</p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 dark:bg-slate-800/60 text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider border-b border-slate-200 dark:border-slate-800">
-                <tr>
-                  <th className="py-3 px-4">User</th>
-                  <th className="py-3 px-4">Email</th>
-                  <th className="py-3 px-4">Current Role</th>
-                  <th className="py-3 px-4">Registered Date</th>
-                  <th className="py-3 px-4">Change Access Role</th>
-                  <th className="py-3 px-4 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
-                {filteredUsers.map((user) => {
-                  const isSelf = user.id === currentUserId
-                  const isUpdating = updatingId === user.id
-                  const regDate = user.createdAt
-                    ? new Date(user.createdAt).toLocaleDateString(undefined, {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                      })
-                    : "—"
+          <>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs">
+                <thead className="bg-slate-50 dark:bg-slate-800/60 text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider border-b border-slate-200 dark:border-slate-800">
+                  <tr>
+                    <th className="py-3 px-4">User</th>
+                    <th className="py-3 px-4">Email</th>
+                    <th className="py-3 px-4">Current Role</th>
+                    <th className="py-3 px-4">Registered Date</th>
+                    <th className="py-3 px-4">Change Access Role</th>
+                    <th className="py-3 px-4 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
+                  {paginatedUsers.map((user) => {
+                    const isSelf = user.id === currentUserId
+                    const isUpdating = updatingId === user.id
+                    const regDate = user.createdAt
+                      ? new Date(user.createdAt).toLocaleDateString(undefined, {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                        })
+                      : "—"
 
-                  const roleStyle =
-                    user.role === "admin"
-                      ? "bg-rose-500/10 text-rose-500 border-rose-500/20"
-                      : user.role === "owner"
-                        ? "bg-amber-500/10 text-amber-500 border-amber-500/20"
-                        : "bg-blue-500/10 text-blue-500 border-blue-500/20"
+                    const roleStyle =
+                      user.role === "admin"
+                        ? "bg-rose-500/10 text-rose-500 border-rose-500/20"
+                        : user.role === "owner"
+                          ? "bg-amber-500/10 text-amber-500 border-amber-500/20"
+                          : "bg-blue-500/10 text-blue-500 border-blue-500/20"
 
-                  return (
-                    <tr key={user.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
-                      {/* Name & Avatar */}
-                      <td className="py-3.5 px-4 align-middle">
-                        <div className="flex items-center gap-3">
-                          <div className="size-8 rounded-full overflow-hidden bg-slate-100 dark:bg-slate-800 flex items-center justify-center shrink-0 border border-slate-200 dark:border-slate-700">
-                            {user.image ? (
-                              // eslint-disable-next-line @next/next/no-img-element
-                              <img src={user.image} alt={user.name} className="size-full object-cover" />
-                            ) : (
-                              <Users className="size-4 text-slate-400" />
-                            )}
-                          </div>
-                          <div>
-                            <span className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
-                              {user.name || "Unnamed User"}
-                              {isSelf && (
-                                <span className="px-1.5 py-0.2 rounded text-[10px] bg-amber-500/10 text-amber-600 font-semibold border border-amber-500/20">
-                                  You
-                                </span>
+                    return (
+                      <tr key={user.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
+                        {/* Name & Avatar */}
+                        <td className="py-3.5 px-4 align-middle">
+                          <div className="flex items-center gap-3">
+                            <div className="size-8 rounded-full overflow-hidden bg-slate-100 dark:bg-slate-800 flex items-center justify-center shrink-0 border border-slate-200 dark:border-slate-700">
+                              {user.image ? (
+                                // eslint-disable-next-line @next/next/no-img-element
+                                <img src={user.image} alt={user.name} className="size-full object-cover" />
+                              ) : (
+                                <Users className="size-4 text-slate-400" />
                               )}
-                            </span>
-                            {user.phone && <span className="text-[11px] text-slate-400">{user.phone}</span>}
+                            </div>
+                            <div>
+                              <span className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                                {user.name || "Unnamed User"}
+                                {isSelf && (
+                                  <span className="px-1.5 py-0.2 rounded text-[10px] bg-amber-500/10 text-amber-600 font-semibold border border-amber-500/20">
+                                    You
+                                  </span>
+                                )}
+                              </span>
+                              {user.phone && <span className="text-[11px] text-slate-400">{user.phone}</span>}
+                            </div>
                           </div>
-                        </div>
-                      </td>
+                        </td>
 
-                      {/* Email */}
-                      <td className="py-3.5 px-4 align-middle text-slate-600 dark:text-slate-300">
-                        {user.email}
-                      </td>
+                        {/* Email */}
+                        <td className="py-3.5 px-4 align-middle text-slate-600 dark:text-slate-300">
+                          {user.email}
+                        </td>
 
-                      {/* Current Role */}
-                      <td className="py-3.5 px-4 align-middle">
-                        <span
-                          className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border ${roleStyle}`}
-                        >
-                          <Shield className="size-3" />
-                          <span className="capitalize">{user.role}</span>
-                        </span>
-                      </td>
+                        {/* Current Role */}
+                        <td className="py-3.5 px-4 align-middle">
+                          <span
+                            className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border ${roleStyle}`}
+                          >
+                            <Shield className="size-3" />
+                            <span className="capitalize">{user.role}</span>
+                          </span>
+                        </td>
 
-                      {/* Registered Date */}
-                      <td className="py-3.5 px-4 align-middle text-slate-500 dark:text-slate-400">
-                        {regDate}
-                      </td>
+                        {/* Registered Date */}
+                        <td className="py-3.5 px-4 align-middle text-slate-500 dark:text-slate-400">
+                          {regDate}
+                        </td>
 
-                      {/* Change Role Selector */}
-                      <td className="py-3.5 px-4 align-middle">
-                        <label htmlFor={`role-select-${user.id}`} className="sr-only">
-                          Change role for {user.name}
-                        </label>
-                        <select
-                          id={`role-select-${user.id}`}
-                          name="userRole"
-                          disabled={isSelf || isUpdating}
-                          value={user.role}
-                          onChange={(e) =>
-                            handleRoleChange(user.id, e.target.value as "customer" | "owner" | "admin")
-                          }
-                          className={`px-2.5 py-1 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-amber-500 ${
-                            isSelf ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
-                          }`}
-                          title={isSelf ? "Self-demotion disabled" : "Assign new role"}
-                        >
-                          <option value="customer">Customer</option>
-                          <option value="owner">Fleet Owner</option>
-                          <option value="admin">Administrator</option>
-                        </select>
-                      </td>
+                        {/* Change Role Selector */}
+                        <td className="py-3.5 px-4 align-middle">
+                          <label htmlFor={`role-select-${user.id}`} className="sr-only">
+                            Change role for {user.name}
+                          </label>
+                          <select
+                            id={`role-select-${user.id}`}
+                            name="userRole"
+                            disabled={isSelf || isUpdating}
+                            value={user.role}
+                            onChange={(e) =>
+                              handleRoleChange(user.id, e.target.value as "customer" | "owner" | "admin")
+                            }
+                            className={`px-2.5 py-1 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-amber-500 ${
+                              isSelf ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+                            }`}
+                            title={isSelf ? "Self-demotion disabled" : "Assign new role"}
+                          >
+                            <option value="customer">Customer</option>
+                            <option value="owner">Fleet Owner</option>
+                            <option value="admin">Administrator</option>
+                          </select>
+                        </td>
 
-                      {/* Actions */}
-                      <td className="py-3.5 px-4 align-middle text-right">
-                        <button
-                          type="button"
-                          disabled={isSelf || isUpdating}
-                          onClick={() => setDeleteModal({ open: true, user })}
-                          className={`p-1.5 rounded-lg text-rose-500 hover:bg-rose-500/10 transition-colors ${
-                            isSelf ? "opacity-30 cursor-not-allowed" : "cursor-pointer"
-                          }`}
-                          title={isSelf ? "Cannot delete own account" : "Delete user"}
-                        >
-                          <Trash2 className="size-4" />
-                        </button>
-                      </td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
-          </div>
+                        {/* Actions */}
+                        <td className="py-3.5 px-4 align-middle text-right">
+                          <button
+                            type="button"
+                            disabled={isSelf || isUpdating}
+                            onClick={() => setDeleteModal({ open: true, user })}
+                            className={`p-1.5 rounded-lg text-rose-500 hover:bg-rose-500/10 transition-colors ${
+                              isSelf ? "opacity-30 cursor-not-allowed" : "cursor-pointer"
+                            }`}
+                            title={isSelf ? "Cannot delete own account" : "Delete user"}
+                          >
+                            <Trash2 className="size-4" />
+                          </button>
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div className="px-4 py-3.5 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3 bg-slate-50/50 dark:bg-slate-900/50">
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Showing{" "}
+                  <span className="font-semibold text-slate-700 dark:text-slate-300">
+                    {(currentPage - 1) * itemsPerPage + 1}
+                  </span>{" "}
+                  to{" "}
+                  <span className="font-semibold text-slate-700 dark:text-slate-300">
+                    {Math.min(currentPage * itemsPerPage, filteredUsers.length)}
+                  </span>{" "}
+                  of{" "}
+                  <span className="font-semibold text-slate-700 dark:text-slate-300">
+                    {filteredUsers.length}
+                  </span>{" "}
+                  platform users
+                </p>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                    disabled={currentPage === 1}
+                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                  >
+                    <ChevronLeft className="h-3.5 w-3.5" />
+                    <span>Previous</span>
+                  </button>
+
+                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400 px-1">
+                    Page {currentPage} of {totalPages}
+                  </span>
+
+                  <button
+                    onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                    disabled={currentPage === totalPages}
+                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                  >
+                    <span>Next</span>
+                    <ChevronRight className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+              </div>
+            )}
+          </>
         )}
       </div>
 
