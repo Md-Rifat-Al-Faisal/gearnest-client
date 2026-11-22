@@ -28,11 +28,18 @@ const getBaseURL = () => {
   return process.env.BETTER_AUTH_URL || "http://localhost:3000"
 }
 
+const authSecret = process.env.BETTER_AUTH_SECRET || (
+  process.env.NODE_ENV === "production"
+    ? (() => { throw new Error("FATAL: BETTER_AUTH_SECRET environment variable is missing in production!") })()
+    : "gearnest_auth_secret_minimum_32_characters_long_12345"
+)
+
 export const auth = betterAuth({
-  secret: process.env.BETTER_AUTH_SECRET || "gearnest_auth_secret_minimum_32_characters_long_12345",
+  secret: authSecret,
   baseURL: getBaseURL(),
   emailAndPassword: {
     enabled: true,
+    minPasswordLength: 6,
   },
   socialProviders: {
     google: {

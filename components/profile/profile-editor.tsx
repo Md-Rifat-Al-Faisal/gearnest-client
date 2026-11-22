@@ -15,6 +15,7 @@ import {
   Save,
 } from "lucide-react"
 import { apiRequest } from "@/lib/api-client"
+import { authClient } from "@/lib/auth-client"
 import { toast } from "sonner"
 
 interface ProfileData {
@@ -133,6 +134,15 @@ export function ProfileEditor({ initialUser }: ProfileEditorProps) {
       const data = await res.json()
 
       if (res.ok && data.success) {
+        try {
+          // Immediately update Better-Auth session cookie cache so navbar/sidebar refresh in real time
+          await authClient.updateUser({
+            name: name.trim(),
+            image: image.trim() || undefined,
+          })
+        } catch {
+          // Non-blocking fallback
+        }
         toast.success("Profile updated successfully!")
         router.refresh()
       } else {

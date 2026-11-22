@@ -276,7 +276,7 @@ export default function OwnerAnalyticsPage() {
                 Monthly Earnings Velocity (6-Month)
               </h2>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                Gross payouts from your rented heavy equipment
+                Gross rental booking earnings from your listed equipment
               </p>
             </div>
             <div className="rounded-lg bg-amber-500/10 p-2 text-amber-500">

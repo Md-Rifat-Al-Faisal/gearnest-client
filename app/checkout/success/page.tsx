@@ -72,7 +72,7 @@ function CheckoutSuccessContent() {
           Verifying Stripe Payment...
         </h2>
         <p className="text-xs text-slate-500">
-          Securing your booking contract and dispatching equipment reservation. Please do not close this window.
+          Verifying your booking transaction and confirming equipment reservation. Please do not close this window.
         </p>
       </div>
     )
@@ -121,7 +121,7 @@ function CheckoutSuccessContent() {
             Booking Confirmed!
           </h1>
           <p className="text-sm text-slate-600 dark:text-slate-300 mt-2 max-w-sm mx-auto">
-            Your payment was processed securely via Stripe. The equipment partner has been notified for job-site dispatch.
+            Your payment was processed securely via Stripe. Your reservation is confirmed and recorded in your customer dashboard.
           </p>
         </div>
 
@@ -144,10 +144,10 @@ function CheckoutSuccessContent() {
             </div>
           )}
           <div className="flex justify-between items-center">
-            <span className="text-slate-400">Escrow Security:</span>
+            <span className="text-slate-400">Payment Security:</span>
             <span className="font-semibold text-emerald-500 flex items-center gap-1">
               <ShieldCheck className="h-3.5 w-3.5" />
-              Protected by Stripe Escrow
+              Encrypted via Stripe
             </span>
           </div>
         </div>

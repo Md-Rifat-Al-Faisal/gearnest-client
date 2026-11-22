@@ -65,6 +65,49 @@ export default function CustomerRentalsPage() {
     }
   }
 
+  const handleCancelBooking = async (bookingId: string) => {
+    if (!confirm("Are you sure you want to cancel this pending reservation?")) return
+    try {
+      const res = await apiRequest(`/api/customer/rentals/${bookingId}/cancel`, {
+        method: "PATCH",
+      })
+      const data = await res.json()
+      if (res.ok && data.success) {
+        toast.success("Reservation cancelled successfully")
+        fetchRentals()
+      } else {
+        toast.error(data.message || "Failed to cancel reservation")
+      }
+    } catch {
+      toast.error("Network error while cancelling reservation")
+    }
+  }
+
+  const handlePayNow = async (r: CustomerRental) => {
+    try {
+      toast.info("Preparing Stripe Checkout session...")
+      const res = await fetch("/api/checkout_sessions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          bookingId: r._id,
+          equipmentId: r.equipmentId,
+          startDate: r.startDate,
+          endDate: r.endDate,
+          quantity: r.quantity || 1,
+        }),
+      })
+      const data = await res.json()
+      if (res.ok && data.url) {
+        window.location.href = data.url
+      } else {
+        toast.error(data.message || "Unable to initialize payment session")
+      }
+    } catch {
+      toast.error("Network error while connecting to payment checkout")
+    }
+  }
+
   useEffect(() => {
     fetchRentals()
   }, [])
@@ -122,11 +165,14 @@ export default function CustomerRentalsPage() {
               <thead className="bg-slate-50 dark:bg-slate-950/60 border-b border-slate-200 dark:border-slate-800 text-xs uppercase font-semibold text-slate-500 dark:text-slate-400">
                 <tr>
                   <th className="py-3.5 px-4">Equipment</th>
-                  <th className="py-3.5 px-4">Rental Duration</th>
-                  <th className="py-3.5 px-4">Booking Date</th>
-                  <th className="py-3.5 px-4 text-center">Payment</th>
-                  <th className="py-3.5 px-4 text-center">Rental Status</th>
-                  <th className="py-3.5 px-4 text-right">Total Paid</th>
+                  <th className="py-3.5 px-3">Start Date</th>
+                  <th className="py-3.5 px-3">End Date</th>
+                  <th className="py-3.5 px-3">Units & Qty</th>
+                  <th className="py-3.5 px-3">Booked</th>
+                  <th className="py-3.5 px-3 text-center">Payment</th>
+                  <th className="py-3.5 px-3 text-center">Rental Status</th>
+                  <th className="py-3.5 px-3 text-right">Amount</th>
+                  <th className="py-3.5 px-4 text-center">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200 dark:divide-slate-800/80">
@@ -135,17 +181,21 @@ export default function CustomerRentalsPage() {
                     month: "short",
                     day: "numeric",
                     year: "numeric",
+                    timeZone: "UTC",
                   })
                   const endDateFormatted = new Date(r.endDate).toLocaleDateString("en-US", {
                     month: "short",
                     day: "numeric",
                     year: "numeric",
+                    timeZone: "UTC",
                   })
                   const bookedDateFormatted = new Date(r.createdAt).toLocaleDateString("en-US", {
                     month: "short",
                     day: "numeric",
                     year: "numeric",
                   })
+
+                  const isPendingPayment = r.paymentStatus === "pending" && r.bookingStatus !== "cancelled"
 
                   return (
                     <tr
@@ -177,29 +227,28 @@ export default function CustomerRentalsPage() {
                             <p className="text-xs text-slate-500 dark:text-slate-400">
                               {r.category} • Partner: {r.ownerName}
                             </p>
-                            {r.quantity > 1 && (
-                              <span className="text-[11px] text-amber-500 font-bold">
-                                Quantity: {r.quantity} machines
-                              </span>
-                            )}
                           </div>
                         </div>
                       </td>
 
-                      <td className="py-4 px-4 text-xs">
-                        <div className="font-semibold text-slate-800 dark:text-slate-200">
-                          {startDateFormatted} — {endDateFormatted}
-                        </div>
-                        <p className="text-slate-400 mt-0.5">
-                          {r.days} {r.days === 1 ? "day" : "days"} ({r.units} {r.rentalType?.toLowerCase()} units)
-                        </p>
+                      <td className="py-4 px-3 text-xs font-semibold text-slate-800 dark:text-slate-200 whitespace-nowrap">
+                        {startDateFormatted}
                       </td>
 
-                      <td className="py-4 px-4 text-xs text-slate-500 dark:text-slate-400">
+                      <td className="py-4 px-3 text-xs font-semibold text-slate-800 dark:text-slate-200 whitespace-nowrap">
+                        {endDateFormatted}
+                      </td>
+
+                      <td className="py-4 px-3 text-xs text-slate-600 dark:text-slate-300">
+                        <span>{r.days}d ({r.units} {r.rentalType?.toLowerCase()})</span>
+                        <span className="block text-[11px] text-slate-400">x{r.quantity} machine{r.quantity > 1 ? "s" : ""}</span>
+                      </td>
+
+                      <td className="py-4 px-3 text-xs text-slate-500 dark:text-slate-400 whitespace-nowrap">
                         {bookedDateFormatted}
                       </td>
 
-                      <td className="py-4 px-4 text-center">
+                      <td className="py-4 px-3 text-center whitespace-nowrap">
                         {r.paymentStatus === "paid" ? (
                           <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
                             <CheckCircle2 className="h-3 w-3" />
@@ -208,24 +257,24 @@ export default function CustomerRentalsPage() {
                         ) : (
                           <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
                             <Clock className="h-3 w-3" />
-                            Pending
+                            Unpaid
                           </span>
                         )}
                         {r.transactionId && (
-                          <p className="text-[10px] text-slate-400 mt-1 font-mono truncate max-w-[120px] mx-auto">
+                          <p className="text-[10px] text-slate-400 mt-1 font-mono truncate max-w-[100px] mx-auto">
                             {r.transactionId}
                           </p>
                         )}
                       </td>
 
-                      <td className="py-4 px-4 text-center">
+                      <td className="py-4 px-3 text-center whitespace-nowrap">
                         {r.bookingStatus === "active" ? (
                           <span className="inline-block px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-                            Active Rental
+                            Active
                           </span>
                         ) : r.bookingStatus === "pending" ? (
                           <span className="inline-block px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
-                            Pending Dispatch
+                            Pending
                           </span>
                         ) : r.bookingStatus === "completed" ? (
                           <span className="inline-block px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
@@ -238,10 +287,41 @@ export default function CustomerRentalsPage() {
                         )}
                       </td>
 
-                      <td className="py-4 px-4 text-right">
-                        <span className="font-extrabold text-base text-slate-900 dark:text-white">
+                      <td className="py-4 px-3 text-right whitespace-nowrap">
+                        <div className="font-extrabold text-sm text-slate-900 dark:text-white">
                           ${r.totalAmount}
+                        </div>
+                        <span className="text-[10px] uppercase font-bold text-slate-400">
+                          {r.paymentStatus === "paid" ? "Paid" : "Due"}
                         </span>
+                      </td>
+
+                      <td className="py-4 px-4 text-center whitespace-nowrap">
+                        {isPendingPayment ? (
+                          <div className="flex items-center justify-center gap-1.5">
+                            <button
+                              type="button"
+                              onClick={() => handlePayNow(r)}
+                              className="px-2.5 py-1 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition-colors cursor-pointer"
+                            >
+                              Pay Now
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleCancelBooking(r._id)}
+                              className="px-2 py-1 rounded-lg border border-rose-300 dark:border-rose-800 text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/20 text-xs font-semibold transition-colors cursor-pointer"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        ) : (
+                          <Link
+                            href={`/equipment/${r.equipmentId}`}
+                            className="text-xs text-amber-600 dark:text-amber-400 hover:underline font-semibold"
+                          >
+                            View Item
+                          </Link>
+                        )}
                       </td>
                     </tr>
                   )

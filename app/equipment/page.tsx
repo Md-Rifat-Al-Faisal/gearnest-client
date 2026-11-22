@@ -34,12 +34,12 @@ interface EquipmentItem {
 
 const CATEGORIES = [
   "All",
-  "Construction",
-  "Photography",
-  "Vehicles",
-  "Agriculture",
+  "Construction Equipment",
+  "Photography Equipment",
+  "Vehicles & Transportation",
+  "Agriculture Equipment",
   "Electronics",
-  "Events",
+  "Event Equipment",
 ]
 
 const RENTAL_TYPES = ["All", "Daily", "Weekly", "Monthly"]
@@ -68,7 +68,47 @@ function EquipmentCatalogContent() {
   const FALLBACK_API = "https://gearnest-server.vercel.app"
   const apiBase = process.env.NEXT_PUBLIC_API_URL || FALLBACK_API
 
-  const fetchCatalog = async () => {
+  // Sync state whenever external searchParams change (e.g., clicking footer category links)
+  useEffect(() => {
+    const urlCategory = searchParams.get("category") || "All"
+    const urlSearch = searchParams.get("search") || ""
+    const urlRentalType = searchParams.get("rentalType") || "All"
+    const urlMinPrice = searchParams.get("minPrice") || ""
+    const urlMaxPrice = searchParams.get("maxPrice") || ""
+    const urlAvailableOnly = searchParams.get("availableOnly") === "true"
+    const urlSort = searchParams.get("sort") || "newest"
+    const urlPage = parseInt(searchParams.get("page") || "1", 10)
+
+    setCategory((prev) => (prev !== urlCategory ? urlCategory : prev))
+    setSearch((prev) => (prev !== urlSearch ? urlSearch : prev))
+    setRentalType((prev) => (prev !== urlRentalType ? urlRentalType : prev))
+    setMinPrice((prev) => (prev !== urlMinPrice ? urlMinPrice : prev))
+    setMaxPrice((prev) => (prev !== urlMaxPrice ? urlMaxPrice : prev))
+    setAvailableOnly((prev) => (prev !== urlAvailableOnly ? urlAvailableOnly : prev))
+    setSort((prev) => (prev !== urlSort ? urlSort : prev))
+    setPage((prev) => (prev !== urlPage ? urlPage : prev))
+  }, [searchParams])
+
+  // Sync active filters to URL search parameters without full page reloads
+  useEffect(() => {
+    const params = new URLSearchParams()
+    if (search.trim()) params.set("search", search.trim())
+    if (category && category !== "All") params.set("category", category)
+    if (rentalType && rentalType !== "All") params.set("rentalType", rentalType)
+    if (minPrice) params.set("minPrice", minPrice)
+    if (maxPrice) params.set("maxPrice", maxPrice)
+    if (availableOnly) params.set("availableOnly", "true")
+    if (sort && sort !== "newest") params.set("sort", sort)
+    if (page > 1) params.set("page", String(page))
+
+    const newQuery = params.toString()
+    const currentQuery = searchParams.toString()
+    if (newQuery !== currentQuery) {
+      router.replace(newQuery ? `/equipment?${newQuery}` : "/equipment", { scroll: false })
+    }
+  }, [search, category, rentalType, minPrice, maxPrice, availableOnly, sort, page, router, searchParams])
+
+  const fetchCatalog = async (signal?: AbortSignal) => {
     try {
       setLoading(true)
       setFetchError(null)
@@ -86,9 +126,10 @@ function EquipmentCatalogContent() {
 
       let res: Response
       try {
-        res = await fetch(`${apiBase}/api/equipment?${params.toString()}`)
-      } catch {
-        res = await fetch(`${FALLBACK_API}/api/equipment?${params.toString()}`)
+        res = await fetch(`${apiBase}/api/equipment?${params.toString()}`, { signal })
+      } catch (err: any) {
+        if (err.name === "AbortError") return
+        res = await fetch(`${FALLBACK_API}/api/equipment?${params.toString()}`, { signal })
       }
 
       if (!res.ok) {
@@ -104,6 +145,7 @@ function EquipmentCatalogContent() {
         setItems([])
       }
     } catch (err: any) {
+      if (err.name === "AbortError") return
       console.warn("Equipment catalog network notice:", err.message)
       setFetchError("Unable to reach the equipment catalog server. Please verify your connection or retry.")
       setItems([])
@@ -113,8 +155,10 @@ function EquipmentCatalogContent() {
   }
 
   useEffect(() => {
-    fetchCatalog()
-  }, [category, rentalType, availableOnly, sort, page])
+    const controller = new AbortController()
+    fetchCatalog(controller.signal)
+    return () => controller.abort()
+  }, [category, rentalType, availableOnly, sort, page, search])
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -154,7 +198,7 @@ function EquipmentCatalogContent() {
           </h1>
           <p className="text-sm text-slate-600 dark:text-slate-300 mt-2">
             Filter through commercial machinery, cinema kits, tractors, and production tools.
-            Instant online reservations backed by Stripe escrow protection.
+            Instant online reservations with secure card checkout powered by Stripe.
           </p>
         </div>
 
@@ -358,7 +402,7 @@ function EquipmentCatalogContent() {
               <h3 className="text-base font-bold text-slate-900 dark:text-white">Connection Notice</h3>
               <p className="text-xs text-slate-600 dark:text-slate-300 max-w-sm mx-auto">{fetchError}</p>
               <button
-                onClick={fetchCatalog}
+                onClick={() => fetchCatalog()}
                 className="mt-4 px-5 py-2.5 rounded-lg bg-amber-500 text-slate-950 font-bold text-xs hover:bg-amber-400 transition-colors cursor-pointer shadow-sm"
               >
                 Retry Connecting
@@ -474,7 +518,10 @@ function EquipmentCatalogContent() {
           {totalPages > 1 && (
             <div className="flex items-center justify-center gap-2 pt-6">
               <button
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                onClick={() => {
+                  setPage((p) => Math.max(1, p - 1))
+                  window.scrollTo({ top: 0, behavior: "smooth" })
+                }}
                 disabled={page <= 1}
                 className="p-2 rounded-lg border border-slate-200 dark:border-slate-800 disabled:opacity-40 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 transition-colors cursor-pointer"
                 aria-label="Previous Page"
@@ -487,7 +534,10 @@ function EquipmentCatalogContent() {
               </span>
 
               <button
-                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                onClick={() => {
+                  setPage((p) => Math.min(totalPages, p + 1))
+                  window.scrollTo({ top: 0, behavior: "smooth" })
+                }}
                 disabled={page >= totalPages}
                 className="p-2 rounded-lg border border-slate-200 dark:border-slate-800 disabled:opacity-40 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 transition-colors cursor-pointer"
                 aria-label="Next Page"

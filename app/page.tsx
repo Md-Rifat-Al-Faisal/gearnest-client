@@ -35,6 +35,9 @@ import {
 } from "lucide-react"
 import { toast } from "sonner"
 import { useSession } from "@/lib/auth-client"
+import { apiRequest } from "@/lib/api-client"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import {
@@ -70,7 +73,7 @@ interface CustomerReview {
 
 const CATEGORIES = [
   {
-    name: "Construction",
+    name: "Construction Equipment",
     displayTitle: "Construction Equipment",
     icon: HardHat,
     description: "Excavators, skid steers, scissor lifts & heavy compaction",
@@ -78,7 +81,7 @@ const CATEGORIES = [
     border: "group-hover:border-amber-500/50",
   },
   {
-    name: "Photography",
+    name: "Photography Equipment",
     displayTitle: "Photography Equipment",
     icon: Camera,
     description: "Cinema cameras, prime lenses, studio lighting & gimbals",
@@ -86,7 +89,7 @@ const CATEGORIES = [
     border: "group-hover:border-blue-500/50",
   },
   {
-    name: "Vehicles",
+    name: "Vehicles & Transportation",
     displayTitle: "Vehicles & Transportation",
     icon: Truck,
     description: "Heavy dually haulers, extended cargo vans & flatbeds",
@@ -94,7 +97,7 @@ const CATEGORIES = [
     border: "group-hover:border-emerald-500/50",
   },
   {
-    name: "Agriculture",
+    name: "Agriculture Equipment",
     displayTitle: "Agriculture Equipment",
     icon: Tractor,
     description: "Utility tractors, rotary mowers, seeders & field loaders",
@@ -110,7 +113,7 @@ const CATEGORIES = [
     border: "group-hover:border-purple-500/50",
   },
   {
-    name: "Events",
+    name: "Event Equipment",
     displayTitle: "Event Equipment",
     icon: Sparkles,
     description: "Line-array audio rigs, moving head lights & staging trusses",
@@ -134,15 +137,15 @@ const WHY_CHOOSE_ITEMS = [
   },
   {
     icon: Clock,
-    title: "Instant Stripe Protection",
+    title: "Secure Card Checkout",
     description:
-      "Payments are held safely in escrow until the equipment is verified and operational on-site, giving both renters and owners peace of mind.",
+      "Direct card payments powered by Stripe with instant reservation confirmation and digital transaction receipts.",
   },
   {
     icon: Layers,
-    title: "Flexible Dispatch & Pickup",
+    title: "Flexible Handover & Pickup",
     description:
-      "Coordinate local job site delivery or easy warehouse pickup across multiple commercial hubs nationwide with full logistics support.",
+      "Coordinate convenient job site delivery or direct equipment pickup directly with verified equipment owners.",
   },
 ]
 
@@ -155,38 +158,38 @@ const HOW_IT_WORKS_STEPS = [
   },
   {
     step: "02",
-    title: "Instant Escrow Checkout",
+    title: "Instant Stripe Checkout",
     description:
-      "Select your rental dates, compute accurate rates, and complete booking via encrypted Stripe payment with security guarantee.",
+      "Select your rental dates, review calculated rental rates, and complete booking via encrypted Stripe card payment.",
   },
   {
     step: "03",
-    title: "Job Site Delivery & Dispatch",
+    title: "Job Site Handover & Return",
     description:
-      "Coordinate with verified equipment owners for on-site dropoff or rapid pickup, complete your project, and return hassle-free.",
+      "Coordinate with the equipment owner for handover, complete your project, and return the equipment per agreed rental terms.",
   },
 ]
 
 const FAQ_ITEMS = [
   {
-    q: "How does equipment delivery and site pick-up work?",
-    a: "Owners offer both on-site depot pick-up and direct jobsite transport. During contract booking, specify your delivery address and arrival window, and the fleet owner arranges verified freight dispatch.",
+    q: "How does equipment reservation and jobsite handover work?",
+    a: "Browse approved machinery, select your required rental dates and quantity, and complete instant Stripe checkout. Once confirmed, equipment specifications, site address, and owner contact details are immediately accessible in your customer dashboard.",
   },
   {
-    q: "What insurance and certifications are required to rent heavy machinery?",
-    a: "Renters provide commercial general liability and equipment floater insurance for heavy equipment. For light equipment and electronics, platform insurance verification is automatically provided at checkout.",
+    q: "How are rental costs and durations calculated?",
+    a: "Pricing is transparently calculated based on the equipment owner's daily, weekly, or monthly rate and the number of days selected. The system automatically determines required rental units and total pricing prior to payment.",
   },
   {
-    q: "What happens if a piece of equipment experiences mechanical downtime?",
-    a: "Every rental includes 24/7 dispatch technician support. If a machine malfunctions, our certified emergency technician is deployed or an immediate replacement unit is dispatched at zero extra charge.",
+    q: "What payment methods are supported?",
+    a: "All equipment reservations are processed securely using Stripe Checkout with credit or debit cards, generating a verified digital transaction ID upon confirmation.",
   },
   {
-    q: "Can I extend our contract duration once equipment is already on site?",
-    a: "Yes. From your Customer Dashboard under My Rentals, you can request a rental duration extension with prorated daily or weekly rates before the current contract term ends.",
+    q: "How do equipment owners list and manage machinery?",
+    a: "Registered partners can list machinery with photos, specifications, rental rates, and terms. Every listing undergoes administrative review before appearing in the public catalog.",
   },
   {
-    q: "How are owner payouts and customer security deposits processed?",
-    a: "All payments are securely handled through Stripe with automated escrow. Owners receive direct transfers upon rental completion, and customer security authorizations are released immediately after equipment check-in.",
+    q: "Can I cancel a pending equipment reservation?",
+    a: "Yes. Customers can view and cancel any pending, unpaid reservations directly from their customer dashboard under the My Rentals section.",
   },
 ]
 
@@ -208,21 +211,39 @@ export default function HomePage() {
   const [contactMessage, setContactMessage] = useState("")
   const [contactSubmitting, setContactSubmitting] = useState(false)
 
-  const handleContactSubmit = (e: React.FormEvent) => {
+  const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!contactName.trim() || !contactEmail.trim() || !contactMessage.trim()) {
       toast.error("Please fill in your name, email, and inquiry details.")
       return
     }
-    setContactSubmitting(true)
-    setTimeout(() => {
+    try {
+      setContactSubmitting(true)
+      const res = await apiRequest("/api/contact", {
+        method: "POST",
+        body: JSON.stringify({
+          name: contactName.trim(),
+          email: contactEmail.trim(),
+          phone: contactPhone.trim(),
+          subject: `${contactCategory} Equipment Inquiry`,
+          message: contactMessage.trim(),
+        }),
+      })
+      const data = await res.json()
+      if (res.ok && data.success) {
+        toast.success("Inquiry received! Our team will review your equipment request.")
+        setContactName("")
+        setContactEmail("")
+        setContactPhone("")
+        setContactMessage("")
+      } else {
+        toast.error(data.message || "Failed to submit inquiry")
+      }
+    } catch {
+      toast.error("Network error while submitting inquiry")
+    } finally {
       setContactSubmitting(false)
-      toast.success("Thank you! Our heavy equipment dispatch team will contact you within 15 minutes.")
-      setContactName("")
-      setContactEmail("")
-      setContactPhone("")
-      setContactMessage("")
-    }, 600)
+    }
   }
 
   const FALLBACK_API = "https://gearnest-server.vercel.app"
@@ -282,19 +303,27 @@ export default function HomePage() {
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
-      {/* 1. HERO BANNER - Seamless Light / Dark Theme Adaptation */}
-      <section className="relative overflow-hidden bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white pt-20 pb-20 sm:pt-28 sm:pb-28 border-b border-slate-200 dark:border-slate-800 transition-colors">
-        {/* Subtle grid pattern background */}
-        <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.04] bg-[radial-gradient(#f59e0b_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none" />
-        <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-amber-500/10 blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-40 -left-40 w-96 h-96 rounded-full bg-slate-300/30 dark:bg-slate-700/20 blur-3xl pointer-events-none" />
+      {/* 1. HERO BANNER - High-Quality Machinery Fleet Background with Cinematic Contrast Overlay */}
+      <section className="relative overflow-hidden bg-slate-950 text-white pt-20 pb-20 sm:pt-28 sm:pb-28 border-b border-slate-800 transition-colors">
+        {/* Background Machinery Fleet Image */}
+        <div className="absolute inset-0 z-0">
+          <img
+            src="https://images.unsplash.com/photo-1541888946425-d0fbb186c5f7?auto=format&fit=crop&w=2000&q=85"
+            alt="Commercial heavy machinery fleet at industrial site"
+            className="w-full h-full object-cover object-center opacity-25 scale-105"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/95 via-slate-950/80 to-slate-950 pointer-events-none" />
+          <div className="absolute inset-0 opacity-[0.04] bg-[radial-gradient(#f59e0b_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none" />
+        </div>
+        <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-amber-500/15 blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-40 -left-40 w-96 h-96 rounded-full bg-slate-700/25 blur-3xl pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
           <motion.div
             variants={heroBadge}
             initial="hidden"
             animate="visible"
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-400 text-xs font-semibold uppercase tracking-wider mb-6"
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-400 text-xs font-semibold uppercase tracking-wider mb-6"
           >
             <Wrench className="h-3.5 w-3.5" />
             <span>Commercial & Industrial Equipment Rental Hub</span>
@@ -304,10 +333,10 @@ export default function HomePage() {
             variants={heroHeading}
             initial="hidden"
             animate="visible"
-            className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight max-w-4xl mx-auto leading-tight sm:leading-none text-slate-900 dark:text-white"
+            className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight max-w-4xl mx-auto leading-tight sm:leading-none text-white"
           >
             Power Your Job Site with{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-600 via-amber-500 to-amber-600 dark:from-amber-400 dark:via-amber-300 dark:to-yellow-500">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-500">
               Verified Machinery
             </span>
           </motion.h1>
@@ -316,10 +345,10 @@ export default function HomePage() {
             variants={heroSubtitle}
             initial="hidden"
             animate="visible"
-            className="mt-6 text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto font-normal leading-relaxed"
+            className="mt-6 text-base sm:text-lg text-slate-200 max-w-2xl mx-auto font-normal leading-relaxed"
           >
             Access top-tier excavators, cinema cameras, utility tractors, and survey drones
-            from certified equipment owners. Protected with instant Stripe payment escrow.
+            from verified equipment partners. Secured with instant card checkout powered by Stripe.
           </motion.p>
 
           {/* Quick Search Box */}
@@ -356,12 +385,7 @@ export default function HomePage() {
           </motion.form>
 
           {/* Category Quick Chips */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-            className="mt-6 flex flex-wrap items-center justify-center gap-2 text-xs text-slate-500 dark:text-slate-400"
-          >
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-2 text-xs text-slate-500 dark:text-slate-400">
             <span className="font-semibold text-slate-500 dark:text-slate-400">Popular:</span>
             {["Construction", "Photography", "Vehicles", "Agriculture", "Electronics", "Events"].map(
               (cat) => (
@@ -374,15 +398,10 @@ export default function HomePage() {
                 </Link>
               )
             )}
-          </motion.div>
+          </div>
 
           {/* High-Quality Hero Showcase Image */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
-            className="mt-12 relative max-w-5xl mx-auto rounded-3xl overflow-hidden border border-slate-200/80 dark:border-slate-800 shadow-2xl bg-slate-900 group"
-          >
+          <div className="mt-12 relative max-w-5xl mx-auto rounded-3xl overflow-hidden border border-slate-200/80 dark:border-slate-800 shadow-2xl bg-slate-900 group">
             <div className="relative aspect-[16/8] sm:aspect-[21/9] w-full overflow-hidden">
               <img
                 src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=1600&q=85"
@@ -394,20 +413,20 @@ export default function HomePage() {
               {/* Floating Verified Trust Badges */}
               <div className="absolute top-4 left-4 sm:top-6 sm:left-6 flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-950/80 backdrop-blur-md border border-white/10 text-white text-[11px] sm:text-xs font-bold shadow-lg">
                 <ShieldCheck className="size-3.5 text-amber-400" />
-                <span>OSHA & DOT Certified Fleet</span>
+                <span>Verified Commercial Fleet</span>
               </div>
 
               <div className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-950/80 backdrop-blur-md border border-white/10 text-white text-[11px] sm:text-xs font-bold shadow-lg">
                 <MapPin className="size-3.5 text-emerald-400" />
-                <span>45+ Nationwide Metro Depots</span>
+                <span>Multi-Category Machinery Hub</span>
               </div>
 
               <div className="absolute bottom-4 right-4 sm:bottom-6 sm:right-6 flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/90 backdrop-blur-md text-slate-950 text-[11px] sm:text-xs font-extrabold shadow-lg">
                 <Clock className="size-3.5 text-slate-950" />
-                <span>24/7 Site Technician Support</span>
+                <span>Direct Partner Coordination</span>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -476,7 +495,7 @@ export default function HomePage() {
                 Featured Equipment Listings
               </h2>
               <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-                Top-rated machinery and production gear available for dispatch right now.
+                Approved machinery and production gear available for booking right now.
               </p>
             </div>
             <Link
@@ -542,9 +561,15 @@ export default function HomePage() {
                     <span className="absolute top-3 left-3 px-2.5 py-1 rounded-md text-[11px] font-bold uppercase tracking-wider bg-slate-950/80 text-amber-400 backdrop-blur-xs border border-amber-500/30">
                       {item.category}
                     </span>
-                    <span className="absolute bottom-3 right-3 px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/90 text-slate-950">
-                      {item.availableQuantity} in stock
-                    </span>
+                    {item.availableQuantity > 0 ? (
+                      <span className="absolute bottom-3 right-3 px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/90 text-slate-950">
+                        {item.availableQuantity} in stock
+                      </span>
+                    ) : (
+                      <span className="absolute bottom-3 right-3 px-2 py-0.5 rounded text-[10px] font-semibold bg-rose-500/90 text-white">
+                        Rented Out
+                      </span>
+                    )}
                   </div>
 
                   {/* Content */}
@@ -699,9 +724,18 @@ export default function HomePage() {
               >
                 <div>
                   <div className="flex items-center gap-1 text-amber-500 mb-3">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="h-4 w-4 fill-amber-500" />
-                    ))}
+                    {[...Array(5)].map((_, i) => {
+                      const isFilled = i < (rev.rating || 5)
+                      return (
+                        <Star
+                          key={i}
+                          className={`h-4 w-4 ${isFilled ? "fill-amber-500 text-amber-500" : "text-slate-300 dark:text-slate-700"}`}
+                        />
+                      )
+                    })}
+                    <span className="text-xs font-bold text-slate-700 dark:text-slate-300 ml-1.5">
+                      {(rev.rating || 5).toFixed(1)}
+                    </span>
                   </div>
                   <p className="text-sm text-slate-700 dark:text-slate-300 italic leading-relaxed">
                     "{rev.comment}"
@@ -741,9 +775,9 @@ export default function HomePage() {
             The GearNest Fleet Assurance
           </h2>
           <p className="mt-4 text-slate-300 text-sm sm:text-base leading-relaxed">
-            Every listed item is held to rigorous commercial safety standards. If any rented machine
-            fails to match its stated specifications on delivery, our dispatch network guarantees an
-            immediate replacement or a full Stripe escrow refund within 2 hours.
+            Every listed item is held to rigorous commercial quality standards. If any rented machine
+            fails to match its stated specifications, our team coordinates prompt owner resolution
+            and transparent assistance for peace of mind.
           </p>
 
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -785,25 +819,29 @@ export default function HomePage() {
                 Founded to eliminate downtime on high-stakes construction, film, agriculture, and infrastructure sites, GearNest provides contractors and project superintendents with instant, frictionless access to vetted machinery from certified fleet owners nationwide.
               </p>
               <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
-                Every transaction is backed by server-verified Stripe escrow, dynamic availability scheduling, and transparent equipment health diagnostics — empowering builders to rent with complete confidence.
+                Every transaction is backed by server-verified Stripe checkout, dynamic inventory tracking, and transparent equipment specifications — empowering contractors to rent with complete confidence.
               </p>
 
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4 border-t border-slate-200 dark:border-slate-800">
                 <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-center">
-                  <div className="text-2xl font-black text-amber-500">1,200+</div>
-                  <div className="text-[11px] font-semibold text-slate-500 mt-0.5">Heavy Machines</div>
+                  <div className="text-2xl font-black text-amber-500">6</div>
+                  <div className="text-[11px] font-semibold text-slate-500 mt-0.5">Fleet Sectors</div>
                 </div>
                 <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-center">
-                  <div className="text-2xl font-black text-emerald-500">99.8%</div>
-                  <div className="text-[11px] font-semibold text-slate-500 mt-0.5">On-Time Dispatch</div>
+                  <div className="text-2xl font-black text-emerald-500">100%</div>
+                  <div className="text-[11px] font-semibold text-slate-500 mt-0.5">Admin Moderated</div>
                 </div>
                 <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-center">
-                  <div className="text-2xl font-black text-blue-500">4.9/5</div>
-                  <div className="text-[11px] font-semibold text-slate-500 mt-0.5">Renter Rating</div>
+                  <div className="text-2xl font-black text-blue-500">
+                    {reviews.length > 0
+                      ? (reviews.reduce((acc, r) => acc + (r.rating || 5), 0) / reviews.length).toFixed(1)
+                      : "5.0"}★
+                  </div>
+                  <div className="text-[11px] font-semibold text-slate-500 mt-0.5">Verified Reviews</div>
                 </div>
                 <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-center">
-                  <div className="text-2xl font-black text-purple-500">24/7</div>
-                  <div className="text-[11px] font-semibold text-slate-500 mt-0.5">Site Support</div>
+                  <div className="text-2xl font-black text-purple-500">Stripe</div>
+                  <div className="text-[11px] font-semibold text-slate-500 mt-0.5">Instant Checkout</div>
                 </div>
               </div>
             </motion.div>
@@ -820,9 +858,9 @@ export default function HomePage() {
                 <div className="size-10 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center">
                   <Award className="size-5" />
                 </div>
-                <h3 className="font-bold text-slate-900 dark:text-white text-base">OSHA & DOT Certified</h3>
+                <h3 className="font-bold text-slate-900 dark:text-white text-base">Admin Moderated Fleet</h3>
                 <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                  Every machine undergoes rigorous mechanical inspection and certification prior to catalog listing approval.
+                  Every machine undergoes specifications verification and administrative review prior to catalog listing publication.
                 </p>
               </div>
 
@@ -830,9 +868,9 @@ export default function HomePage() {
                 <div className="size-10 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center">
                   <ShieldCheck className="size-5" />
                 </div>
-                <h3 className="font-bold text-slate-900 dark:text-white text-base">Damage & Waiver Shield</h3>
+                <h3 className="font-bold text-slate-900 dark:text-white text-base">Clear Rental Terms</h3>
                 <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                  Comprehensive commercial equipment protection shields both renters and equipment owners throughout every lease.
+                  Transparent daily, weekly, and monthly rates with owner-defined operational terms and real-time inventory tracking.
                 </p>
               </div>
 
@@ -850,9 +888,9 @@ export default function HomePage() {
                 <div className="size-10 rounded-xl bg-purple-500/10 text-purple-500 flex items-center justify-center">
                   <Clock className="size-5" />
                 </div>
-                <h3 className="font-bold text-slate-900 dark:text-white text-base">Rapid Jobsite Delivery</h3>
+                <h3 className="font-bold text-slate-900 dark:text-white text-base">Direct Owner Coordination</h3>
                 <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                  Scheduled lowboy and flatbed transport directly to your designated coordinates or loading dock.
+                  Coordinate directly with local equipment owners for jobsite handover, machine walkthrough, and scheduled return.
                 </p>
               </div>
             </motion.div>
@@ -916,10 +954,10 @@ export default function HomePage() {
               Direct Assistance
             </span>
             <h2 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white mt-2">
-              Contact Machinery Dispatch
+              Contact & Equipment Inquiries
             </h2>
             <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">
-              Need immediate equipment staging, custom long-term contract rates, or emergency site support? Our dispatch desk is standing by.
+              Have questions about machinery availability, rental terms, or fleet partner onboarding? Send our team a message.
             </p>
           </div>
 
@@ -928,14 +966,14 @@ export default function HomePage() {
             <div className="space-y-4">
               <div className="p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 space-y-3">
                 <div className="size-10 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center">
-                  <Phone className="size-5" />
+                  <Mail className="size-5" />
                 </div>
-                <h3 className="font-bold text-slate-900 dark:text-white text-sm">24/7 Dispatch Hotline</h3>
+                <h3 className="font-bold text-slate-900 dark:text-white text-sm">Online Inquiries Desk</h3>
                 <p className="text-xs text-slate-500 dark:text-slate-400">
-                  Direct commercial line for real-time fleet bookings and site breakdowns:
+                  Submit equipment inquiries via the form. Our team reviews all requests promptly:
                 </p>
-                <div className="text-sm font-extrabold text-amber-600 dark:text-amber-400">
-                  +1 (800) 432-7637
+                <div className="text-sm font-semibold text-amber-600 dark:text-amber-400">
+                  dispatch@gearnest.com
                 </div>
               </div>
 
@@ -943,12 +981,12 @@ export default function HomePage() {
                 <div className="size-10 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center">
                   <Mail className="size-5" />
                 </div>
-                <h3 className="font-bold text-slate-900 dark:text-white text-sm">Corporate & Fleet Support</h3>
+                <h3 className="font-bold text-slate-900 dark:text-white text-sm">Corporate & Fleet Inquiries</h3>
                 <p className="text-xs text-slate-500 dark:text-slate-400">
-                  For formal bids, municipal proposals, and partner fleet inquiries:
+                  For fleet partner onboarding, contract agreements, and general support:
                 </p>
                 <div className="text-sm font-semibold text-slate-900 dark:text-white">
-                  dispatch@gearnest.com
+                  support@gearnest.com
                 </div>
               </div>
 
@@ -956,12 +994,12 @@ export default function HomePage() {
                 <div className="size-10 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
                   <MapPin className="size-5" />
                 </div>
-                <h3 className="font-bold text-slate-900 dark:text-white text-sm">Central Equipment Depot</h3>
+                <h3 className="font-bold text-slate-900 dark:text-white text-sm">National Partner Network</h3>
                 <p className="text-xs text-slate-500 dark:text-slate-400">
-                  Main logistics staging hub:
+                  Distributed equipment listings:
                 </p>
                 <div className="text-xs font-semibold text-slate-700 dark:text-slate-300">
-                  450 Industrial Parkway, Suite 100<br />Dallas, TX 75201, United States
+                  Verified equipment owners and contractors across major metro hubs nationwide.
                 </div>
               </div>
             </div>
@@ -969,10 +1007,10 @@ export default function HomePage() {
             {/* Interactive Contact Form */}
             <div className="lg:col-span-2 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs">
               <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-1">
-                Send an Equipment Dispatch Inquiry
+                Send an Equipment Inquiry
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400 mb-6">
-                Our logistics coordinators respond with exact equipment availability and rate estimates in under 15 minutes.
+                Our team reviews submitted equipment inquiries and coordinates with fleet owners regarding equipment availability.
               </p>
 
               <form onSubmit={handleContactSubmit} className="space-y-4">
@@ -1021,7 +1059,7 @@ export default function HomePage() {
                       type="tel"
                       value={contactPhone}
                       onChange={(e) => setContactPhone(e.target.value)}
-                      placeholder="e.g. (555) 234-5678"
+                      placeholder="e.g. +1 555 0100"
                       className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/50 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/50"
                     />
                   </div>
@@ -1070,7 +1108,7 @@ export default function HomePage() {
                     className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs shadow-md transition-all cursor-pointer disabled:opacity-50"
                   >
                     <Send className={`size-3.5 ${contactSubmitting ? "animate-pulse" : ""}`} />
-                    <span>{contactSubmitting ? "Transmitting..." : "Send Dispatch Request"}</span>
+                    <span>{contactSubmitting ? "Submitting..." : "Send Inquiry"}</span>
                   </button>
                 </div>
               </form>

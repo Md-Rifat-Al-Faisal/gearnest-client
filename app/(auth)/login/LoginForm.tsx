@@ -10,7 +10,14 @@ import { Lock, Mail, Loader2, ArrowRight } from "lucide-react"
 export function LoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const callbackUrl = searchParams.get("callbackUrl") || searchParams.get("redirectTo") || "/"
+  const rawCallback = searchParams.get("callbackUrl") || searchParams.get("redirectTo") || "/"
+  // Mitigate open redirect vulnerabilities: must start with a single "/" and reject protocol-relative or backslash paths
+  const callbackUrl =
+    rawCallback.startsWith("/") &&
+    !rawCallback.startsWith("//") &&
+    !rawCallback.startsWith("/\\")
+      ? rawCallback
+      : "/"
 
   const [email, setEmail] = React.useState("")
   const [password, setPassword] = React.useState("")
@@ -135,7 +142,7 @@ export function LoginForm() {
               type="button"
               onClick={() => {
                 setEmail("admin@gearnest.com")
-                setPassword("Admin@123456")
+                setPassword("Password123!")
                 toast.info("Admin credentials loaded")
               }}
               className="py-1 px-2 rounded-lg text-[11px] font-bold border border-rose-500/20 bg-rose-500/10 text-rose-600 dark:text-rose-400 hover:bg-rose-500/20 transition-colors"
@@ -146,7 +153,7 @@ export function LoginForm() {
               type="button"
               onClick={() => {
                 setEmail("owner@gearnest.com")
-                setPassword("Owner@123456")
+                setPassword("Password123!")
                 toast.info("Owner credentials loaded")
               }}
               className="py-1 px-2 rounded-lg text-[11px] font-bold border border-amber-500/20 bg-amber-500/10 text-amber-600 dark:text-amber-400 hover:bg-amber-500/20 transition-colors"
@@ -157,7 +164,7 @@ export function LoginForm() {
               type="button"
               onClick={() => {
                 setEmail("customer@gearnest.com")
-                setPassword("Customer@123456")
+                setPassword("Password123!")
                 toast.info("Customer credentials loaded")
               }}
               className="py-1 px-2 rounded-lg text-[11px] font-bold border border-blue-500/20 bg-blue-500/10 text-blue-600 dark:text-blue-400 hover:bg-blue-500/20 transition-colors"

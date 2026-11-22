@@ -11,10 +11,10 @@
 
 ### 1. Public Catalog & Discovery
 - **Hero & Fleet Showcase**: Industrial Slate & Amber aesthetic with dark/light mode toggle and responsive motion choreography.
-- **Search & Filtering**: Real-time regex-escaped search across equipment name, brand, model, location, and description.
-- **Multi-Filter Sidebar**: Filter by category (Excavation, Aerial Work, Compaction, Power, Concrete, Material Handling), rental rate range, rental term (Daily, Weekly, Monthly), and availability.
+- **Search & Filtering**: Real-time regex-escaped search across equipment name, brand, location, and description.
+- **Multi-Filter Sidebar**: Filter by category (Construction Equipment, Photography Equipment, Vehicles & Transportation, Agriculture Equipment, Electronics, Event Equipment), rental rate range, rental term (Daily, Weekly, Monthly), and live inventory availability.
 - **Sorting & Pagination**: Sort by newest listings, price ascending, and price descending with server-side pagination.
-- **Equipment Details**: High-resolution gallery, specifications table, rental terms, owner verification badges, and automatic login return callbacks.
+- **Equipment Details**: Complete specifications table, rental terms, owner verification card with verified email contact, and automatic login return callbacks.
 
 ### 2. Customer / Renter Workspace
 - **Live Favorites**: Interactive wishlist with optimistic heart animations and compound index persistence.
@@ -38,7 +38,7 @@
   - 6-Month Revenue Trajectory chart (`AreaChart` with amber gradient fill).
   - Monthly Booking Volume trend (`BarChart`).
   - Fleet Distribution progress bars across machinery categories.
-- **Equipment Moderation**: Approve or reject pending machinery listings with instant status updating and owner notifications.
+- **Equipment Moderation**: Approve or reject pending machinery listings with instant status updates in the public catalog and owner fleet dashboard.
 - **All Platform Rentals**: Global audit log of all bookings with renter, owner, and transaction status.
 - **User Management**: Role management (Customer, Owner, Admin) with demotion and self-deletion guardrails.
 
@@ -46,7 +46,7 @@
 
 ## Demo Credentials
 
-You can test any role directly using these pre-seeded demo accounts:
+You can test any role directly using these pre-seeded demo accounts (or click the quick-fill buttons on the Sign-In page):
 
 | Role | Email | Password | Access Level |
 | :--- | :--- | :--- | :--- |

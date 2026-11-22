@@ -60,8 +60,9 @@ export async function apiRequest(endpoint: string, options: RequestInit = {}, ex
     })
     return response
   } catch (err) {
-    if (apiBase !== FALLBACK_API) {
-      console.warn(`Local backend unreachable (${apiBase}). Falling back to live API (${FALLBACK_API})...`)
+    const method = (options.method || "GET").toUpperCase()
+    if (apiBase !== FALLBACK_API && method === "GET") {
+      console.warn(`Local backend unreachable (${apiBase}). Falling back to live API for read request (${FALLBACK_API})...`)
       return await fetch(`${FALLBACK_API}${cleanEndpoint}`, {
         ...options,
         headers,

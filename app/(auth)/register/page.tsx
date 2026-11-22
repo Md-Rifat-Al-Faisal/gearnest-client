@@ -109,7 +109,7 @@ export default function RegisterPage() {
 
       toast.success("Account created successfully! Welcome to GearNest.")
       router.refresh()
-      router.push("/login")
+      router.push("/")
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Something went wrong"
       toast.error(msg)
@@ -393,7 +393,7 @@ export default function RegisterPage() {
         {/* Submit */}
         <button
           type="submit"
-          disabled={submitting || uploadingImage || !isPasswordValid}
+          disabled={submitting || uploadingImage}
           className="gn-btn-primary mt-2 w-full disabled:cursor-not-allowed disabled:opacity-50"
         >
           {submitting ? (

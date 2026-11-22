@@ -183,11 +183,21 @@ export function DashboardSidebar({ user }: DashboardSidebarProps) {
           Navigation
         </div>
         {navLinks.map((link) => {
-          const isActive =
-            pathname === link.href ||
-            (link.href !== "/dashboard/owner" &&
-              link.href !== "/dashboard/admin" &&
-              pathname.startsWith(link.href))
+          const isExact = pathname === link.href
+          const isLongestPrefix =
+            !isExact &&
+            link.href !== "/dashboard/owner" &&
+            link.href !== "/dashboard/admin" &&
+            link.href !== "/dashboard/customer" &&
+            link.href !== "/equipment" &&
+            pathname.startsWith(link.href + "/") &&
+            !navLinks.some(
+              (other) =>
+                other.href !== link.href &&
+                other.href.length > link.href.length &&
+                pathname.startsWith(other.href)
+            )
+          const isActive = isExact || isLongestPrefix
           const Icon = link.icon
 
           return (

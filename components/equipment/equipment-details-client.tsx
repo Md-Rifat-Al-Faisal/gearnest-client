@@ -18,6 +18,7 @@ import {
   Layers,
   Heart,
   Phone,
+  Mail,
   X,
   CreditCard,
   FileText,
@@ -81,6 +82,7 @@ export function EquipmentDetailsClient({
 
   // Check if item is already in user's favorites
   useEffect(() => {
+    if (currentUser.role !== "customer") return
     async function checkFavorite() {
       try {
         const res = await apiRequest("/api/customer/favorites")
@@ -99,7 +101,7 @@ export function EquipmentDetailsClient({
     }
 
     checkFavorite()
-  }, [equipment._id])
+  }, [equipment._id, currentUser.role])
 
   // Handle Favorite toggle
   const handleFavoriteToggle = async () => {
@@ -212,8 +214,15 @@ export function EquipmentDetailsClient({
     }
   }
 
-  // Min dates for pickers
-  const todayString = new Date().toISOString().split("T")[0]
+  // Local-date helper for calendar picker min bound
+  const getLocalDateString = (d: Date = new Date()) => {
+    const year = d.getFullYear()
+    const month = String(d.getMonth() + 1).padStart(2, "0")
+    const day = String(d.getDate()).padStart(2, "0")
+    return `${year}-${month}-${day}`
+  }
+  const todayString = getLocalDateString()
+  const isNonCustomerRole = Boolean(currentUser.id && currentUser.role !== "customer")
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
@@ -227,21 +236,23 @@ export function EquipmentDetailsClient({
           <span>Back to Equipment Catalog</span>
         </Link>
 
-        {/* Favorite Button */}
-        <button
-          onClick={handleFavoriteToggle}
-          disabled={togglingFavorite}
-          className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border text-xs font-bold transition-all cursor-pointer ${
-            isFavorited
-              ? "bg-rose-500/10 text-rose-600 border-rose-500/30 hover:bg-rose-500/20"
-              : "border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-amber-500/50 hover:text-amber-500"
-          }`}
-        >
-          <Heart
-            className={`h-4 w-4 ${isFavorited ? "fill-rose-500 text-rose-500" : ""}`}
-          />
-          <span>{isFavorited ? "Saved in Favorites" : "Add to Favorites"}</span>
-        </button>
+        {/* Favorite Button (Hidden for non-customer roles) */}
+        {!isNonCustomerRole && (
+          <button
+            onClick={handleFavoriteToggle}
+            disabled={togglingFavorite}
+            className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border text-xs font-bold transition-all cursor-pointer ${
+              isFavorited
+                ? "bg-rose-500/10 text-rose-600 border-rose-500/30 hover:bg-rose-500/20"
+                : "border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-amber-500/50 hover:text-amber-500"
+            }`}
+          >
+            <Heart
+              className={`h-4 w-4 ${isFavorited ? "fill-rose-500 text-rose-500" : ""}`}
+            />
+            <span>{isFavorited ? "Saved in Favorites" : "Add to Favorites"}</span>
+          </button>
+        )}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -334,8 +345,39 @@ export function EquipmentDetailsClient({
               <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800">
                 <span className="text-slate-400">Payment Security</span>
                 <p className="font-bold text-emerald-500 mt-0.5">
-                  Stripe Escrow Verified
+                  Verified Stripe Checkout
                 </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Owner & Fleet Partner Information Card */}
+          <div className="p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 space-y-4 shadow-xs">
+            <h3 className="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-2">
+              <Package className="h-4 w-4 text-amber-500" />
+              Equipment Owner & Partner Information
+            </h3>
+            <div className="flex items-center gap-4 pt-1">
+              <div className="h-12 w-12 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-600 dark:text-amber-400 font-bold text-base shrink-0">
+                {(equipment.ownerName || "P").charAt(0).toUpperCase()}
+              </div>
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <h4 className="text-sm font-bold text-slate-900 dark:text-white">
+                    {equipment.ownerName || "GearNest Verified Fleet Partner"}
+                  </h4>
+                  <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                    Verified Partner
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5 text-xs text-slate-600 dark:text-slate-300">
+                  <Mail className="h-3.5 w-3.5 text-amber-500 shrink-0" />
+                  <span>Owner Email: <span className="font-semibold text-slate-900 dark:text-white">{equipment.ownerEmail || "owner@gearnest.com"}</span></span>
+                </div>
+                <div className="flex items-center gap-1.5 text-[11px] text-slate-400 pt-0.5">
+                  <MapPin className="h-3 w-3 text-amber-500 shrink-0" />
+                  <span>Depot Operating Location: {equipment.location || "USA Metro Depots"}</span>
+                </div>
               </div>
             </div>
           </div>
@@ -348,7 +390,7 @@ export function EquipmentDetailsClient({
             </h3>
             <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
               {equipment.rentalTerms ||
-                "Standard commercial rental terms apply. Valid operator license required for heavy machinery. Full refundable security deposit held via Stripe until machine inspection is finalized upon return."}
+                "Standard commercial rental terms apply. Clear operating expectations, certified equipment handover, and secure digital payment protection via Stripe."}
             </p>
           </div>
         </div>
@@ -394,21 +436,32 @@ export function EquipmentDetailsClient({
               </div>
             )}
 
-            {/* Quick Rent Action */}
-            <button
-              onClick={() => setModalOpen(true)}
-              disabled={equipment.availableQuantity <= 0 || isOwner}
-              className="w-full py-3.5 rounded-xl bg-amber-500 hover:bg-amber-400 disabled:opacity-40 text-slate-950 font-bold text-sm flex items-center justify-center gap-2 shadow-md shadow-amber-500/20 transition-all cursor-pointer"
-            >
-              <Calendar className="h-4 w-4 stroke-[2.5]" />
-              <span>
-                {isOwner
-                  ? "Owner Cannot Book Own Equipment"
-                  : equipment.availableQuantity > 0
-                    ? "Book Equipment Now"
-                    : "Currently Unavailable"}
-              </span>
-            </button>
+            {/* Quick Rent Action (Hidden / restricted for non-customer roles) */}
+            {isNonCustomerRole ? (
+              <div className="p-4 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-center text-xs text-slate-600 dark:text-slate-300">
+                <p className="font-semibold text-slate-800 dark:text-slate-200">
+                  {currentUser.role === "admin" ? "Admin Account Active" : "Equipment Owner Account Active"}
+                </p>
+                <p className="mt-1 text-[11px] text-slate-500">
+                  Direct equipment booking is reserved for customer/renter accounts.
+                </p>
+              </div>
+            ) : (
+              <button
+                onClick={() => setModalOpen(true)}
+                disabled={equipment.availableQuantity <= 0 || isOwner}
+                className="w-full py-3.5 rounded-xl bg-amber-500 hover:bg-amber-400 disabled:opacity-40 text-slate-950 font-bold text-sm flex items-center justify-center gap-2 shadow-md shadow-amber-500/20 transition-all cursor-pointer"
+              >
+                <Calendar className="h-4 w-4 stroke-[2.5]" />
+                <span>
+                  {isOwner
+                    ? "Owner Cannot Book Own Equipment"
+                    : equipment.availableQuantity > 0
+                      ? "Book Equipment Now"
+                      : "Currently Unavailable"}
+                </span>
+              </button>
+            )}
 
             {/* Owner assurance */}
             <div className="pt-2 text-center text-[11px] text-slate-400 border-t border-slate-100 dark:border-slate-800 flex items-center justify-center gap-1.5">

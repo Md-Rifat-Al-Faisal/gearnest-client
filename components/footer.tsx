@@ -70,18 +70,33 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/equipment?category=Construction" className="hover:text-amber-600 dark:hover:text-amber-400">
-                  Heavy Construction
+                <Link href="/equipment?category=Construction+Equipment" className="hover:text-amber-600 dark:hover:text-amber-400">
+                  Construction Equipment
                 </Link>
               </li>
               <li>
-                <Link href="/equipment?category=Photography" className="hover:text-amber-600 dark:hover:text-amber-400">
-                  Cameras & Lighting
+                <Link href="/equipment?category=Photography+Equipment" className="hover:text-amber-600 dark:hover:text-amber-400">
+                  Photography Equipment
                 </Link>
               </li>
               <li>
-                <Link href="/equipment?category=Vehicles" className="hover:text-amber-600 dark:hover:text-amber-400">
-                  Commercial Vehicles
+                <Link href="/equipment?category=Vehicles+%26+Transportation" className="hover:text-amber-600 dark:hover:text-amber-400">
+                  Vehicles & Transportation
+                </Link>
+              </li>
+              <li>
+                <Link href="/equipment?category=Agriculture+Equipment" className="hover:text-amber-600 dark:hover:text-amber-400">
+                  Agriculture Equipment
+                </Link>
+              </li>
+              <li>
+                <Link href="/equipment?category=Electronics" className="hover:text-amber-600 dark:hover:text-amber-400">
+                  Electronics
+                </Link>
+              </li>
+              <li>
+                <Link href="/equipment?category=Event+Equipment" className="hover:text-amber-600 dark:hover:text-amber-400">
+                  Event Equipment
                 </Link>
               </li>
             </ul>
