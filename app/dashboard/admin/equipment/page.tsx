@@ -229,13 +229,13 @@ export default function AdminEquipmentPage() {
             <table className="w-full text-left text-sm">
               <thead className="bg-slate-50 dark:bg-slate-950/60 border-b border-slate-200 dark:border-slate-800 text-xs uppercase font-semibold text-slate-500 dark:text-slate-400">
                 <tr>
-                  <th className="py-3.5 px-4">Equipment</th>
-                  <th className="py-3.5 px-4">Category & Location</th>
-                  <th className="py-3.5 px-4">Partner / Owner</th>
-                  <th className="py-3.5 px-4">Rate</th>
-                  <th className="py-3.5 px-4 text-center">Status</th>
-                  <th className="py-3.5 px-4 text-center">Quick Moderation</th>
-                  <th className="py-3.5 px-4 text-right">Actions</th>
+                  <th className="py-3 px-2.5 sm:px-3 max-w-[200px]">Equipment</th>
+                  <th className="py-3 px-2 sm:px-2.5 max-w-[120px]">Category & Location</th>
+                  <th className="py-3 px-2 sm:px-2.5 max-w-[120px]">Partner / Owner</th>
+                  <th className="py-3 px-2 sm:px-2.5">Rate</th>
+                  <th className="py-3 px-2 sm:px-2.5 text-center">Status</th>
+                  <th className="py-3 px-2 sm:px-2.5 text-center">Moderation</th>
+                  <th className="py-3 px-2.5 sm:px-3 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200 dark:divide-slate-800/80">
@@ -244,9 +244,9 @@ export default function AdminEquipmentPage() {
                     key={item._id}
                     className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors"
                   >
-                    <td className="py-4 px-4">
-                      <div className="flex items-center gap-3">
-                        <div className="h-14 w-14 rounded-lg bg-slate-100 dark:bg-slate-800 overflow-hidden shrink-0 border border-slate-200 dark:border-slate-700">
+                    <td className="py-3 px-2.5 sm:px-3 max-w-[200px]">
+                      <div className="flex items-center gap-2.5">
+                        <div className="h-11 w-11 rounded-lg bg-slate-100 dark:bg-slate-800 overflow-hidden shrink-0 border border-slate-200 dark:border-slate-700">
                           {item.image ? (
                             <img
                               src={item.image}
@@ -255,113 +255,122 @@ export default function AdminEquipmentPage() {
                             />
                           ) : (
                             <div className="h-full w-full flex items-center justify-center text-slate-400">
-                              <Package className="h-6 w-6" />
+                              <Package className="h-5 w-5" />
                             </div>
                           )}
                         </div>
-                        <div className="min-w-0">
-                          <p className="font-semibold text-slate-900 dark:text-white truncate max-w-xs">
+                        <div className="min-w-0 flex-1">
+                          <Link
+                            href={`/equipment/${item._id}`}
+                            className="font-semibold text-slate-900 dark:text-white hover:text-amber-600 dark:hover:text-amber-400 text-xs sm:text-sm line-clamp-2 leading-snug transition-colors"
+                            title={item.name}
+                          >
                             {item.name}
-                          </p>
-                          <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
+                          </Link>
+                          <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5">
                             {item.brand} {item.model && `• ${item.model}`}
                           </p>
                         </div>
                       </div>
                     </td>
 
-                    <td className="py-4 px-4">
-                      <span className="inline-block px-2 py-0.5 rounded text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+                    <td className="py-3 px-2 sm:px-2.5 max-w-[120px]">
+                      <span className="inline-block px-1.5 py-0.5 rounded text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 truncate max-w-full">
                         {item.category}
                       </span>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 truncate">
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 truncate max-w-full">
                         {item.location || "Location unlisted"}
                       </p>
                     </td>
 
-                    <td className="py-4 px-4">
-                      <div className="flex items-center gap-2">
-                        <div className="h-6 w-6 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-xs text-slate-600 dark:text-slate-300 font-bold">
+                    <td className="py-3 px-2 sm:px-2.5 max-w-[120px]">
+                      <div className="flex items-center gap-1.5">
+                        <div className="h-5 w-5 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-[10px] text-slate-600 dark:text-slate-300 font-bold shrink-0">
                           {item.ownerName ? item.ownerName.charAt(0).toUpperCase() : "O"}
                         </div>
                         <div className="min-w-0">
-                          <p className="text-xs font-semibold text-slate-800 dark:text-slate-200 truncate max-w-[140px]">
+                          <p className="text-xs font-semibold text-slate-800 dark:text-slate-200 truncate max-w-full">
                             {item.ownerName || "Equipment Owner"}
                           </p>
-                          <p className="text-[11px] text-slate-400 truncate max-w-[140px]">
+                          <p className="text-[10px] text-slate-400 truncate max-w-full">
                             {item.ownerEmail}
                           </p>
                         </div>
                       </div>
                     </td>
 
-                    <td className="py-4 px-4 font-semibold text-slate-900 dark:text-white">
-                      ${item.rentalPrice}{" "}
-                      <span className="text-xs font-normal text-slate-500">
+                    <td className="py-3 px-2 sm:px-2.5 whitespace-nowrap">
+                      <div className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white">
+                        ${item.rentalPrice}
+                      </div>
+                      <div className="text-[10px] text-slate-400 font-medium">
                         /{item.rentalType?.toLowerCase()}
-                      </span>
+                      </div>
                     </td>
 
-                    <td className="py-4 px-4 text-center">
+                    <td className="py-3 px-2 sm:px-2.5 text-center whitespace-nowrap">
                       {item.status === "Approved" ? (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
                           <CheckCircle2 className="h-3 w-3" />
                           Approved
                         </span>
                       ) : item.status === "Pending" ? (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
                           <Clock className="h-3 w-3" />
                           Pending
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20">
                           <XCircle className="h-3 w-3" />
                           Rejected
                         </span>
                       )}
                     </td>
 
-                    <td className="py-4 px-4 text-center">
-                      <div className="inline-flex items-center gap-1.5">
+                    <td className="py-3 px-2 sm:px-2.5 text-center whitespace-nowrap">
+                      <div className="inline-flex items-center gap-1">
                         <button
+                          type="button"
                           onClick={() => handleStatusChange(item._id, "Approved")}
                           disabled={updatingId === item._id || item.status === "Approved"}
                           title="Approve Equipment for Public Catalog"
-                          className="px-2.5 py-1 text-xs font-semibold rounded-md bg-emerald-600 hover:bg-emerald-500 disabled:opacity-40 text-white transition-colors"
+                          className="px-2 py-1 text-[11px] font-bold rounded bg-emerald-600 hover:bg-emerald-500 disabled:opacity-30 text-white transition-colors cursor-pointer"
                         >
                           {updatingId === item._id ? "..." : "Approve"}
                         </button>
                         <button
+                          type="button"
                           onClick={() => handleStatusChange(item._id, "Rejected")}
                           disabled={updatingId === item._id || item.status === "Rejected"}
                           title="Reject Equipment Listing"
-                          className="px-2.5 py-1 text-xs font-semibold rounded-md bg-rose-600 hover:bg-rose-500 disabled:opacity-40 text-white transition-colors"
+                          className="px-2 py-1 text-[11px] font-bold rounded bg-rose-600 hover:bg-rose-500 disabled:opacity-30 text-white transition-colors cursor-pointer"
                         >
                           {updatingId === item._id ? "..." : "Reject"}
                         </button>
                       </div>
                     </td>
 
-                    <td className="py-4 px-4 text-right">
-                      <div className="flex items-center justify-end gap-1.5">
+                    <td className="py-3 px-2.5 sm:px-3 text-right whitespace-nowrap">
+                      <div className="flex items-center justify-end gap-1">
                         <Link
                           href={`/equipment/${item._id}`}
                           title="View Catalog Page"
-                          className="p-1.5 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+                          className="p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
                         >
                           <Eye className="h-4 w-4" />
                         </Link>
                         <Link
                           href={`/dashboard/admin/equipment/${item._id}/edit`}
                           title="Edit Equipment Specifications"
-                          className="p-1.5 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-amber-500 dark:hover:text-amber-400 transition-colors"
+                          className="p-1.5 rounded hover:bg-amber-50 dark:hover:bg-amber-950/30 text-slate-400 hover:text-amber-600 dark:hover:text-amber-400 transition-colors"
                         >
                           <Edit2 className="h-4 w-4" />
                         </Link>
                         <button
+                          type="button"
                           onClick={() => setItemToDelete(item)}
                           title="Delete Equipment"
-                          className="p-1.5 rounded-md hover:bg-rose-500/10 text-slate-500 hover:text-rose-600 dark:hover:text-rose-400 transition-colors"
+                          className="p-1.5 rounded hover:bg-rose-50 dark:hover:bg-rose-950/30 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 transition-colors cursor-pointer"
                         >
                           <Trash2 className="h-4 w-4" />
                         </button>

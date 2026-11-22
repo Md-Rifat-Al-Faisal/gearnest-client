@@ -81,7 +81,7 @@ export default function AdminRentalsPage() {
   // Filter rentals
   const filteredRentals = rentals.filter((r) => {
     const matchesStatus =
-      statusFilter === "all" ? true : r.bookingStatus.toLowerCase() === statusFilter.toLowerCase()
+      statusFilter === "all" ? true : (r.bookingStatus || "").toLowerCase() === statusFilter.toLowerCase()
 
     const term = search.toLowerCase().trim()
     const matchesSearch =
@@ -205,15 +205,17 @@ export default function AdminRentalsPage() {
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
                 {paginatedRentals.map((rental) => {
-                  const startFmt = new Date(rental.startDate).toLocaleDateString(undefined, {
+                  const startFmt = new Date(rental.startDate).toLocaleDateString("en-US", {
                     month: "short",
                     day: "numeric",
                     year: "numeric",
+                    timeZone: "UTC",
                   })
-                  const endFmt = new Date(rental.endDate).toLocaleDateString(undefined, {
+                  const endFmt = new Date(rental.endDate).toLocaleDateString("en-US", {
                     month: "short",
                     day: "numeric",
                     year: "numeric",
+                    timeZone: "UTC",
                   })
 
                   const statusStyle =
@@ -293,7 +295,7 @@ export default function AdminRentalsPage() {
                               : "bg-amber-500/10 text-amber-600 border border-amber-500/20"
                           }`}
                         >
-                          {rental.paymentStatus.toUpperCase()}
+                          {(rental.paymentStatus || "pending").toUpperCase()}
                         </span>
                       </td>
 
@@ -305,7 +307,7 @@ export default function AdminRentalsPage() {
                           {rental.bookingStatus === "active" && <CheckCircle2 className="size-3" />}
                           {rental.bookingStatus === "completed" && <ShieldCheck className="size-3" />}
                           {rental.bookingStatus === "cancelled" && <XCircle className="size-3" />}
-                          <span className="capitalize">{rental.bookingStatus}</span>
+                          <span className="capitalize">{rental.bookingStatus || "pending"}</span>
                         </span>
                       </td>
                     </tr>

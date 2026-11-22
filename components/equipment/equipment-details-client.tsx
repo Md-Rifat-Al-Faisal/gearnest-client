@@ -25,6 +25,13 @@ import {
 } from "lucide-react"
 import { apiRequest } from "@/lib/api-client"
 import { toast } from "sonner"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogClose,
+} from "@/components/ui/dialog"
 
 interface EquipmentData {
   _id: string
@@ -77,6 +84,21 @@ export function EquipmentDetailsClient({
   const [deliveryAddress, setDeliveryAddress] = useState(currentUser.address || "")
   const [notes, setNotes] = useState("")
   const [submittingBooking, setSubmittingBooking] = useState(false)
+
+  // Booking modal accessibility: Escape key listener and body scroll lock
+  useEffect(() => {
+    if (!modalOpen) return
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setModalOpen(false)
+    }
+    window.addEventListener("keydown", handleKeyDown)
+    const prevOverflow = document.body.style.overflow
+    document.body.style.overflow = "hidden"
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown)
+      document.body.style.overflow = prevOverflow
+    }
+  }, [modalOpen])
 
   const isOwner = currentUser.id === equipment.ownerId
 
@@ -338,7 +360,7 @@ export function EquipmentDetailsClient({
               <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800">
                 <span className="text-slate-400">Billing Period</span>
                 <p className="font-bold text-slate-900 dark:text-white mt-0.5">
-                  Per {equipment.rentalType.toLowerCase()}
+                  Per {(equipment.rentalType || "day").toLowerCase()}
                 </p>
               </div>
 
@@ -408,7 +430,7 @@ export function EquipmentDetailsClient({
                   ${equipment.rentalPrice}
                 </span>
                 <span className="text-sm text-slate-500">
-                  / per {equipment.rentalType.toLowerCase()}
+                  / per {(equipment.rentalType || "day").toLowerCase()}
                 </span>
               </div>
             </div>
@@ -472,33 +494,21 @@ export function EquipmentDetailsClient({
         </div>
       </div>
 
-      {/* "BOOK NOW" MODAL */}
-      {modalOpen && (
-        <div
-          className="fixed inset-0 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-4 z-50 overflow-y-auto"
-          onClick={() => setModalOpen(false)}
-        >
-          <div
-            className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl space-y-6 my-8"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Modal Header */}
-            <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
-              <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-amber-500">
-                  Rental Reservation
-                </span>
-                <h3 className="text-xl font-extrabold text-slate-900 dark:text-white mt-0.5">
-                  Book {equipment.name}
-                </h3>
-              </div>
-              <button
-                onClick={() => setModalOpen(false)}
-                className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-900 dark:hover:text-white"
-              >
-                <X className="h-5 w-5" />
-              </button>
+      {/* "BOOK NOW" MODAL (USING SHADCN DIALOG) */}
+      <Dialog open={modalOpen} onOpenChange={setModalOpen}>
+        <DialogContent>
+          {/* Modal Header */}
+          <DialogHeader>
+            <div>
+              <span className="text-xs font-bold uppercase tracking-wider text-amber-500">
+                Rental Reservation
+              </span>
+              <DialogTitle>
+                Book {equipment.name}
+              </DialogTitle>
             </div>
+            <DialogClose onClose={() => setModalOpen(false)} />
+          </DialogHeader>
 
             <form onSubmit={handleProceedToStripe} className="space-y-4">
               {/* Dates */}
@@ -629,7 +639,7 @@ export function EquipmentDetailsClient({
                   <div className="flex justify-between text-slate-600 dark:text-slate-300">
                     <span>Duration:</span>
                     <span className="font-semibold text-slate-900 dark:text-white">
-                      {totalDays} {totalDays === 1 ? "day" : "days"} ({units} {equipment.rentalType.toLowerCase()} units)
+                      {totalDays} {totalDays === 1 ? "day" : "days"} ({units} {(equipment.rentalType || "day").toLowerCase()} units)
                     </span>
                   </div>
                   <div className="flex justify-between text-slate-600 dark:text-slate-300">
@@ -675,9 +685,8 @@ export function EquipmentDetailsClient({
                 </button>
               </div>
             </form>
-          </div>
-        </div>
-      )}
+          </DialogContent>
+        </Dialog>
     </div>
   )
 }

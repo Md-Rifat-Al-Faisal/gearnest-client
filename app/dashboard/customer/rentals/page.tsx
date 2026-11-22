@@ -17,6 +17,15 @@ import {
 } from "lucide-react"
 import { apiRequest } from "@/lib/api-client"
 import { toast } from "sonner"
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableHead,
+  TableRow,
+  TableCell,
+} from "@/components/ui/table"
+import { Badge } from "@/components/ui/badge"
 
 interface CustomerRental {
   _id: string
@@ -161,21 +170,21 @@ export default function CustomerRentalsPage() {
         ) : (
           <>
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm">
-              <thead className="bg-slate-50 dark:bg-slate-950/60 border-b border-slate-200 dark:border-slate-800 text-xs uppercase font-semibold text-slate-500 dark:text-slate-400">
-                <tr>
-                  <th className="py-3.5 px-4">Equipment</th>
-                  <th className="py-3.5 px-3">Start Date</th>
-                  <th className="py-3.5 px-3">End Date</th>
-                  <th className="py-3.5 px-3">Units & Qty</th>
-                  <th className="py-3.5 px-3">Booked</th>
-                  <th className="py-3.5 px-3 text-center">Payment</th>
-                  <th className="py-3.5 px-3 text-center">Rental Status</th>
-                  <th className="py-3.5 px-3 text-right">Amount</th>
-                  <th className="py-3.5 px-4 text-center">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-200 dark:divide-slate-800/80">
+              <Table className="text-sm">
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="py-3.5 px-4">Equipment</TableHead>
+                  <TableHead className="py-3.5 px-3">Start Date</TableHead>
+                  <TableHead className="py-3.5 px-3">End Date</TableHead>
+                  <TableHead className="py-3.5 px-3">Units & Qty</TableHead>
+                  <TableHead className="py-3.5 px-3">Booked</TableHead>
+                  <TableHead className="py-3.5 px-3 text-center">Payment</TableHead>
+                  <TableHead className="py-3.5 px-3 text-center">Rental Status</TableHead>
+                  <TableHead className="py-3.5 px-3 text-right">Amount</TableHead>
+                  <TableHead className="py-3.5 px-4 text-center">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
                 {paginatedRentals.map((r) => {
                   const startDateFormatted = new Date(r.startDate).toLocaleDateString("en-US", {
                     month: "short",
@@ -198,11 +207,11 @@ export default function CustomerRentalsPage() {
                   const isPendingPayment = r.paymentStatus === "pending" && r.bookingStatus !== "cancelled"
 
                   return (
-                    <tr
+                    <TableRow
                       key={r._id}
                       className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors"
                     >
-                      <td className="py-4 px-4">
+                      <TableCell className="py-4 px-4">
                         <div className="flex items-center gap-3">
                           <div className="h-14 w-14 rounded-lg bg-slate-100 dark:bg-slate-800 overflow-hidden shrink-0 border border-slate-200 dark:border-slate-700">
                             {r.equipmentImage ? (
@@ -229,74 +238,66 @@ export default function CustomerRentalsPage() {
                             </p>
                           </div>
                         </div>
-                      </td>
+                      </TableCell>
 
-                      <td className="py-4 px-3 text-xs font-semibold text-slate-800 dark:text-slate-200 whitespace-nowrap">
+                      <TableCell className="py-4 px-3 text-xs font-semibold text-slate-800 dark:text-slate-200 whitespace-nowrap">
                         {startDateFormatted}
-                      </td>
+                      </TableCell>
 
-                      <td className="py-4 px-3 text-xs font-semibold text-slate-800 dark:text-slate-200 whitespace-nowrap">
+                      <TableCell className="py-4 px-3 text-xs font-semibold text-slate-800 dark:text-slate-200 whitespace-nowrap">
                         {endDateFormatted}
-                      </td>
+                      </TableCell>
 
-                      <td className="py-4 px-3 text-xs text-slate-600 dark:text-slate-300">
+                      <TableCell className="py-4 px-3 text-xs text-slate-600 dark:text-slate-300">
                         <span>{r.days}d ({r.units} {r.rentalType?.toLowerCase()})</span>
                         <span className="block text-[11px] text-slate-400">x{r.quantity} machine{r.quantity > 1 ? "s" : ""}</span>
-                      </td>
+                      </TableCell>
 
-                      <td className="py-4 px-3 text-xs text-slate-500 dark:text-slate-400 whitespace-nowrap">
+                      <TableCell className="py-4 px-3 text-xs text-slate-500 dark:text-slate-400 whitespace-nowrap">
                         {bookedDateFormatted}
-                      </td>
+                      </TableCell>
 
-                      <td className="py-4 px-3 text-center whitespace-nowrap">
+                      <TableCell className="py-4 px-3 text-center whitespace-nowrap">
                         {r.paymentStatus === "paid" ? (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                          <Badge variant="success">
                             <CheckCircle2 className="h-3 w-3" />
                             Paid
-                          </span>
+                          </Badge>
                         ) : (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                          <Badge variant="warning">
                             <Clock className="h-3 w-3" />
                             Unpaid
-                          </span>
+                          </Badge>
                         )}
                         {r.transactionId && (
                           <p className="text-[10px] text-slate-400 mt-1 font-mono truncate max-w-[100px] mx-auto">
                             {r.transactionId}
                           </p>
                         )}
-                      </td>
+                      </TableCell>
 
-                      <td className="py-4 px-3 text-center whitespace-nowrap">
+                      <TableCell className="py-4 px-3 text-center whitespace-nowrap">
                         {r.bookingStatus === "active" ? (
-                          <span className="inline-block px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-                            Active
-                          </span>
+                          <Badge variant="success">Active</Badge>
                         ) : r.bookingStatus === "pending" ? (
-                          <span className="inline-block px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
-                            Pending
-                          </span>
+                          <Badge variant="warning">Pending</Badge>
                         ) : r.bookingStatus === "completed" ? (
-                          <span className="inline-block px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
-                            Completed
-                          </span>
+                          <Badge variant="default">Completed</Badge>
                         ) : (
-                          <span className="inline-block px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-500/10 text-slate-500 border border-slate-500/20">
-                            Cancelled
-                          </span>
+                          <Badge variant="destructive">Cancelled</Badge>
                         )}
-                      </td>
+                      </TableCell>
 
-                      <td className="py-4 px-3 text-right whitespace-nowrap">
+                      <TableCell className="py-4 px-3 text-right whitespace-nowrap">
                         <div className="font-extrabold text-sm text-slate-900 dark:text-white">
                           ${r.totalAmount}
                         </div>
                         <span className="text-[10px] uppercase font-bold text-slate-400">
                           {r.paymentStatus === "paid" ? "Paid" : "Due"}
                         </span>
-                      </td>
+                      </TableCell>
 
-                      <td className="py-4 px-4 text-center whitespace-nowrap">
+                      <TableCell className="py-4 px-4 text-center whitespace-nowrap">
                         {isPendingPayment ? (
                           <div className="flex items-center justify-center gap-1.5">
                             <button
@@ -322,12 +323,12 @@ export default function CustomerRentalsPage() {
                             View Item
                           </Link>
                         )}
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   )
                 })}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
 
           {/* Pagination Controls */}

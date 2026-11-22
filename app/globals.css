@@ -11,14 +11,14 @@
   --card-foreground: #0f172a;
   --border: #e2e8f0;
   --input: #cbd5e1;
-  --input-focus: #d97706;
+  --input-focus: #b45309;
   --muted: #f1f5f9;
-  --muted-foreground: #64748b;
-  --primary: #d97706;
-  --primary-hover: #b45309;
+  --muted-foreground: #475569;
+  --primary: #b45309;
+  --primary-hover: #92400e;
   --primary-foreground: #ffffff;
-  --primary-glow: rgba(245, 158, 11, 0.2);
-  --ring: #f59e0b;
+  --primary-glow: rgba(180, 83, 9, 0.2);
+  --ring: #b45309;
 }
 
 /* Centralized GearNest Design Tokens (Industrial Dark Theme) */
@@ -62,6 +62,11 @@ body {
   background-color: var(--background);
   color: var(--foreground);
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+p {
+  font-size: 0.875rem; /* 14px minimum */
+  line-height: 1.5rem;
 }
 
 /* GearNest Custom UI Component Classes tied to Centralized Variables */

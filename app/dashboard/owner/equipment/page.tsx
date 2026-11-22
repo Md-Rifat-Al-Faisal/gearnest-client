@@ -27,7 +27,7 @@ interface EquipmentItem {
   description: string
   category: string
   rentalPrice: number
-  rentalType: string
+  rentalType?: string
   availableQuantity: number
   condition: string
   brand: string
@@ -91,10 +91,11 @@ export default function OwnerEquipmentPage() {
   }
 
   const filteredEquipment = equipment.filter((item) => {
+    const term = search.toLowerCase()
     const matchesSearch =
-      item.name.toLowerCase().includes(search.toLowerCase()) ||
-      item.brand?.toLowerCase().includes(search.toLowerCase()) ||
-      item.category.toLowerCase().includes(search.toLowerCase())
+      (item.name || "").toLowerCase().includes(term) ||
+      (item.brand || "").toLowerCase().includes(term) ||
+      (item.category || "").toLowerCase().includes(term)
     const matchesStatus = statusFilter === "all" || item.status === statusFilter
     return matchesSearch && matchesStatus
   })
@@ -279,7 +280,7 @@ export default function OwnerEquipmentPage() {
                       <td className="py-4 px-4 font-semibold text-slate-900 dark:text-white">
                         ${item.rentalPrice}{" "}
                         <span className="text-xs font-normal text-slate-500">
-                          / {item.rentalType.toLowerCase()}
+                          / {(item.rentalType || "day").toLowerCase()}
                         </span>
                       </td>
 

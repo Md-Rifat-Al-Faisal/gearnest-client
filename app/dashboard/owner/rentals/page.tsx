@@ -41,7 +41,7 @@ interface OwnerRental {
   endDate: string
   days: number
   units: number
-  rentalType: string
+  rentalType?: string
   rentalPrice: number
   quantity: number
   totalAmount: number
@@ -58,7 +58,7 @@ export default function OwnerRentalsPage() {
   const [statusFilter, setStatusFilter] = useState("all")
   const [processingId, setProcessingId] = useState<string | null>(null)
   const [page, setPage] = useState(1)
-  const limit = 6
+  const limit = 8
 
   // Confirmation modal state
   const [confirmModal, setConfirmModal] = useState<{
@@ -127,7 +127,7 @@ export default function OwnerRentalsPage() {
   // Filter rentals
   const filteredRentals = rentals.filter((r) => {
     const matchesStatus =
-      statusFilter === "all" ? true : r.bookingStatus.toLowerCase() === statusFilter.toLowerCase()
+      statusFilter === "all" ? true : (r.bookingStatus || "").toLowerCase() === statusFilter.toLowerCase()
 
     const term = search.toLowerCase().trim()
     const matchesSearch =
@@ -223,26 +223,33 @@ export default function OwnerRentalsPage() {
               <table className="w-full text-left text-xs">
               <thead className="bg-slate-50 dark:bg-slate-800/60 text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider border-b border-slate-200 dark:border-slate-800">
                 <tr>
-                  <th className="py-3 px-4">Equipment & Machinery</th>
-                  <th className="py-3 px-4">Customer & Dispatch Details</th>
-                  <th className="py-3 px-4">Rental Duration</th>
-                  <th className="py-3 px-4">Qty & Total</th>
-                  <th className="py-3 px-4">Booking Status</th>
-                  <th className="py-3 px-4 text-right">Actions</th>
+                  <th className="py-3 px-3">Equipment</th>
+                  <th className="py-3 px-3">Customer & Dispatch Details</th>
+                  <th className="py-3 px-3 whitespace-nowrap">Timeline</th>
+                  <th className="py-3 px-3 whitespace-nowrap">Qty & Total</th>
+                  <th className="py-3 px-3 text-center whitespace-nowrap">Status</th>
+                  <th className="py-3 px-3 text-right whitespace-nowrap">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
                 {paginatedRentals.map((rental) => {
-                  const startFmt = new Date(rental.startDate).toLocaleDateString(undefined, {
-                    month: "short",
-                    day: "numeric",
-                    year: "numeric",
-                  })
-                  const endFmt = new Date(rental.endDate).toLocaleDateString(undefined, {
-                    month: "short",
-                    day: "numeric",
-                    year: "numeric",
-                  })
+                  const isValidDate = (d?: string | null) => !!d && !isNaN(new Date(d).getTime())
+                  const startFmt = isValidDate(rental.startDate)
+                    ? new Date(rental.startDate).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                        timeZone: "UTC",
+                      })
+                    : "Flexible"
+                  const endFmt = isValidDate(rental.endDate)
+                    ? new Date(rental.endDate).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                        timeZone: "UTC",
+                      })
+                    : "Flexible"
 
                   const isProcessing = processingId === rental._id
                   const isActive = rental.bookingStatus === "active"
@@ -250,76 +257,84 @@ export default function OwnerRentalsPage() {
                   return (
                     <tr key={rental._id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
                       {/* Equipment */}
-                      <td className="py-4 px-4 align-top">
-                        <div className="flex items-start gap-3">
-                          <div className="size-14 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800 shrink-0 border border-slate-200 dark:border-slate-700">
+                      <td className="py-3.5 px-3 align-top min-w-[150px] max-w-[200px]">
+                        <div className="flex items-start gap-2.5">
+                          <div className="size-11 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-800 shrink-0 border border-slate-200 dark:border-slate-700">
                             {rental.equipmentImage ? (
                               // eslint-disable-next-line @next/next/no-img-element
                               <img
                                 src={rental.equipmentImage}
-                                alt={rental.equipmentName}
+                                alt={rental.equipmentName || "Equipment"}
                                 className="size-full object-cover"
                               />
                             ) : (
-                              <Package className="size-full p-3 text-slate-400" />
+                              <Package className="size-full p-2 text-slate-400" />
                             )}
                           </div>
-                          <div className="space-y-1">
-                            <span className="font-bold text-slate-900 dark:text-white line-clamp-1">
-                              {rental.equipmentName}
-                            </span>
-                            <span className="inline-block px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
-                              {rental.category}
+                          <div className="min-w-0 flex-1 space-y-1">
+                            <p
+                              className="font-bold text-slate-900 dark:text-white text-xs sm:text-sm leading-snug break-words"
+                              title={rental.equipmentName || "Equipment Item"}
+                            >
+                              {rental.equipmentName || "Equipment Item"}
+                            </p>
+                            <span className="inline-block px-1.5 py-0.5 rounded text-[10px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                              {rental.category || "General"}
                             </span>
                           </div>
                         </div>
                       </td>
 
-                      {/* Customer Info */}
-                      <td className="py-4 px-4 align-top space-y-1">
+                      {/* Customer Info (Full Display - No Truncation) */}
+                      <td className="py-3.5 px-3 align-top min-w-[170px] max-w-[210px] space-y-1">
                         <div className="font-semibold text-slate-900 dark:text-white flex items-center gap-1.5">
-                          <User className="size-3.5 text-slate-400" />
-                          <span>{rental.customerName || "Customer"}</span>
+                          <User className="size-3.5 text-slate-400 shrink-0" />
+                          <span className="break-words">{rental.customerName || "Customer"}</span>
                         </div>
-                        <div className="text-slate-500 flex items-center gap-1.5 text-[11px]">
-                          <Mail className="size-3 text-slate-400" />
-                          <span>{rental.customerEmail}</span>
+                        <div className="text-slate-500 flex items-center gap-1.5 text-[11px] break-all leading-tight">
+                          <Mail className="size-3 text-slate-400 shrink-0" />
+                          <span>{rental.customerEmail || "N/A"}</span>
                         </div>
                         {rental.contactNumber && (
-                          <div className="text-slate-500 flex items-center gap-1.5 text-[11px]">
-                            <Phone className="size-3 text-slate-400" />
+                          <div className="text-slate-500 flex items-center gap-1.5 text-[11px] whitespace-nowrap">
+                            <Phone className="size-3 text-slate-400 shrink-0" />
                             <span>{rental.contactNumber}</span>
                           </div>
                         )}
                         {rental.deliveryAddress && (
-                          <div className="text-slate-500 flex items-center gap-1.5 text-[11px]">
-                            <MapPin className="size-3 text-slate-400" />
-                            <span className="line-clamp-1">{rental.deliveryAddress}</span>
+                          <div className="text-slate-500 flex items-start gap-1.5 text-[11px] leading-tight break-words pt-0.5">
+                            <MapPin className="size-3 text-slate-400 shrink-0 mt-0.5" />
+                            <span>{rental.deliveryAddress}</span>
                           </div>
                         )}
                       </td>
 
-                      {/* Duration */}
-                      <td className="py-4 px-4 align-top space-y-1">
-                        <div className="font-medium text-slate-900 dark:text-white">
-                          {startFmt} – {endFmt}
-                        </div>
-                        <div className="text-[11px] text-slate-500 flex items-center gap-1">
-                          <Clock className="size-3 text-slate-400" />
-                          <span>
-                            {rental.days} {rental.days === 1 ? "day" : "days"} ({rental.units}{" "}
-                            {rental.rentalType.toLowerCase()} unit)
-                          </span>
+                      {/* Duration (2 Lines as requested) */}
+                      <td className="py-3.5 px-3 align-top whitespace-nowrap w-[110px]">
+                        <div className="space-y-0.5">
+                          <div className="font-semibold text-slate-900 dark:text-white text-xs">
+                            {startFmt}
+                          </div>
+                          <div className="text-slate-500 dark:text-slate-400 text-[11px]">
+                            to {endFmt}
+                          </div>
+                          <div className="text-[10px] text-slate-400 flex items-center gap-1 pt-0.5">
+                            <Clock className="size-2.5 text-slate-400 shrink-0" />
+                            <span>
+                              {rental.days ? `${rental.days}d` : "Standard"}{" "}
+                              {rental.units ? `(${rental.units} ${(rental.rentalType || "day").toLowerCase()})` : ""}
+                            </span>
+                          </div>
                         </div>
                       </td>
 
                       {/* Qty & Price */}
-                      <td className="py-4 px-4 align-top space-y-1">
-                        <div className="font-bold text-amber-600 dark:text-amber-400 text-sm">
-                          ${rental.totalAmount.toLocaleString()}
+                      <td className="py-3.5 px-3 align-top whitespace-nowrap w-[80px] space-y-1">
+                        <div className="font-bold text-amber-600 dark:text-amber-400 text-xs sm:text-sm">
+                          ${(rental.totalAmount ?? 0).toLocaleString()}
                         </div>
                         <div className="text-[11px] text-slate-500">
-                          {rental.quantity} {rental.quantity === 1 ? "unit" : "units"}
+                          {rental.quantity ?? 1} {(rental.quantity ?? 1) === 1 ? "unit" : "units"}
                         </div>
                         <span
                           className={`inline-block px-1.5 py-0.5 rounded text-[10px] font-semibold ${
@@ -328,14 +343,14 @@ export default function OwnerRentalsPage() {
                               : "bg-amber-500/10 text-amber-600 border border-amber-500/20"
                           }`}
                         >
-                          {rental.paymentStatus.toUpperCase()}
+                          {(rental.paymentStatus || "pending").toUpperCase()}
                         </span>
                       </td>
 
                       {/* Status */}
-                      <td className="py-4 px-4 align-top">
+                      <td className="py-3.5 px-3 align-top whitespace-nowrap text-center w-[85px]">
                         <span
-                          className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold ${
+                          className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold ${
                             rental.bookingStatus === "active"
                               ? "bg-emerald-500/10 text-emerald-600 border border-emerald-500/20"
                               : rental.bookingStatus === "completed"
@@ -345,17 +360,17 @@ export default function OwnerRentalsPage() {
                                   : "bg-slate-100 dark:bg-slate-800 text-slate-600"
                           }`}
                         >
-                          {rental.bookingStatus === "active" && <CheckCircle2 className="size-3.5" />}
-                          {rental.bookingStatus === "completed" && <ShieldCheck className="size-3.5" />}
-                          {rental.bookingStatus === "cancelled" && <XCircle className="size-3.5" />}
-                          <span className="capitalize">{rental.bookingStatus}</span>
+                          {rental.bookingStatus === "active" && <CheckCircle2 className="size-3" />}
+                          {rental.bookingStatus === "completed" && <ShieldCheck className="size-3" />}
+                          {rental.bookingStatus === "cancelled" && <XCircle className="size-3" />}
+                          <span className="capitalize">{rental.bookingStatus || "pending"}</span>
                         </span>
                       </td>
 
-                      {/* Action Controls */}
-                      <td className="py-4 px-4 align-top text-right space-y-1.5">
+                      {/* Action Controls - Vertical Stacking to Save Horizontal Space */}
+                      <td className="py-3.5 px-3 align-top text-right whitespace-nowrap w-[115px]">
                         {isActive ? (
-                          <div className="flex flex-col sm:flex-row items-end justify-end gap-1.5">
+                          <div className="flex flex-col items-end gap-1">
                             <button
                               type="button"
                               disabled={isProcessing}
@@ -366,7 +381,7 @@ export default function OwnerRentalsPage() {
                                   targetStatus: "completed",
                                 })
                               }
-                              className="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-[11px] transition-colors cursor-pointer disabled:opacity-50"
+                              className="w-full text-center px-2 py-1 rounded bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-[11px] transition-colors cursor-pointer disabled:opacity-50 shadow-xs"
                             >
                               {isProcessing ? "Processing..." : "Mark Completed"}
                             </button>
@@ -380,7 +395,7 @@ export default function OwnerRentalsPage() {
                                   targetStatus: "cancelled",
                                 })
                               }
-                              className="px-2.5 py-1 rounded-lg bg-rose-600/10 hover:bg-rose-600/20 text-rose-600 font-semibold text-[11px] border border-rose-500/20 transition-colors cursor-pointer disabled:opacity-50"
+                              className="w-full text-center px-2 py-1 rounded bg-rose-600/10 hover:bg-rose-600/20 text-rose-600 font-semibold text-[11px] border border-rose-500/20 transition-colors cursor-pointer disabled:opacity-50"
                             >
                               Cancel Rental
                             </button>

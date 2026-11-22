@@ -139,7 +139,7 @@ export default function AdminUsersPage() {
   // Filter users
   const filteredUsers = users.filter((u) => {
     const matchesRole =
-      roleFilter === "all" ? true : u.role.toLowerCase() === roleFilter.toLowerCase()
+      roleFilter === "all" ? true : (u.role || "").toLowerCase() === roleFilter.toLowerCase()
 
     const term = search.toLowerCase().trim()
     const matchesSearch =
