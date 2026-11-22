@@ -1,135 +1,173 @@
-# GearNest — Industrial & Heavy Equipment Rental Platform (Client)
+# GearNest — Modern Smart-Rental Marketplace for Heavy Machinery & Industrial Equipment
 
-**GearNest** is a full-stack, enterprise-grade heavy machinery and equipment rental marketplace designed for contractors, industrial project managers, equipment owners, and fleet administrators. Built with Next.js 16 (App Router + Turbopack), React 19, Tailwind CSS v4, and Better-Auth.
+[![Next.js 16](https://img.shields.io/badge/Next.js_16-black?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
+[![React 19](https://img.shields.io/badge/React_19-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript_5-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Tailwind CSS v4](https://img.shields.io/badge/Tailwind_CSS_v4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![Better-Auth](https://img.shields.io/badge/Better--Auth_1.7-black?style=for-the-badge&logo=auth0&logoColor=white)](https://www.better-auth.com/)
+[![Stripe](https://img.shields.io/badge/Stripe-626CD9?style=for-the-badge&logo=stripe&logoColor=white)](https://stripe.com/)
+[![Framer Motion](https://img.shields.io/badge/Framer_Motion-black?style=for-the-badge&logo=framer&logoColor=blue)](https://www.framer.com/motion/)
+[![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com/)
 
-- **Live Application URL**: [https://gearnest-client.vercel.app](https://gearnest-client.vercel.app)
-- **Backend API URL**: [https://gearnest-server.vercel.app](https://gearnest-server.vercel.app)
+**GearNest** is a full-stack, enterprise-grade heavy machinery and equipment rental marketplace connecting contractors, cinematography leads, and industrial operators with verified fleet owners. Engineered with photo-led design, atomic inventory locks, Stripe payment processing, and strict role-based access control (RBAC).
+
+- **Production Client URL**: [https://gearnest-client.vercel.app](https://gearnest-client.vercel.app)
+- **Production API URL**: [https://gearnest-server.vercel.app](https://gearnest-server.vercel.app)
 
 ---
 
-## Key Features by User Role
+## Platform Preview
 
-### 1. Public Catalog & Discovery
-- **Hero & Fleet Showcase**: Industrial Slate & Amber aesthetic with dark/light mode toggle and responsive motion choreography.
-- **Search & Filtering**: Real-time regex-escaped search across equipment name, brand, location, and description.
-- **Multi-Filter Sidebar**: Filter by category (Construction Equipment, Photography Equipment, Vehicles & Transportation, Agriculture Equipment, Electronics, Event Equipment), rental rate range, rental term (Daily, Weekly, Monthly), and live inventory availability.
-- **Sorting & Pagination**: Sort by newest listings, price ascending, and price descending with server-side pagination.
-- **Equipment Details**: Complete specifications table, rental terms, owner verification card with verified email contact, and automatic login return callbacks.
+<p align="center">
+  <img src="public/homescreen.png" alt="GearNest Platform Preview" width="100%" />
+</p>
+
+---
+
+## Architectural Workflow
+
+```mermaid
+flowchart TD
+    subgraph Client["Next.js 16 Client (App Router)"]
+        UI["Landing Page / Catalog / Dashboards"]
+        AuthClient["Better-Auth Client (Session / JWT)"]
+        StripeClient["Stripe Checkout Redirect"]
+    end
+
+    subgraph AuthLayer["Authentication & Identity"]
+        BetterAuth["Better-Auth Service (MongoDB Adapter)"]
+        JWKS["JWKS Key Store (MongoDB jwks collection)"]
+    end
+
+    subgraph Server["Express 5 REST API"]
+        VerifyMiddleware["verifyToken / RBAC Guards"]
+        CatalogAPI["Equipment & Categories"]
+        BookingEngine["Booking & Stock Controller"]
+        AnalyticsEngine["Parallel Aggregations Engine"]
+        CronEngine["Rental Expiration & Stock Restorer"]
+    end
+
+    subgraph External["External Services"]
+        Stripe["Stripe Payments API & Webhooks"]
+        ImgBB["ImgBB Image Hosting"]
+        Atlas[("MongoDB Atlas Database")]
+    end
+
+    UI --> AuthClient
+    AuthClient --> BetterAuth
+    BetterAuth --> JWKS
+    BetterAuth --> Atlas
+
+    UI --> Server
+    Server --> VerifyMiddleware
+    VerifyMiddleware -.-> JWKS
+    BookingEngine --> Stripe
+    Stripe --> StripeClient
+    BookingEngine --> Atlas
+    CronEngine --> Atlas
+    AnalyticsEngine --> Atlas
+    UI --> ImgBB
+```
+
+---
+
+## Key Features by Workspace Role
+
+### 1. Public Marketplace & Catalog Discovery
+- **Hero & Category Grid**: Photo-led hero layout with high-contrast scrims, ambient blend, and a 6-category compact grid (`Construction`, `Photography`, `Vehicles`, `Agriculture`, `Electronics`, `Events`).
+- **Dynamic Search & Multi-Filter**: Real-time regex-escaped search across name, brand, location, and description, paired with category, price range, rental unit (`Daily`, `Weekly`, `Monthly`), and in-stock filtering.
+- **Equipment Detail Page**: Technical specifications, condition metrics, owner dispatch card, and login redirect preservation (`callbackUrl`).
+- **Brand Theming**: 100% tokenized color palette supporting seamless light/dark modes with WCAG AAA compliant contrast ratios.
 
 ### 2. Customer / Renter Workspace
-- **Live Favorites**: Interactive wishlist with optimistic heart animations and compound index persistence.
-- **Dynamic Stripe Checkout**: Server-calculated rental durations and pricing units with automatic inventory validation and Stripe redirect.
-- **Rental Tracking**: View ongoing, completed, and pending rental reservations with real-time payment status badges.
-- **Renter Profile**: Update phone, address, and profile credentials.
+- **Live Wishlist / Favorites**: Interactive saved machinery with optimistic UI transitions backed by MongoDB compound indexes (`customerId + equipmentId`).
+- **Dynamic Stripe Checkout**: Server-calculated rental durations and pricing units with automatic inventory validation before Stripe redirection.
+- **Rental Progression**: Real-time contract status badges (`Active`, `Completed`, `Cancelled`) and transaction receipts.
+- **Self-Service Cancellations**: Customers can instantly cancel pending, unpaid reservations to free reserved fleet allocations.
 
 ### 3. Equipment Owner / Partner Portal
-- **Fleet Management**: Catalog view of listed machinery with live status indicators (Approved, Pending Review, Rejected).
-- **Add Equipment**: Multi-field submission wizard with ImgBB direct image uploads, pricing units, specs, and default "Pending" moderation flow.
-- **Rental Order Execution**: Manage customer rental contracts with atomic stock restoration upon marking bookings "Completed" or "Cancelled".
-- **Partner Analytics Overview**:
-  - KPI Stat Cards: Total Earnings, Fleet Inventory, Active Site Deployments, Completed Contracts.
+- **Fleet Management**: Catalog table of listed machinery with administrative review status (`Approved`, `Pending`, `Rejected`).
+- **Listing Submission Wizard**: Multi-field equipment creation with ImgBB direct image upload, specifications, and default pending moderation flow.
+- **Rental Order Execution**: Process incoming customer bookings with atomic stock restoration upon transitioning orders to `Completed` or `Cancelled`.
+- **Fleet Analytics**:
+  - Stat KPI Cards: Gross Fleet Earnings, Listed Fleet Size, Active Deployments, Completed Orders.
   - 6-Month Monthly Earnings Velocity chart (`AreaChart`).
-  - Equipment Moderation Status donut chart (`PieChart`).
-- **Partner Profile**: Edit business address, dispatch contact, and profile avatar.
+  - Fleet Moderation Distribution donut chart (`PieChart`).
 
 ### 4. Administrator Moderation Suite
+- **Equipment Moderation**: Approve or reject pending partner listings with instant reflection across the public catalog.
+- **Platform User Management**: Role management (`customer`, `owner`, `admin`) guarded against self-demotion and account self-deletion.
 - **Master Platform Analytics**:
-  - Summary Metrics: Total Platform Users, Fleet Inventory, Pending Moderation Queue, Active Rentals, Gross Stripe Revenue.
-  - 6-Month Revenue Trajectory chart (`AreaChart` with amber gradient fill).
+  - Global KPIs: Total Platform Users, Fleet Inventory, Pending Approvals, Active Deployments, Gross Stripe Volume.
+  - 6-Month Revenue Trajectory chart (`AreaChart` with amber gradient).
   - Monthly Booking Volume trend (`BarChart`).
-  - Fleet Distribution progress bars across machinery categories.
-- **Equipment Moderation**: Approve or reject pending machinery listings with instant status updates in the public catalog and owner fleet dashboard.
-- **All Platform Rentals**: Global audit log of all bookings with renter, owner, and transaction status.
-- **User Management**: Role management (Customer, Owner, Admin) with demotion and self-deletion guardrails.
+  - Fleet distribution breakdown across commercial categories.
+- **Rental Audit Log**: Complete historical record of all bookings across all owners and renters.
 
 ---
 
-## Demo Credentials
+## Demo Accounts & Role-Based Access
 
-You can test any role directly using these pre-seeded demo accounts (or click the quick-fill buttons on the Sign-In page):
+The platform features pre-configured accounts for evaluating all access levels:
 
-| Role | Email | Password | Access Level |
-| :--- | :--- | :--- | :--- |
-| **Customer** | `customer@gearnest.com` | `Password123!` | Public Catalog, Wishlist, Stripe Checkout, Customer Dashboard |
-| **Fleet Owner** | `owner@gearnest.com` | `Password123!` | Add/Edit Equipment, Fleet Orders, Stock Restore, Owner Analytics |
-| **Admin** | `admin@gearnest.com` | `Password123!` | Moderate Equipment, Manage Users, Platform Analytics, All Rentals |
+| Role | Demo Email | Access Scope |
+| :--- | :--- | :--- |
+| **Customer** | `customer@gearnest.com` | Public catalog, favorites, Stripe checkout, rental tracking |
+| **Fleet Owner** | `owner@gearnest.com` | Equipment listing, fleet orders, return dispatch, owner analytics |
+| **Platform Administrator** | `admin@gearnest.com` | Listing moderation queue, user RBAC, platform-wide audit, master analytics |
+
+> [!NOTE]
+> Demo passwords are protected against unauthorized modification on shared environments. Evaluators can log in using the pre-configured credentials provided above or in the evaluation submission form.
 
 ---
 
-## Tech Stack & Dependencies
+## Tech Stack & Core Technologies
 
-### Core Frontend
-- **Framework**: [Next.js 16](https://nextjs.org/) (App Router, Server Components, Turbopack)
-- **Library**: [React 19](https://react.dev/)
-- **Styling**: [Tailwind CSS v4](https://tailwindcss.com/) with centralized CSS custom properties
-- **Animations**: [Framer Motion](https://www.framer.com/motion/)
-- **Visualizations**: [Recharts](https://recharts.org/)
-- **Icons**: [Lucide React](https://lucide.dev/)
-- **Notifications**: [Sonner](https://sonner.emilkowal.ski/)
-- **Themes**: [next-themes](https://github.com/pacocoursey/next-themes) (Light & Dark mode support)
-
-### Authentication & Payments
-- **Authentication**: [Better-Auth](https://www.better-auth.com/) with MongoDB adapter and JWT plugin
-- **Payments**: [@stripe/stripe-js](https://stripe.com/docs/js) & Stripe API
-
-### Complete NPM Dependencies
-```json
-{
-  "dependencies": {
-    "@base-ui/react": "^1.9.0",
-    "@better-auth/mongo-adapter": "^1.7.17",
-    "@stripe/stripe-js": "^10.2.1",
-    "better-auth": "^1.7.17",
-    "class-variance-authority": "^0.7.1",
-    "cn": "^0.5.2",
-    "framer-motion": "^12.4.0",
-    "lucide-react": "^1.68.0",
-    "mongodb": "^7.8.0",
-    "next": "^16.4.3",
-    "next-themes": "^0.4.6",
-    "react": "19.3.1",
-    "react-dom": "19.3.1",
-    "recharts": "^2.15.1",
-    "shadcn": "^4.23.0",
-    "sonner": "^2.0.1",
-    "stripe": "^23.1.0",
-    "tw-animate-css": "^1.4.0"
-  }
-}
-```
+| Technology | Badge | Purpose |
+| :--- | :--- | :--- |
+| **Next.js 16** | ![Next.js](https://img.shields.io/badge/Next.js-16.4-black?logo=next.js) | App Router, Server Components, Turbopack |
+| **React 19** | ![React](https://img.shields.io/badge/React-19.3-20232A?logo=react) | Modern UI library with action hooks |
+| **TypeScript** | ![TypeScript](https://img.shields.io/badge/TypeScript-5.x-007ACC?logo=typescript) | Strict type safety across client & schemas |
+| **Tailwind CSS v4** | ![Tailwind](https://img.shields.io/badge/Tailwind_CSS-v4-38B2AC?logo=tailwind-css) | Tokenized theme variables & utilities |
+| **Better-Auth** | ![Better-Auth](https://img.shields.io/badge/Better--Auth-1.7-black?logo=auth0) | MongoDB adapter, JWT plugin, session cookies |
+| **Stripe** | ![Stripe](https://img.shields.io/badge/Stripe-API-626CD9?logo=stripe) | Client redirect & hosted checkout |
+| **Framer Motion** | ![Framer](https://img.shields.io/badge/Framer_Motion-12.4-black?logo=framer) | Hardware-accelerated UI choreographies |
+| **Recharts** | ![Recharts](https://img.shields.io/badge/Recharts-2.15-22c55e?logo=chartdotjs) | Visual analytics (AreaChart, BarChart, PieChart) |
+| **Lucide React** | ![Lucide](https://img.shields.io/badge/Lucide-Icons-orange) | Crisp, lightweight SVG iconography |
+| **Sonner** | ![Sonner](https://img.shields.io/badge/Sonner-Toasts-blue) | Accessible toast notification system |
 
 ---
 
 ## Environment Variables Reference
 
-Create a `.env.local` file in the `gearnest-client` root directory:
+Create a `.env.local` file in the `gearnest-client` directory:
 
 ```bash
-# Better-Auth Secret & Base URL
+# Better-Auth Secret & Configuration
 BETTER_AUTH_SECRET="your_secure_random_auth_secret_minimum_32_characters"
 BETTER_AUTH_URL="http://localhost:3000"
 BETTER_AUTH_DB_URI="mongodb+srv://<user>:<password>@cluster.mongodb.net/gearnestdb"
 DB_NAME="gearnestdb"
 
-# Public App & API URLs
+# Public Application URLs
 NEXT_PUBLIC_APP_URL="http://localhost:3000"
 NEXT_PUBLIC_API_URL="http://localhost:5000"
 
-# Image Uploads (ImgBB)
+# Image Uploads (ImgBB Direct Client Upload)
 NEXT_PUBLIC_IMGBB_API_KEY="your_imgbb_api_key"
 
-# Stripe Checkout
+# Stripe Public Key
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY="pk_test_..."
 STRIPE_SECRET_KEY="sk_test_..."
 
-# Google OAuth (Optional)
+# Optional Google OAuth Credentials
 GOOGLE_CLIENT_ID="your_google_oauth_client_id"
 GOOGLE_CLIENT_SECRET="your_google_oauth_client_secret"
 ```
 
 ---
 
-## Local Setup & Development
+## Local Development Setup
 
 1. **Clone the repository**:
    ```bash
@@ -145,35 +183,17 @@ GOOGLE_CLIENT_SECRET="your_google_oauth_client_secret"
 3. **Configure environment variables**:
    ```bash
    cp .env.example .env.local
-   # Fill in your database and API credentials
+   # Update values in .env.local
    ```
 
-4. **Start the development server**:
+4. **Start development server**:
    ```bash
    npm run dev
    ```
+   Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-5. Open [http://localhost:3000](http://localhost:3000) in your browser.
-
----
-
-## Production Build & Quality Checks
-
-```bash
-# Type check TypeScript definitions
-npm run typecheck
-
-# Build for production
-npm run build
-
-# Start production server
-npm start
-```
-
-
----
-
-## Photography & Asset Credits
-
-- **Landing Page Hero Photo**: Komatsu autonomous trenching excavator retrofitted with the Built Robotics Exosystem by [Built Robotics](https://unsplash.com/@built) on [Unsplash](https://images.unsplash.com/photo-1649829809465-d358fce60ebd).
-- **Category & Fleet Photography**: Commercial equipment photography licensed via Unsplash (Caterpillar, Sony Alpha, Ford Super Duty, John Deere, DJI Enterprise, and Chauvet Professional).
+5. **Typecheck & Production Build**:
+   ```bash
+   npx tsc --noEmit
+   npm run build
+   ```

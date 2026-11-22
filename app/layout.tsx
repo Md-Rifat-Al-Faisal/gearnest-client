@@ -30,7 +30,12 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${spaceGrotesk.variable} ${manrope.variable}`}>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      data-scroll-behavior="smooth"
+      className={`${spaceGrotesk.variable} ${manrope.variable}`}
+    >
       <body className="min-h-screen font-sans bg-background text-foreground antialiased selection:bg-primary/20 selection:text-foreground">
         <ThemeProvider>
           <MotionProvider>
@@ -38,6 +43,7 @@ export default function RootLayout({
           </MotionProvider>
           <Toaster
             position="top-right"
+            closeButton
             toastOptions={{
               className: "!bg-surface !text-foreground !border !border-border !shadow-lg",
               descriptionClassName: "!text-muted-foreground",

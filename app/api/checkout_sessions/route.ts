@@ -32,7 +32,17 @@ export async function POST(req: Request) {
       notes,
     } = body
 
-    const apiBase = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/$/, "")
+    const getApiBase = () => {
+      const url = process.env.NEXT_PUBLIC_API_URL
+      if (url && !url.includes("localhost") && !url.includes("<") && !url.includes(">")) {
+        return url.replace(/\/$/, "")
+      }
+      if (process.env.NODE_ENV === "production") {
+        return "https://gearnest-server.vercel.app"
+      }
+      return (url || "http://localhost:5000").replace(/\/$/, "")
+    }
+    const apiBase = getApiBase()
 
     let bookingId = existingBookingId
     let totalAmount: number
@@ -115,11 +125,15 @@ export async function POST(req: Request) {
     }
 
     const headerList = await headers()
-    const origin =
+    const rawOrigin =
       headerList.get("origin") ||
       headerList.get("referer")?.split("/").slice(0, 3).join("/") ||
       process.env.NEXT_PUBLIC_APP_URL ||
-      "http://localhost:3000"
+      ""
+    const origin =
+      rawOrigin && !rawOrigin.includes("<") && !rawOrigin.includes(">")
+        ? rawOrigin
+        : (process.env.NODE_ENV === "production" ? "https://gearnest-client.vercel.app" : "http://localhost:3000")
     const cleanOrigin = origin.replace(/\/$/, "")
 
     let session: Stripe.Checkout.Session

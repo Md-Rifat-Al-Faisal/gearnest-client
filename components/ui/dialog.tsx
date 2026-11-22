@@ -36,7 +36,7 @@ export function Dialog({ open, onOpenChange, children }: DialogProps) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.18 }}
+          transition={{ duration: 0.25 }}
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-band/75 backdrop-blur-xs overflow-y-auto"
           onClick={() => onOpenChange(false)}
         >

@@ -271,8 +271,10 @@ export default function AdminEquipmentPage() {
                         type="button"
                         onClick={() => handleStatusChange(item._id, "Approved")}
                         disabled={updatingId === item._id || item.status === "Approved"}
-                        title="Approve Equipment"
-                        className="px-2.5 py-1 text-xs font-semibold rounded bg-success hover:opacity-90 disabled:opacity-30 text-band-foreground dark:text-primary-foreground transition-opacity cursor-pointer"
+                        title={item.status === "Approved" ? "Equipment is already approved" : "Approve Equipment"}
+                        className={`px-2.5 py-1 text-xs font-semibold rounded bg-success hover:opacity-90 disabled:opacity-30 text-band-foreground dark:text-primary-foreground transition-opacity ${
+                          item.status === "Approved" || updatingId === item._id ? "cursor-not-allowed" : "cursor-pointer"
+                        }`}
                       >
                         {updatingId === item._id ? "..." : "Approve"}
                       </button>
@@ -280,8 +282,10 @@ export default function AdminEquipmentPage() {
                         type="button"
                         onClick={() => handleStatusChange(item._id, "Rejected")}
                         disabled={updatingId === item._id || item.status === "Rejected"}
-                        title="Reject Equipment"
-                        className="px-2.5 py-1 text-xs font-semibold rounded bg-danger hover:opacity-90 disabled:opacity-30 text-band-foreground dark:text-primary-foreground transition-opacity cursor-pointer"
+                        title={item.status === "Rejected" ? "Equipment is already rejected" : "Reject Equipment"}
+                        className={`px-2.5 py-1 text-xs font-semibold rounded bg-danger hover:opacity-90 disabled:opacity-30 text-band-foreground dark:text-primary-foreground transition-opacity ${
+                          item.status === "Rejected" || updatingId === item._id ? "cursor-not-allowed" : "cursor-pointer"
+                        }`}
                       >
                         {updatingId === item._id ? "..." : "Reject"}
                       </button>
@@ -426,8 +430,10 @@ export default function AdminEquipmentPage() {
                             type="button"
                             onClick={() => handleStatusChange(item._id, "Approved")}
                             disabled={updatingId === item._id || item.status === "Approved"}
-                            title="Approve Equipment for Public Catalog"
-                            className="px-1.5 py-0.5 text-[10px] font-bold rounded bg-success hover:opacity-90 disabled:opacity-30 text-band-foreground dark:text-primary-foreground transition-opacity cursor-pointer"
+                            title={item.status === "Approved" ? "Equipment is already approved" : "Approve Equipment for Public Catalog"}
+                            className={`px-1.5 py-0.5 text-[10px] font-bold rounded bg-success hover:opacity-90 disabled:opacity-30 text-band-foreground dark:text-primary-foreground transition-opacity ${
+                              item.status === "Approved" || updatingId === item._id ? "cursor-not-allowed" : "cursor-pointer"
+                            }`}
                           >
                             {updatingId === item._id ? "..." : "Approve"}
                           </button>
@@ -435,8 +441,10 @@ export default function AdminEquipmentPage() {
                             type="button"
                             onClick={() => handleStatusChange(item._id, "Rejected")}
                             disabled={updatingId === item._id || item.status === "Rejected"}
-                            title="Reject Equipment Listing"
-                            className="px-1.5 py-0.5 text-[10px] font-bold rounded bg-danger hover:opacity-90 disabled:opacity-30 text-band-foreground dark:text-primary-foreground transition-opacity cursor-pointer"
+                            title={item.status === "Rejected" ? "Equipment is already rejected" : "Reject Equipment Listing"}
+                            className={`px-1.5 py-0.5 text-[10px] font-bold rounded bg-danger hover:opacity-90 disabled:opacity-30 text-band-foreground dark:text-primary-foreground transition-opacity ${
+                              item.status === "Rejected" || updatingId === item._id ? "cursor-not-allowed" : "cursor-pointer"
+                            }`}
                           >
                             {updatingId === item._id ? "..." : "Reject"}
                           </button>

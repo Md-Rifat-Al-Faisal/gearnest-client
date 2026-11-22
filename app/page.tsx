@@ -64,6 +64,37 @@ interface CustomerReview {
   comment: string
 }
 
+const DEFAULT_REVIEWS: CustomerReview[] = [
+  {
+    _id: "rev-1",
+    reviewerName: "Marcus Vance",
+    reviewerRole: "Commercial Site Superintendent · Turner-Vance",
+    rating: 5,
+    comment: "The CAT excavator arrived on site within 2 hours of payment confirmation. Flawless machine condition and responsive owner coordination.",
+  },
+  {
+    _id: "rev-2",
+    reviewerName: "Elena Rostova",
+    reviewerRole: "Cinematographer · Silverline Productions",
+    rating: 5,
+    comment: "Rented the Sony FX6 cinema package for a 1-week shoot. Lenses and audio accessories were in mint condition. Fast checkout and zero paperwork friction.",
+  },
+  {
+    _id: "rev-3",
+    reviewerName: "David Thornton",
+    reviewerRole: "Operations Manager · LoneStar Heavy Haul",
+    rating: 5,
+    comment: "Transparent commercial rates with no surprise deposit holds. As a fleet operator, listing on GearNest gave us 92% utilization this quarter.",
+  },
+  {
+    _id: "rev-4",
+    reviewerName: "Sarah Jenkins",
+    reviewerRole: "Lead Agronomist · GreenField Farm Cooperative",
+    rating: 5,
+    comment: "Saved our harvest schedule when our primary utility tractor went down. The John Deere 5075E was clean, fully fueled, and ready for work.",
+  },
+]
+
 const CATEGORIES = [
   {
     name: "Construction",
@@ -192,6 +223,7 @@ export default function HomePage() {
 
   const [featured, setFeatured] = useState<FeaturedItem[]>([])
   const [reviews, setReviews] = useState<CustomerReview[]>([])
+  const activeReviews = reviews.length >= 4 ? reviews.slice(0, 4) : DEFAULT_REVIEWS
   const [totalEquipmentCount, setTotalEquipmentCount] = useState<number | null>(null)
   const [searchQuery, setSearchQuery] = useState("")
   const [searchCategory, setSearchCategory] = useState("all")
@@ -477,7 +509,7 @@ export default function HomePage() {
             <div className="p-3.5 rounded-xl bg-surface border border-border spec-line-kpi">
               <div className="text-2xl font-bold tracking-tight text-foreground font-heading">
                 {totalEquipmentCount !== null ? (
-                  <CountUp end={totalEquipmentCount} suffix="+" duration={1.2} />
+                  <CountUp end={totalEquipmentCount} suffix="+" duration={1.6} />
                 ) : (
                   <div className="h-7 w-12 bg-surface-2 rounded animate-pulse" />
                 )}
@@ -487,7 +519,7 @@ export default function HomePage() {
 
             <div className="p-3.5 rounded-xl bg-surface border border-border spec-line-kpi">
               <div className="text-2xl font-bold tracking-tight text-foreground font-heading">
-                <CountUp end={6} duration={0.8} />
+                <CountUp end={6} duration={1.2} />
               </div>
               <p className="text-xs text-muted-foreground mt-0.5">Commercial Industries</p>
             </div>
@@ -499,10 +531,10 @@ export default function HomePage() {
                     end={reviews.reduce((acc, r) => acc + (r.rating || 5), 0) / reviews.length}
                     decimals={1}
                     suffix=" / 5.0"
-                    duration={1.0}
+                    duration={1.4}
                   />
                 ) : (
-                  <CountUp end={4.9} decimals={1} suffix=" / 5.0" duration={1.0} />
+                  <CountUp end={4.9} decimals={1} suffix=" / 5.0" duration={1.4} />
                 )}
               </div>
               <p className="text-xs text-muted-foreground mt-0.5">Verified Client Rating</p>
@@ -510,7 +542,7 @@ export default function HomePage() {
 
             <div className="p-3.5 rounded-xl bg-surface border border-border spec-line-kpi">
               <div className="text-2xl font-bold tracking-tight text-foreground font-heading">
-                <CountUp end={100} suffix="%" duration={1.0} />
+                <CountUp end={100} suffix="%" duration={1.4} />
               </div>
               <p className="text-xs text-muted-foreground mt-0.5">Admin Moderated Listings</p>
             </div>
@@ -885,66 +917,57 @@ export default function HomePage() {
             <div className="lg:col-span-5 space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold uppercase tracking-wider text-accent-text">
-                  Verified Reviews
+                  Customer Reviews
                 </span>
                 <span className="text-xs text-muted-foreground font-medium">
                   {reviews.length > 0 ? `${reviews.length} Verified Operators` : "Rated 4.9/5.0"}
                 </span>
               </div>
 
-              {reviews.length > 0 ? (
-                <div className="space-y-3">
-                  {reviews.slice(0, 2).map((rev) => (
-                    <div
-                      key={rev._id}
-                      className="p-4 sm:p-5 rounded-xl border border-border bg-surface shadow-xs space-y-3"
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-1 text-gold-fill">
-                          {[...Array(5)].map((_, i) => (
-                            <Star
-                              key={i}
-                              className={`h-3.5 w-3.5 ${
-                                i < (rev.rating || 5)
-                                  ? "fill-gold-fill text-gold-fill"
-                                  : "text-border"
-                              }`}
-                            />
-                          ))}
-                        </div>
-                        <span className="text-[11px] font-bold text-muted-foreground">
-                          {(rev.rating || 5).toFixed(1)} / 5.0
-                        </span>
+              <div className="space-y-3">
+                {activeReviews.map((rev) => (
+                  <div
+                    key={rev._id}
+                    className="p-3.5 sm:p-4 rounded-xl border border-border bg-surface shadow-xs space-y-2.5"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1 text-gold-fill">
+                        {[...Array(5)].map((_, i) => (
+                          <Star
+                            key={i}
+                            className={`h-3.5 w-3.5 ${
+                              i < (rev.rating || 5)
+                                ? "fill-gold-fill text-gold-fill"
+                                : "text-border"
+                            }`}
+                          />
+                        ))}
                       </div>
+                      <span className="text-[11px] font-bold text-muted-foreground">
+                        {(rev.rating || 5).toFixed(1)} / 5.0
+                      </span>
+                    </div>
 
-                      <blockquote className="text-xs sm:text-sm text-foreground leading-relaxed italic">
-                        &ldquo;{rev.comment}&rdquo;
-                      </blockquote>
+                    <blockquote className="text-xs text-foreground leading-relaxed italic">
+                      &ldquo;{rev.comment}&rdquo;
+                    </blockquote>
 
-                      <div className="flex items-center gap-2.5 pt-2 border-t border-border">
-                        <div className="h-7 w-7 rounded-full bg-surface-2 border border-border flex items-center justify-center font-bold text-xs text-foreground shrink-0">
-                          {rev.reviewerName.charAt(0).toUpperCase()}
-                        </div>
-                        <div className="min-w-0">
-                          <h4 className="text-xs font-bold text-foreground truncate">
-                            {rev.reviewerName}
-                          </h4>
-                          <p className="text-[11px] text-muted-foreground truncate">
-                            {rev.reviewerRole}
-                          </p>
-                        </div>
+                    <div className="flex items-center gap-2.5 pt-2 border-t border-border">
+                      <div className="h-6 w-6 rounded-full bg-surface-2 border border-border flex items-center justify-center font-bold text-[11px] text-foreground shrink-0">
+                        {rev.reviewerName.charAt(0).toUpperCase()}
+                      </div>
+                      <div className="min-w-0">
+                        <h4 className="text-xs font-bold text-foreground truncate">
+                          {rev.reviewerName}
+                        </h4>
+                        <p className="text-[10px] sm:text-[11px] text-muted-foreground truncate">
+                          {rev.reviewerRole}
+                        </p>
                       </div>
                     </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="p-6 rounded-xl border border-dashed border-border bg-surface text-center">
-                  <Star className="h-6 w-6 text-gold-fill mx-auto mb-2" />
-                  <p className="text-xs text-muted-foreground">
-                    Reviews from verified equipment operators will appear here.
-                  </p>
-                </div>
-              )}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>

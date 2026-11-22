@@ -135,48 +135,6 @@ export function LoginForm() {
           </div>
         </div>
 
-        {/* Quick Fill Demo Credentials */}
-        <div className="rounded-lg border border-border bg-surface-2/60 p-2.5">
-          <p className="text-[11px] font-semibold text-muted-foreground mb-1.5 flex items-center justify-between">
-            <span>Evaluation Quick Logins:</span>
-          </p>
-          <div className="grid grid-cols-3 gap-1.5">
-            <button
-              type="button"
-              onClick={() => {
-                setEmail("admin@gearnest.com")
-                setPassword("Password123!")
-                toast.info("Admin credentials loaded")
-              }}
-              className="py-1 px-2 rounded-md text-[11px] font-bold border border-danger/30 bg-danger/10 text-danger hover:bg-danger/20 transition-colors cursor-pointer"
-            >
-              Admin
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setEmail("owner@gearnest.com")
-                setPassword("Password123!")
-                toast.info("Owner credentials loaded")
-              }}
-              className="py-1 px-2 rounded-md text-[11px] font-bold border border-primary/30 bg-primary/10 text-accent-text hover:bg-primary/20 transition-colors cursor-pointer"
-            >
-              Owner
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setEmail("customer@gearnest.com")
-                setPassword("Password123!")
-                toast.info("Customer credentials loaded")
-              }}
-              className="py-1 px-2 rounded-md text-[11px] font-bold border border-border bg-surface text-foreground hover:bg-surface-2 transition-colors cursor-pointer"
-            >
-              Customer
-            </button>
-          </div>
-        </div>
-
         <Button
           type="submit"
           disabled={loading}

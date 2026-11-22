@@ -121,6 +121,12 @@ html {
   scroll-behavior: smooth;
 }
 
+button:disabled,
+button[disabled],
+[aria-disabled="true"] {
+  cursor: not-allowed !important;
+}
+
 body {
   font-family: var(--font-sans), sans-serif;
   font-size: 15px;
@@ -308,4 +314,17 @@ p {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+
+[data-sonner-toaster] [data-close-button] {
+  background-color: var(--surface-2) !important;
+  color: var(--foreground) !important;
+  border: 1px solid var(--border) !important;
+  opacity: 0.8 !important;
+}
+
+[data-sonner-toaster] [data-close-button]:hover {
+  opacity: 1 !important;
+  background-color: var(--border) !important;
 }

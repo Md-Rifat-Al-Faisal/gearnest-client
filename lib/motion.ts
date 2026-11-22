@@ -1,38 +1,38 @@
 import type { Variants, Transition } from "framer-motion"
 
 /**
- * Standard Transitions for smooth, professional motion
+ * Standard Transitions for smooth, professional motion - slightly refined pacing for elegant visibility
  */
 export const defaultTransition: Transition = {
-  duration: 0.4,
+  duration: 0.6,
   ease: [0.16, 1, 0.3, 1],
 }
 
 export const smoothSpring: Transition = {
   type: "spring",
-  stiffness: 260,
+  stiffness: 180,
   damping: 24,
 }
 
-// Hero entrance variants (0.5s, 0.08s stagger)
+// Hero entrance variants (0.7s, 0.12s stagger)
 export const heroStagger: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.08,
-      delayChildren: 0.05,
+      staggerChildren: 0.12,
+      delayChildren: 0.08,
     },
   },
 }
 
 export const heroItem: Variants = {
-  hidden: { opacity: 0, y: 16 },
+  hidden: { opacity: 0, y: 18 },
   visible: {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 0.5,
+      duration: 0.7,
       ease: [0.16, 1, 0.3, 1],
     },
   },
@@ -44,57 +44,57 @@ export const heroSearchSlideUp: Variants = {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 0.5,
-      delay: 0.25,
+      duration: 0.7,
+      delay: 0.35,
       ease: [0.16, 1, 0.3, 1],
     },
   },
 }
 
-// Hero photo scale 1.06 -> 1 over 1.2s once
+// Hero photo scale 1.06 -> 1 over 1.6s
 export const heroPhotoScale: Variants = {
   hidden: { scale: 1.06, opacity: 0.8 },
   visible: {
     scale: 1,
     opacity: 1,
     transition: {
-      duration: 1.2,
+      duration: 1.6,
       ease: [0.16, 1, 0.3, 1],
     },
   },
 }
 
-// Fade up with whileInView once (viewport margin -80px), stagger 0.06s
+// Fade up with whileInView once (viewport margin -80px), stagger 0.1s
 export const cardStagger: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.06,
+      staggerChildren: 0.1,
     },
   },
 }
 
 export const cardFadeUp: Variants = {
-  hidden: { opacity: 0, y: 16 },
+  hidden: { opacity: 0, y: 18 },
   visible: {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 0.45,
+      duration: 0.65,
       ease: [0.16, 1, 0.3, 1],
     },
   },
 }
 
-// Modal scale 0.96 -> 1 + fade, 180ms
+// Modal scale 0.96 -> 1 + fade, 260ms
 export const modalVariants: Variants = {
   hidden: { opacity: 0, scale: 0.96 },
   visible: {
     opacity: 1,
     scale: 1,
     transition: {
-      duration: 0.18,
+      duration: 0.26,
       ease: [0.16, 1, 0.3, 1],
     },
   },
@@ -102,7 +102,7 @@ export const modalVariants: Variants = {
     opacity: 0,
     scale: 0.96,
     transition: {
-      duration: 0.15,
+      duration: 0.2,
       ease: "easeIn",
     },
   },
@@ -110,12 +110,12 @@ export const modalVariants: Variants = {
 
 // Backwards-compatible exports
 export const fadeInUp: Variants = {
-  hidden: { opacity: 0, y: 16 },
+  hidden: { opacity: 0, y: 18 },
   visible: (customDelay: number = 0) => ({
     opacity: 1,
     y: 0,
     transition: {
-      duration: 0.45,
+      duration: 0.65,
       delay: customDelay,
       ease: [0.16, 1, 0.3, 1],
     },
@@ -127,7 +127,7 @@ export const fadeIn: Variants = {
   visible: (customDelay: number = 0) => ({
     opacity: 1,
     transition: {
-      duration: 0.4,
+      duration: 0.6,
       delay: customDelay,
     },
   }),
@@ -138,8 +138,8 @@ export const staggerContainer: Variants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.06,
-      delayChildren: 0.05,
+      staggerChildren: 0.1,
+      delayChildren: 0.08,
     },
   },
 }
@@ -150,7 +150,7 @@ export const cardHover: Variants = {
   initial: { y: 0, scale: 1 },
   hover: {
     y: -3,
-    transition: { duration: 0.2, ease: "easeOut" },
+    transition: { duration: 0.3, ease: "easeOut" },
   },
 }
 
