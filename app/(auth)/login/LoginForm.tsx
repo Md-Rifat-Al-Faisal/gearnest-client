@@ -6,6 +6,8 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { signIn } from "@/lib/auth-client"
 import { toast } from "sonner"
 import { Lock, Mail, Loader2, ArrowRight } from "lucide-react"
+import { Logo } from "@/components/logo"
+import { Button } from "@/components/ui/button"
 
 export function LoginForm() {
   const router = useRouter()
@@ -75,13 +77,14 @@ export function LoginForm() {
   }
 
   return (
-    <div className="gn-card p-8">
-      <div className="text-center">
-        <h1 className="font-heading text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
-          Sign In to GearNest
+    <div className="rounded-xl border border-border bg-surface p-8 shadow-md">
+      <div className="flex flex-col items-center text-center">
+        <Logo href="/" className="mb-4" />
+        <h1 className="font-heading text-2xl font-bold tracking-tight text-foreground">
+          Sign In to Workspace
         </h1>
-        <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
-          Access your equipment rentals, listings, and reservations
+        <p className="mt-1.5 text-xs text-muted-foreground">
+          Access your equipment rentals, fleet listings, and reservations
         </p>
       </div>
 
@@ -89,12 +92,12 @@ export function LoginForm() {
         <div>
           <label
             htmlFor="login-email"
-            className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300"
+            className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground"
           >
             Email Address
           </label>
           <div className="relative mt-1.5">
-            <Mail className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
+            <Mail className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
             <input
               id="login-email"
               name="email"
@@ -104,7 +107,7 @@ export function LoginForm() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
               required
-              className="gn-input pl-11"
+              className="w-full rounded-lg border border-border bg-surface-2 pl-10 pr-3.5 py-2 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
             />
           </div>
         </div>
@@ -112,12 +115,12 @@ export function LoginForm() {
         <div>
           <label
             htmlFor="login-password"
-            className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300"
+            className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground"
           >
             Password
           </label>
           <div className="relative mt-1.5">
-            <Lock className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
+            <Lock className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
             <input
               id="login-password"
               name="password"
@@ -127,15 +130,15 @@ export function LoginForm() {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
               required
-              className="gn-input pl-11"
+              className="w-full rounded-lg border border-border bg-surface-2 pl-10 pr-3.5 py-2 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
             />
           </div>
         </div>
 
         {/* Quick Fill Demo Credentials */}
-        <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 p-2.5">
-          <p className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-1.5 flex items-center justify-between">
-            <span>Quick Demo Logins (Evaluation):</span>
+        <div className="rounded-lg border border-border bg-surface-2/60 p-2.5">
+          <p className="text-[11px] font-semibold text-muted-foreground mb-1.5 flex items-center justify-between">
+            <span>Evaluation Quick Logins:</span>
           </p>
           <div className="grid grid-cols-3 gap-1.5">
             <button
@@ -145,7 +148,7 @@ export function LoginForm() {
                 setPassword("Password123!")
                 toast.info("Admin credentials loaded")
               }}
-              className="py-1 px-2 rounded-lg text-[11px] font-bold border border-rose-500/20 bg-rose-500/10 text-rose-600 dark:text-rose-400 hover:bg-rose-500/20 transition-colors"
+              className="py-1 px-2 rounded-md text-[11px] font-bold border border-danger/30 bg-danger/10 text-danger hover:bg-danger/20 transition-colors cursor-pointer"
             >
               Admin
             </button>
@@ -156,7 +159,7 @@ export function LoginForm() {
                 setPassword("Password123!")
                 toast.info("Owner credentials loaded")
               }}
-              className="py-1 px-2 rounded-lg text-[11px] font-bold border border-amber-500/20 bg-amber-500/10 text-amber-600 dark:text-amber-400 hover:bg-amber-500/20 transition-colors"
+              className="py-1 px-2 rounded-md text-[11px] font-bold border border-primary/30 bg-primary/10 text-accent-text hover:bg-primary/20 transition-colors cursor-pointer"
             >
               Owner
             </button>
@@ -167,53 +170,54 @@ export function LoginForm() {
                 setPassword("Password123!")
                 toast.info("Customer credentials loaded")
               }}
-              className="py-1 px-2 rounded-lg text-[11px] font-bold border border-blue-500/20 bg-blue-500/10 text-blue-600 dark:text-blue-400 hover:bg-blue-500/20 transition-colors"
+              className="py-1 px-2 rounded-md text-[11px] font-bold border border-border bg-surface text-foreground hover:bg-surface-2 transition-colors cursor-pointer"
             >
               Customer
             </button>
           </div>
         </div>
 
-        <button
+        <Button
           type="submit"
           disabled={loading}
-          className="gn-btn-primary w-full disabled:opacity-50"
+          className="w-full text-xs font-bold"
         >
           {loading ? (
             <>
-              <Loader2 className="size-4 animate-spin" />
-              Signing In...
+              <Loader2 className="size-4 animate-spin mr-1.5" />
+              <span>Signing In...</span>
             </>
           ) : (
             <>
-              Sign In
-              <ArrowRight className="size-4" />
+              <span>Sign In</span>
+              <ArrowRight className="size-4 ml-1.5" />
             </>
           )}
-        </button>
+        </Button>
       </form>
 
       <div className="relative my-6">
         <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-slate-200 dark:border-slate-800" />
+          <div className="w-full border-t border-border" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-white px-2 text-slate-500 dark:bg-slate-900 dark:text-slate-400">
+          <span className="bg-surface px-2 text-muted-foreground">
             Or continue with
           </span>
         </div>
       </div>
 
-      <button
+      <Button
         type="button"
+        variant="outline"
         onClick={handleGoogleLogin}
         disabled={googleLoading}
-        className="gn-btn-secondary w-full"
+        className="w-full text-xs font-semibold"
       >
         {googleLoading ? (
-          <Loader2 className="size-4 animate-spin" />
+          <Loader2 className="size-4 animate-spin mr-2" />
         ) : (
-          <svg className="size-4" viewBox="0 0 24 24">
+          <svg className="size-4 mr-2" viewBox="0 0 24 24">
             <path
               fill="#4285F4"
               d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.8-2.4 3.65v3h3.88c2.27-2.09 3.66-5.17 3.66-9.09z"
@@ -232,12 +236,12 @@ export function LoginForm() {
             />
           </svg>
         )}
-        Continue with Google
-      </button>
+        <span>Continue with Google</span>
+      </Button>
 
-      <p className="mt-6 text-center text-xs text-slate-600 dark:text-slate-400">
+      <p className="mt-6 text-center text-xs text-muted-foreground">
         Don&apos;t have an account?{" "}
-        <Link href="/register" className="font-semibold text-amber-600 hover:underline dark:text-amber-500">
+        <Link href="/register" className="font-semibold text-accent-text hover:underline">
           Create an account
         </Link>
       </p>

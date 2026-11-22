@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation"
 import { getCurrentSession } from "@/lib/server-auth"
 import { DashboardSidebar } from "@/components/dashboard/dashboard-sidebar"
+import { DashboardFade } from "@/components/dashboard/dashboard-fade"
 
 export default async function DashboardLayout({
   children,
@@ -22,11 +23,11 @@ export default async function DashboardLayout({
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col lg:flex-row">
+    <div className="min-h-screen bg-background text-foreground flex flex-col lg:flex-row">
       <DashboardSidebar user={user} />
       <main className="flex-1 flex flex-col min-w-0 overflow-y-auto">
         <div className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
-          {children}
+          <DashboardFade>{children}</DashboardFade>
         </div>
       </main>
     </div>

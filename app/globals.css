@@ -3,55 +3,118 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Centralized GearNest Design Tokens (Light Theme Default) */
+/* GearNest Core Tokens - Light Theme */
 :root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
-  --card: #ffffff;
-  --card-foreground: #0f172a;
-  --border: #e2e8f0;
-  --input: #cbd5e1;
-  --input-focus: #b45309;
-  --muted: #f1f5f9;
-  --muted-foreground: #475569;
-  --primary: #b45309;
-  --primary-hover: #92400e;
-  --primary-foreground: #ffffff;
-  --primary-glow: rgba(180, 83, 9, 0.2);
-  --ring: #b45309;
+  --background: #F4F8FA;
+  --surface: #FFFFFF;
+  --surface-2: #EAF1F5;
+  --foreground: #0A1A2F;
+  --muted-foreground: #4F6275;
+  --border: #D6E2EA;
+  --primary: #2DD4BF;
+  --primary-foreground: #0A1A2F;
+  --primary-hover: #5EEAD4;
+  --accent-text: #0F766E;
+  --gold: #92400E;
+  --gold-fill: #FBBF24;
+  --gold-fill-foreground: #0A1A2F;
+  --success: #166534;
+  --danger: #B91C1C;
+  --warning-text: #92400E;
+
+  /* Intentionally Dark Section Band */
+  --band: #0A1A2F;
+  --band-foreground: #FFFFFF;
+  --band-muted: #9FB3C8;
+  --band-accent: #2DD4BF;
+
+  /* Charts */
+  --chart-1: var(--primary);
+  --chart-2: #3B82F6;
+  --chart-3: var(--gold-fill);
+  --chart-grid: var(--border);
+
+  /* Fallback aliases for shadcn integration */
+  --card: var(--surface);
+  --card-foreground: var(--foreground);
+  --muted: var(--surface-2);
+  --input: var(--border);
+  --ring: var(--primary);
 }
 
-/* Centralized GearNest Design Tokens (Industrial Dark Theme) */
+/* GearNest Core Tokens - Dark Theme */
 .dark {
-  --background: #020617;
-  --foreground: #f8fafc;
-  --card: #0f172a;
-  --card-foreground: #f8fafc;
-  --border: #1e293b;
-  --input: #334155;
-  --input-focus: #f59e0b;
-  --muted: #1e293b;
-  --muted-foreground: #94a3b8;
-  --primary: #f59e0b;
-  --primary-hover: #fbbf24;
-  --primary-foreground: #020617;
-  --primary-glow: rgba(245, 158, 11, 0.25);
-  --ring: #f59e0b;
+  --background: #07131F;
+  --surface: #0D2033;
+  --surface-2: #112A42;
+  --foreground: #EAF2F7;
+  --muted-foreground: #8FA5BA;
+  --border: #1B3550;
+  --primary: #2DD4BF;
+  --primary-foreground: #07131F;
+  --primary-hover: #5EEAD4;
+  --accent-text: #2DD4BF;
+  --gold: #FBBF24;
+  --gold-fill: #FBBF24;
+  --gold-fill-foreground: #07131F;
+  --success: #4ADE80;
+  --danger: #F87171;
+  --warning-text: #FBBF24;
+
+  /* Intentionally Dark Section Band (Theme aligned) */
+  --band: #050E17;
+  --band-foreground: #FFFFFF;
+  --band-muted: #9FB3C8;
+  --band-accent: #2DD4BF;
+
+  /* Charts */
+  --chart-1: var(--primary);
+  --chart-2: #60A5FA;
+  --chart-3: var(--gold-fill);
+  --chart-grid: var(--border);
+
+  /* Fallback aliases for shadcn integration */
+  --card: var(--surface);
+  --card-foreground: var(--foreground);
+  --muted: var(--surface-2);
+  --input: var(--border);
+  --ring: var(--primary);
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
   --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
   --color-primary: var(--primary);
-  --color-primary-hover: var(--primary-hover);
   --color-primary-foreground: var(--primary-foreground);
-  --color-ring: var(--ring);
+  --color-primary-hover: var(--primary-hover);
+  --color-accent-text: var(--accent-text);
+  --color-gold: var(--gold);
+  --color-gold-fill: var(--gold-fill);
+  --color-gold-fill-foreground: var(--gold-fill-foreground);
+  --color-success: var(--success);
+  --color-danger: var(--danger);
+  --color-warning-text: var(--warning-text);
+  --color-band: var(--band);
+  --color-band-foreground: var(--band-foreground);
+  --color-band-muted: var(--band-muted);
+  --color-band-accent: var(--band-accent);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-grid: var(--chart-grid);
+
+  --color-card: var(--surface);
+  --color-card-foreground: var(--foreground);
+  --color-muted: var(--surface-2);
+  --color-input: var(--border);
+  --color-ring: var(--primary);
+
+  --font-heading: var(--font-heading), sans-serif;
+  --font-sans: var(--font-sans), sans-serif;
 }
 
 html {
@@ -59,91 +122,190 @@ html {
 }
 
 body {
+  font-family: var(--font-sans), sans-serif;
+  font-size: 15px;
+  line-height: 1.65;
   background-color: var(--background);
   color: var(--foreground);
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
 }
 
-p {
-  font-size: 0.875rem; /* 14px minimum */
-  line-height: 1.5rem;
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading), sans-serif;
+  color: var(--foreground);
 }
 
-/* GearNest Custom UI Component Classes tied to Centralized Variables */
+h1 {
+  font-size: clamp(2.5rem, 5vw, 4.25rem);
+  line-height: 1.05;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+h2 {
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  line-height: 1.15;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+p {
+  font-size: 0.9375rem; /* 15px */
+  line-height: 1.65;
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Subtle blueprint/dot grid texture */
+.bg-dot-grid {
+  background-image: radial-gradient(color-mix(in srgb, var(--border) 70%, transparent) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* Teal spec-line accent */
+.spec-line-kpi {
+  border-left: 3px solid var(--primary);
+}
+
+.spec-line-heading {
+  width: 40px;
+  height: 3px;
+  background-color: var(--primary);
+  border-radius: 9999px;
+  margin-top: 0.5rem;
+}
+
+/* Angular hero transition divider */
+.hero-clip-divider {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 28px), 0 100%);
+}
+
+/* Focus visible standard: 2px primary with offset */
+:focus-visible {
+  outline: none;
+  ring: 2px solid var(--primary);
+  ring-offset: 2px;
+}
+
+/* Selection colours from tokens so selected text stays readable in both themes */
+::selection {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+}
+
+/* Scoped band theme for dark sections */
+.theme-band {
+  --background: var(--band);
+  --color-background: var(--band);
+  --foreground: var(--band-foreground);
+  --color-foreground: var(--band-foreground);
+  --muted-foreground: var(--band-muted);
+  --color-muted-foreground: var(--band-muted);
+  --border: rgba(255, 255, 255, 0.16);
+  --color-border: rgba(255, 255, 255, 0.16);
+  --accent-text: var(--band-accent);
+  --color-accent-text: var(--band-accent);
+  --surface: rgba(255, 255, 255, 0.06);
+  --color-surface: rgba(255, 255, 255, 0.06);
+  --surface-2: rgba(255, 255, 255, 0.12);
+  --color-surface-2: rgba(255, 255, 255, 0.12);
+  --primary-foreground: #0A1A2F;
+  --color-primary-foreground: #0A1A2F;
+  color: var(--band-foreground);
+  background-color: var(--band);
+}
+
+.dark .theme-band {
+  --background: var(--band);
+  --color-background: var(--band);
+  --primary-foreground: #07131F;
+  --color-primary-foreground: #07131F;
+}
+
+.theme-band h1,
+.theme-band h2,
+.theme-band h3,
+.theme-band h4,
+.theme-band h5,
+.theme-band h6 {
+  color: var(--band-foreground);
+}
+
+/* Scoped light container if used inside dark sections */
+.theme-light {
+  --background: #F4F8FA;
+  --color-background: #F4F8FA;
+  --surface: #FFFFFF;
+  --color-surface: #FFFFFF;
+  --surface-2: #EAF1F5;
+  --color-surface-2: #EAF1F5;
+  --foreground: #0A1A2F;
+  --color-foreground: #0A1A2F;
+  --muted-foreground: #4F6275;
+  --color-muted-foreground: #4F6275;
+  --border: #D6E2EA;
+  --color-border: #D6E2EA;
+  --accent-text: #0F766E;
+  --color-accent-text: #0F766E;
+  color: #0A1A2F;
+  background-color: #FFFFFF;
+}
+
+/* Dedicated Photo Overlay Tokens and Scrim */
+.text-overlay-foreground {
+  color: #FFFFFF !important;
+}
+
+.text-overlay-muted {
+  color: #D1D5DB !important;
+}
+
+.border-overlay-border {
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.bg-overlay-scrim {
+  background: linear-gradient(to top, rgba(10, 26, 47, 0.92) 0%, rgba(10, 26, 47, 0.5) 60%, rgba(10, 26, 47, 0.1) 100%);
+}
+
 @layer components {
   .gn-card {
-    border-radius: 0.75rem;
+    border-radius: 0.75rem; /* max rounded-xl (12px) */
     border-width: 1px;
     border-color: var(--border);
-    background-color: var(--card);
-    color: var(--card-foreground);
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
-  }
-  .dark .gn-card {
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+    background-color: var(--surface);
+    color: var(--foreground);
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.04);
   }
 
   .gn-input {
     height: 2.625rem;
     width: 100%;
-    border-radius: 0.5rem;
+    border-radius: 0.5rem; /* 8px */
     border-width: 1px;
-    border-color: var(--input);
-    background-color: var(--card);
+    border-color: var(--border);
+    background-color: var(--surface);
     color: var(--foreground);
     padding-left: 0.875rem;
     padding-right: 0.875rem;
-    font-size: 0.875rem;
+    font-size: 0.9375rem;
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
   }
   .gn-input:focus {
     outline: none;
-    border-color: var(--input-focus);
-    box-shadow: 0 0 0 3px var(--primary-glow);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 25%, transparent);
   }
+}
 
-  .gn-btn-primary {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    border-radius: 0.5rem;
-    background-color: var(--primary);
-    padding-left: 1rem;
-    padding-right: 1rem;
-    padding-top: 0.625rem;
-    padding-bottom: 0.625rem;
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: var(--primary-foreground);
-    transition: background-color 0.15s ease, transform 0.05s ease;
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  }
-  .gn-btn-primary:hover {
-    background-color: var(--primary-hover);
-  }
-
-  .gn-btn-secondary {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    border-radius: 0.5rem;
-    border-width: 1px;
-    border-color: var(--border);
-    background-color: var(--card);
-    padding-left: 1rem;
-    padding-right: 1rem;
-    padding-top: 0.625rem;
-    padding-bottom: 0.625rem;
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: var(--foreground);
-    transition: background-color 0.15s ease, border-color 0.15s ease;
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  }
-  .gn-btn-secondary:hover {
-    background-color: var(--muted);
-    border-color: var(--input);
+/* Reduced motion preference support */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

@@ -1,8 +1,10 @@
 "use client"
 
 import * as React from "react"
+import { motion, AnimatePresence } from "framer-motion"
 import { X } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { modalVariants } from "@/lib/motion"
 
 interface DialogProps {
   open: boolean
@@ -25,17 +27,23 @@ export function Dialog({ open, onOpenChange, children }: DialogProps) {
     }
   }, [open, onOpenChange])
 
-  if (!open) return null
-
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs overflow-y-auto"
-      onClick={() => onOpenChange(false)}
-    >
-      {children}
-    </div>
+    <AnimatePresence>
+      {open && (
+        <motion.div
+          role="dialog"
+          aria-modal="true"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.18 }}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-band/75 backdrop-blur-xs overflow-y-auto"
+          onClick={() => onOpenChange(false)}
+        >
+          {children}
+        </motion.div>
+      )}
+    </AnimatePresence>
   )
 }
 
@@ -46,19 +54,23 @@ export function DialogContent({
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <div
+    <motion.div
+      variants={modalVariants}
+      initial="hidden"
+      animate="visible"
+      exit="exit"
       className={cn(
-        "relative w-full max-w-lg rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 sm:p-8 shadow-2xl space-y-6 my-8",
+        "relative w-full max-w-lg rounded-xl border border-border bg-surface text-foreground p-6 sm:p-8 shadow-2xl space-y-6 my-8",
         className
       )}
       onClick={(e) => {
         e.stopPropagation()
         onClick?.(e)
       }}
-      {...props}
+      {...(props as any)}
     >
       {children}
-    </div>
+    </motion.div>
   )
 }
 
@@ -70,7 +82,7 @@ export function DialogHeader({
   return (
     <div
       className={cn(
-        "flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800",
+        "flex items-center justify-between pb-3 border-b border-border",
         className
       )}
       {...props}
@@ -88,7 +100,7 @@ export function DialogTitle({
   return (
     <h3
       className={cn(
-        "text-xl font-extrabold text-slate-900 dark:text-white mt-0.5",
+        "text-xl font-bold text-foreground font-heading mt-0.5",
         className
       )}
       {...props}
@@ -105,7 +117,7 @@ export function DialogDescription({
 }: React.HTMLAttributes<HTMLParagraphElement>) {
   return (
     <p
-      className={cn("text-xs text-slate-500 dark:text-slate-400", className)}
+      className={cn("text-xs text-muted-foreground", className)}
       {...props}
     >
       {children}
@@ -125,7 +137,7 @@ export function DialogClose({
       type="button"
       onClick={onClose}
       className={cn(
-        "p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer",
+        "p-1.5 rounded-lg hover:bg-surface-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer",
         className
       )}
       aria-label="Close"

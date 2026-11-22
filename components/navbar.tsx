@@ -3,9 +3,11 @@
 import * as React from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { Wrench, Menu, X, LayoutDashboard, LogOut, User } from "lucide-react"
+import { Menu, X, LayoutDashboard, LogOut, User } from "lucide-react"
 import { useSession, signOut } from "@/lib/auth-client"
 import { ThemeToggle } from "./theme-toggle"
+import { Logo } from "@/components/logo"
+import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
 
 export function Navbar() {
@@ -22,8 +24,8 @@ export function Navbar() {
     { label: "All Equipment", href: "/equipment" },
     { label: "How It Works", href: "/#how-it-works" },
     { label: "Why Choose Us", href: "/#why-us" },
-    { label: "FAQ", href: "/#faq" },
     { label: "About Us", href: "/#about" },
+    { label: "FAQ", href: "/#faq" },
     { label: "Contact Us", href: "/#contact" },
   ]
 
@@ -53,17 +55,10 @@ export function Navbar() {
   }
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-slate-200/80 bg-white/90 backdrop-blur-md dark:border-slate-800/80 dark:bg-slate-950/90">
+    <header className="sticky top-0 z-40 w-full border-b border-border bg-surface/90 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Brand Logo & Name */}
-        <Link href="/" className="flex items-center gap-2.5 transition-opacity hover:opacity-90">
-          <div className="flex size-9 items-center justify-center rounded-lg bg-amber-600 text-white shadow-sm dark:bg-amber-500 dark:text-slate-950">
-            <Wrench className="size-5" />
-          </div>
-          <span className="font-heading text-xl font-bold tracking-tight text-slate-900 dark:text-white">
-            Gear<span className="text-amber-600 dark:text-amber-500">Nest</span>
-          </span>
-        </Link>
+        <Logo href="/" />
 
         {/* Desktop Navigation */}
         <nav className="hidden items-center gap-6 lg:flex">
@@ -74,10 +69,10 @@ export function Navbar() {
                 key={link.label}
                 href={link.href}
                 onClick={(e) => handleNavClick(e, link.href)}
-                className={`text-sm font-medium transition-colors hover:text-amber-600 dark:hover:text-amber-400 ${
+                className={`text-sm font-medium transition-colors hover:text-foreground ${
                   isActive
-                    ? "font-semibold text-amber-600 dark:text-amber-500"
-                    : "text-slate-600 dark:text-slate-300"
+                    ? "font-semibold text-accent-text"
+                    : "text-muted-foreground"
                 }`}
               >
                 {link.label}
@@ -92,29 +87,29 @@ export function Navbar() {
 
           {isPending ? (
             <div className="flex items-center gap-2">
-              <div className="h-8 w-24 rounded-lg bg-slate-200 dark:bg-slate-800 animate-pulse" />
-              <div className="size-8 rounded-full bg-slate-200 dark:bg-slate-800 animate-pulse" />
+              <div className="h-8 w-24 rounded-lg bg-surface-2 animate-pulse" />
+              <div className="size-8 rounded-full bg-surface-2 animate-pulse" />
             </div>
           ) : user ? (
             <div className="flex items-center gap-3">
               <Link
                 href="/dashboard"
-                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-700 transition-colors hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface-2 px-3 py-1.5 text-xs font-semibold text-foreground transition-colors hover:bg-border/60"
               >
-                <LayoutDashboard className="size-3.5 text-amber-600 dark:text-amber-400" />
+                <LayoutDashboard className="size-3.5 text-accent-text" />
                 <span>Dashboard ({userRole})</span>
               </Link>
 
-              <div className="flex items-center gap-2 border-l border-slate-200 pl-3 dark:border-slate-800">
+              <div className="flex items-center gap-2 border-l border-border pl-3">
                 {user.image ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={user.image}
                     alt={user.name || "User"}
-                    className="size-8 rounded-full border border-slate-200 object-cover dark:border-slate-700"
+                    className="size-8 rounded-full border border-border object-cover"
                   />
                 ) : (
-                  <div className="flex size-8 items-center justify-center rounded-full bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+                  <div className="flex size-8 items-center justify-center rounded-full bg-surface-2 text-foreground">
                     <User className="size-4" />
                   </div>
                 )}
@@ -122,7 +117,7 @@ export function Navbar() {
                   type="button"
                   onClick={handleSignOut}
                   title="Sign out"
-                  className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100 cursor-pointer"
+                  className="rounded-lg p-1.5 text-muted-foreground hover:bg-surface-2 hover:text-foreground cursor-pointer"
                 >
                   <LogOut className="size-4" />
                 </button>
@@ -130,17 +125,15 @@ export function Navbar() {
             </div>
           ) : (
             <div className="flex items-center gap-2">
-              <Link
-                href="/login"
-                className="inline-flex items-center justify-center rounded-lg px-3 py-1.5 text-sm font-medium text-slate-700 transition-colors hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"
-              >
-                Log In
+              <Link href="/login">
+                <Button variant="ghost" size="sm">
+                  Log In
+                </Button>
               </Link>
-              <Link
-                href="/register"
-                className="gn-btn-primary h-9 px-3.5 text-xs"
-              >
-                Register
+              <Link href="/register">
+                <Button variant="primary" size="sm">
+                  Register
+                </Button>
               </Link>
             </div>
           )}
@@ -153,7 +146,7 @@ export function Navbar() {
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle menu"
-            className="inline-flex size-9 items-center justify-center rounded-lg border border-slate-200 text-slate-700 dark:border-slate-800 dark:text-slate-300"
+            className="inline-flex size-9 items-center justify-center rounded-lg border border-border text-foreground bg-surface"
           >
             {mobileMenuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
           </button>
@@ -162,8 +155,8 @@ export function Navbar() {
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="border-b border-slate-200 bg-white px-4 py-4 dark:border-slate-800 dark:bg-slate-950 lg:hidden">
-          <div className="flex flex-col gap-3">
+        <div className="border-b border-border bg-surface px-4 py-4 lg:hidden">
+          <div className="flex flex-col gap-2">
             {navLinks.map((link) => (
               <Link
                 key={link.label}
@@ -172,28 +165,28 @@ export function Navbar() {
                   setMobileMenuOpen(false)
                   handleNavClick(e, link.href)
                 }}
-                className="rounded-md px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-900"
+                className="rounded-lg px-3 py-2 text-sm font-medium text-foreground hover:bg-surface-2"
               >
                 {link.label}
               </Link>
             ))}
 
-            <div className="my-2 border-t border-slate-200 dark:border-slate-800" />
+            <div className="my-2 border-t border-border" />
 
             {user ? (
               <div className="flex flex-col gap-2">
                 <Link
                   href="/dashboard"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-2 rounded-md bg-amber-50 px-3 py-2 text-sm font-semibold text-amber-900 dark:bg-amber-950/40 dark:text-amber-300"
+                  className="flex items-center gap-2 rounded-lg bg-surface-2 px-3 py-2 text-sm font-semibold text-foreground"
                 >
-                  <LayoutDashboard className="size-4" />
+                  <LayoutDashboard className="size-4 text-accent-text" />
                   Dashboard ({userRole})
                 </Link>
                 <button
                   type="button"
                   onClick={handleSignOut}
-                  className="flex items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/20 cursor-pointer"
+                  className="flex items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-medium text-danger hover:bg-danger/10 cursor-pointer"
                 >
                   <LogOut className="size-4" />
                   Sign Out
@@ -201,19 +194,15 @@ export function Navbar() {
               </div>
             ) : (
               <div className="flex flex-col gap-2">
-                <Link
-                  href="/login"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="gn-btn-secondary w-full"
-                >
-                  Log In
+                <Link href="/login" onClick={() => setMobileMenuOpen(false)} className="w-full">
+                  <Button variant="secondary" className="w-full">
+                    Log In
+                  </Button>
                 </Link>
-                <Link
-                  href="/register"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="gn-btn-primary w-full"
-                >
-                  Register
+                <Link href="/register" onClick={() => setMobileMenuOpen(false)} className="w-full">
+                  <Button variant="primary" className="w-full">
+                    Register
+                  </Button>
                 </Link>
               </div>
             )}

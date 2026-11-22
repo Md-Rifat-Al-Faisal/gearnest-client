@@ -16,7 +16,6 @@ import {
   CalendarCheck2,
   AlertCircle,
   PieChart as PieIcon,
-  XCircle,
   Truck,
 } from "lucide-react"
 import {
@@ -32,10 +31,10 @@ import {
   PieChart,
   Pie,
   Cell,
-  Legend,
 } from "recharts"
 import { apiRequest } from "@/lib/api-client"
 import { fadeInUp, staggerContainer } from "@/lib/motion"
+import { Button } from "@/components/ui/button"
 
 interface OwnerSummary {
   totalListedEquipment: number
@@ -87,7 +86,18 @@ export default function OwnerAnalyticsPage() {
       if (data.success) {
         setSummary(data.summary)
         setMonthlyEarnings(data.monthlyEarnings || [])
-        setStatusBreakdown(data.equipmentStatusBreakdown || [])
+        // Map status colors to design tokens
+        const rawBreakdown: StatusSlice[] = data.equipmentStatusBreakdown || []
+        const mappedBreakdown = rawBreakdown.map((s) => ({
+          ...s,
+          color:
+            s.name.toLowerCase().includes("approved")
+              ? "var(--success)"
+              : s.name.toLowerCase().includes("pending")
+                ? "var(--primary)"
+                : "var(--danger)",
+        }))
+        setStatusBreakdown(mappedBreakdown)
       }
     } catch (err: any) {
       console.error("Owner analytics fetch error:", err)
@@ -102,13 +112,12 @@ export default function OwnerAnalyticsPage() {
     fetchAnalytics()
   }, [])
 
-  // Custom Chart Tooltip
   const CustomTooltip = ({ active, payload, label, prefix = "", suffix = "" }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className="rounded-lg border border-slate-200 bg-white/95 p-3 shadow-lg backdrop-blur-md dark:border-slate-800 dark:bg-slate-900/95">
-          <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">{label}</p>
-          <p className="text-sm font-bold text-amber-500">
+        <div className="rounded-lg border border-border bg-surface p-3 shadow-lg text-foreground">
+          <p className="text-xs font-semibold text-muted-foreground">{label}</p>
+          <p className="text-sm font-bold text-accent-text font-heading">
             {prefix}
             {payload[0].value?.toLocaleString()}
             {suffix}
@@ -125,96 +134,89 @@ export default function OwnerAnalyticsPage() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <div className="flex items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-500/10 px-3 py-1 text-xs font-semibold text-amber-600 dark:text-amber-400 border border-amber-500/20">
-              <Truck className="h-3.5 w-3.5" />
-              Partner Overview
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-accent-text border border-primary/20">
+              <Truck className="h-3.5 w-3.5 text-primary" />
+              Fleet Partner Intelligence
             </span>
           </div>
-          <h1 className="mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl dark:text-white">
-            Equipment Owner Analytics
+          <h1 className="mt-2 text-2xl font-bold tracking-tight text-foreground sm:text-3xl font-heading">
+            Owner Fleet Dashboard
           </h1>
-          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-            Real-time rental earnings, fleet statuses, and reservation performance.
+          <p className="mt-1 text-sm text-muted-foreground">
+            Monitor machinery deployment velocity, monthly rental earnings, and fleet status.
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
-          <button
-            onClick={fetchAnalytics}
-            disabled={loading}
-            className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50 hover:text-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
-          >
-            <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin text-amber-500" : ""}`} />
-            Refresh
-          </button>
-          <Link
-            href="/dashboard/owner/equipment/new"
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-amber-500 px-4 py-2.5 text-sm font-semibold text-slate-950 shadow-sm transition hover:bg-amber-400"
-          >
-            <PackagePlus className="h-4 w-4" />
-            Add Equipment
-          </Link>
-        </div>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={fetchAnalytics}
+          disabled={loading}
+          className="gap-2"
+        >
+          <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin text-accent-text" : ""}`} />
+          <span>Refresh Data</span>
+        </Button>
       </div>
 
-      {/* Error Banner */}
+      {/* Error Alert */}
       {error && (
-        <div className="flex items-center gap-3 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700 dark:border-red-900/40 dark:bg-red-950/20 dark:text-red-400">
+        <div className="flex items-center gap-3 rounded-xl border border-danger/30 bg-danger/10 p-4 text-sm text-danger">
           <AlertCircle className="h-5 w-5 shrink-0" />
           <p>{error}</p>
         </div>
       )}
 
-      {/* KPI Stat Cards Grid */}
+      {/* KPI Stats Grid */}
       <motion.div
         variants={staggerContainer}
         initial="hidden"
         animate="visible"
         className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4"
       >
-        {/* Total Earnings */}
+        {/* Gross Earnings */}
         <motion.div
           variants={fadeInUp}
-          className="rounded-2xl border border-amber-500/30 bg-gradient-to-br from-amber-500/10 via-white to-white p-5 shadow-sm dark:from-amber-500/15 dark:via-slate-900 dark:to-slate-900"
+          className="rounded-xl border border-border bg-surface p-5 shadow-xs spec-line-kpi"
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-amber-600 dark:text-amber-400">
+            <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               Total Earnings
             </span>
-            <div className="rounded-xl bg-amber-500/20 p-2 text-amber-600 dark:text-amber-400">
-              <DollarSign className="h-5 w-5" />
+            <div className="rounded-lg bg-surface-2 p-2 text-accent-text border border-border">
+              <DollarSign className="h-4 w-4" />
             </div>
           </div>
           <div className="mt-4">
-            <div className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+            <div className="text-2xl font-bold tracking-tight text-foreground font-heading">
               ${summary.totalEarnings.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
             </div>
-            <p className="mt-1 flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
-              <TrendingUp className="h-3 w-3 text-emerald-500" />
-              Verified rental income paid
+            <p className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
+              <TrendingUp className="h-3 w-3 text-success" />
+              Verified Stripe gross rental payouts
             </p>
           </div>
         </motion.div>
 
-        {/* Listed Fleet */}
+        {/* Listed Equipment */}
         <motion.div
           variants={fadeInUp}
-          className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900"
+          className="rounded-xl border border-border bg-surface p-5 shadow-xs spec-line-kpi"
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+            <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               Fleet Size
             </span>
-            <div className="rounded-xl bg-blue-500/10 p-2 text-blue-500 dark:bg-blue-500/20">
-              <Boxes className="h-5 w-5" />
+            <div className="rounded-lg bg-surface-2 p-2 text-accent-text border border-border">
+              <Boxes className="h-4 w-4" />
             </div>
           </div>
           <div className="mt-4">
-            <div className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+            <div className="text-2xl font-bold tracking-tight text-foreground font-heading">
               {summary.totalListedEquipment.toLocaleString()}
             </div>
-            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-              {summary.approvedEquipment} live &middot; {summary.pendingEquipment} pending review
+            <p className="mt-1 text-xs text-muted-foreground">
+              {summary.approvedEquipment} live · {summary.pendingEquipment} pending review
             </p>
           </div>
         </motion.div>
@@ -222,21 +224,21 @@ export default function OwnerAnalyticsPage() {
         {/* Active Rentals */}
         <motion.div
           variants={fadeInUp}
-          className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900"
+          className="rounded-xl border border-border bg-surface p-5 shadow-xs spec-line-kpi"
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+            <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               Active Rentals
             </span>
-            <div className="rounded-xl bg-emerald-500/10 p-2 text-emerald-500 dark:bg-emerald-500/20">
-              <Activity className="h-5 w-5" />
+            <div className="rounded-lg bg-surface-2 p-2 text-accent-text border border-border">
+              <Activity className="h-4 w-4" />
             </div>
           </div>
           <div className="mt-4">
-            <div className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+            <div className="text-2xl font-bold tracking-tight text-foreground font-heading">
               {summary.activeRentals.toLocaleString()}
             </div>
-            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+            <p className="mt-1 text-xs text-muted-foreground">
               Machinery currently deployed on site
             </p>
           </div>
@@ -245,21 +247,21 @@ export default function OwnerAnalyticsPage() {
         {/* Completed Bookings */}
         <motion.div
           variants={fadeInUp}
-          className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900"
+          className="rounded-xl border border-border bg-surface p-5 shadow-xs spec-line-kpi"
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+            <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               Completed Orders
             </span>
-            <div className="rounded-xl bg-purple-500/10 p-2 text-purple-500 dark:bg-purple-500/20">
-              <CheckCircle2 className="h-5 w-5" />
+            <div className="rounded-lg bg-surface-2 p-2 text-accent-text border border-border">
+              <CheckCircle2 className="h-4 w-4" />
             </div>
           </div>
           <div className="mt-4">
-            <div className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+            <div className="text-2xl font-bold tracking-tight text-foreground font-heading">
               {summary.completedRentals.toLocaleString()}
             </div>
-            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+            <p className="mt-1 text-xs text-muted-foreground">
               Successfully fulfilled contracts
             </p>
           </div>
@@ -269,17 +271,17 @@ export default function OwnerAnalyticsPage() {
       {/* Main Charts Row */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         {/* Monthly Earnings Trend (Area Chart) */}
-        <div className="lg:col-span-2 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+        <div className="lg:col-span-2 rounded-xl border border-border bg-surface p-6 shadow-xs">
           <div className="mb-6 flex items-center justify-between">
             <div>
-              <h2 className="text-lg font-bold text-slate-900 dark:text-white">
+              <h2 className="text-base font-bold text-foreground font-heading">
                 Monthly Earnings Velocity (6-Month)
               </h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+              <p className="text-xs text-muted-foreground">
                 Gross rental booking earnings from your listed equipment
               </p>
             </div>
-            <div className="rounded-lg bg-amber-500/10 p-2 text-amber-500">
+            <div className="rounded-lg bg-surface-2 p-2 text-accent-text border border-border">
               <DollarSign className="h-4 w-4" />
             </div>
           </div>
@@ -293,36 +295,34 @@ export default function OwnerAnalyticsPage() {
                 >
                   <defs>
                     <linearGradient id="ownerEarningsGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.4} />
-                      <stop offset="95%" stopColor="#f59e0b" stopOpacity={0} />
+                      <stop offset="5%" stopColor="var(--primary)" stopOpacity={0.4} />
+                      <stop offset="95%" stopColor="var(--primary)" stopOpacity={0} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" className="dark:stroke-slate-800" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
                   <XAxis
                     dataKey="month"
-                    tick={{ fontSize: 12, fill: "#94a3b8" }}
-                    stroke="#cbd5e1"
-                    className="dark:stroke-slate-700"
+                    tick={{ fontSize: 12, fill: "var(--muted-foreground)" }}
+                    stroke="var(--border)"
                   />
                   <YAxis
-                    tick={{ fontSize: 12, fill: "#94a3b8" }}
-                    stroke="#cbd5e1"
-                    className="dark:stroke-slate-700"
+                    tick={{ fontSize: 12, fill: "var(--muted-foreground)" }}
+                    stroke="var(--border)"
                     tickFormatter={(val) => `$${val}`}
                   />
                   <Tooltip content={<CustomTooltip prefix="$" />} />
                   <Area
                     type="monotone"
                     dataKey="earnings"
-                    stroke="#f59e0b"
-                    strokeWidth={3}
+                    stroke="var(--primary)"
+                    strokeWidth={2.5}
                     fillOpacity={1}
                     fill="url(#ownerEarningsGradient)"
                   />
                 </AreaChart>
               </ResponsiveContainer>
             ) : (
-              <div className="flex h-full items-center justify-center text-xs text-slate-400">
+              <div className="flex h-full items-center justify-center text-xs text-muted-foreground">
                 Loading chart...
               </div>
             )}
@@ -330,15 +330,15 @@ export default function OwnerAnalyticsPage() {
         </div>
 
         {/* Equipment Status Donut Pie Chart */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900 flex flex-col justify-between">
+        <div className="rounded-xl border border-border bg-surface p-6 shadow-xs flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-bold text-slate-900 dark:text-white">
+              <h2 className="text-base font-bold text-foreground font-heading">
                 Fleet Moderation Status
               </h2>
-              <PieIcon className="h-4 w-4 text-slate-400" />
+              <PieIcon className="h-4 w-4 text-muted-foreground" />
             </div>
-            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+            <p className="mt-1 text-xs text-muted-foreground">
               Live status breakdown of all your listed equipment
             </p>
 
@@ -364,55 +364,54 @@ export default function OwnerAnalyticsPage() {
                     </PieChart>
                   </ResponsiveContainer>
                 ) : (
-                  <div className="text-center text-xs text-slate-400">
+                  <div className="text-center text-xs text-muted-foreground">
                     No equipment listed yet.
                   </div>
                 )
               ) : (
-                <div className="text-xs text-slate-400">Loading chart...</div>
+                <div className="text-xs text-muted-foreground">Loading chart...</div>
               )}
             </div>
 
             {/* Custom Legend / Metric rows */}
-            <div className="mt-4 space-y-2 border-t border-slate-100 pt-4 dark:border-slate-800">
+            <div className="mt-4 space-y-2 border-t border-border pt-4">
               <div className="flex items-center justify-between text-xs">
-                <span className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
-                  <span className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
+                <span className="flex items-center gap-2 text-foreground">
+                  <span className="h-2.5 w-2.5 rounded-full bg-success" />
                   Approved & Cataloged
                 </span>
-                <span className="font-bold text-slate-900 dark:text-white">
+                <span className="font-bold text-foreground font-heading">
                   {summary.approvedEquipment}
                 </span>
               </div>
               <div className="flex items-center justify-between text-xs">
-                <span className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
-                  <span className="h-2.5 w-2.5 rounded-full bg-amber-500" />
+                <span className="flex items-center gap-2 text-foreground">
+                  <span className="h-2.5 w-2.5 rounded-full bg-primary" />
                   Pending Admin Review
                 </span>
-                <span className="font-bold text-slate-900 dark:text-white">
+                <span className="font-bold text-foreground font-heading">
                   {summary.pendingEquipment}
                 </span>
               </div>
               <div className="flex items-center justify-between text-xs">
-                <span className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
-                  <span className="h-2.5 w-2.5 rounded-full bg-rose-500" />
+                <span className="flex items-center gap-2 text-foreground">
+                  <span className="h-2.5 w-2.5 rounded-full bg-danger" />
                   Rejected / Incomplete
                 </span>
-                <span className="font-bold text-slate-900 dark:text-white">
+                <span className="font-bold text-foreground font-heading">
                   {summary.rejectedEquipment}
                 </span>
               </div>
             </div>
           </div>
 
-          <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800">
-            <Link
-              href="/dashboard/owner/equipment"
-              className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-slate-50 py-2.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-800/60 dark:text-slate-200 dark:hover:bg-slate-800"
-            >
-              Manage Fleet Inventory
-              <ArrowUpRight className="h-3.5 w-3.5" />
-            </Link>
+          <div className="mt-6 pt-4 border-t border-border">
+            <Button variant="outline" asChild size="sm" className="w-full">
+              <Link href="/dashboard/owner/equipment">
+                <span>Manage Fleet Inventory</span>
+                <ArrowUpRight className="h-3.5 w-3.5 ml-1" />
+              </Link>
+            </Button>
           </div>
         </div>
       </div>
@@ -421,62 +420,62 @@ export default function OwnerAnalyticsPage() {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <Link
           href="/dashboard/owner/equipment/new"
-          className="group flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-amber-500/50 hover:bg-amber-500/5 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-amber-500/40"
+          className="group flex items-center justify-between rounded-xl border border-border bg-surface p-5 shadow-xs transition hover:border-primary/50 hover:bg-surface-2"
         >
           <div className="flex items-center gap-3">
-            <div className="rounded-xl bg-amber-500/10 p-2.5 text-amber-500">
+            <div className="rounded-lg bg-surface-2 p-2.5 text-accent-text border border-border">
               <PackagePlus className="h-5 w-5" />
             </div>
             <div>
-              <div className="text-sm font-semibold text-slate-900 dark:text-white">
+              <div className="text-sm font-semibold text-foreground">
                 Add New Machinery
               </div>
-              <div className="text-xs text-slate-500 dark:text-slate-400">
+              <div className="text-xs text-muted-foreground">
                 List cranes, excavators & lifts
               </div>
             </div>
           </div>
-          <ArrowUpRight className="h-4 w-4 text-slate-400 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-amber-500" />
+          <ArrowUpRight className="h-4 w-4 text-muted-foreground transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-accent-text" />
         </Link>
 
         <Link
           href="/dashboard/owner/rentals"
-          className="group flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-blue-500/50 hover:bg-blue-500/5 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-blue-500/40"
+          className="group flex items-center justify-between rounded-xl border border-border bg-surface p-5 shadow-xs transition hover:border-primary/50 hover:bg-surface-2"
         >
           <div className="flex items-center gap-3">
-            <div className="rounded-xl bg-blue-500/10 p-2.5 text-blue-500">
+            <div className="rounded-lg bg-surface-2 p-2.5 text-accent-text border border-border">
               <CalendarCheck2 className="h-5 w-5" />
             </div>
             <div>
-              <div className="text-sm font-semibold text-slate-900 dark:text-white">
-                Manage Rental Orders
+              <div className="text-sm font-semibold text-foreground">
+                Fleet Rental Orders
               </div>
-              <div className="text-xs text-slate-500 dark:text-slate-400">
-                Mark active, return & restock
+              <div className="text-xs text-muted-foreground">
+                Active bookings & return dispatches
               </div>
             </div>
           </div>
-          <ArrowUpRight className="h-4 w-4 text-slate-400 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-blue-500" />
+          <ArrowUpRight className="h-4 w-4 text-muted-foreground transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-accent-text" />
         </Link>
 
         <Link
-          href="/dashboard/owner/equipment"
-          className="group flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-emerald-500/50 hover:bg-emerald-500/5 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-emerald-500/40"
+          href="/dashboard/owner/profile"
+          className="group flex items-center justify-between rounded-xl border border-border bg-surface p-5 shadow-xs transition hover:border-primary/50 hover:bg-surface-2"
         >
           <div className="flex items-center gap-3">
-            <div className="rounded-xl bg-emerald-500/10 p-2.5 text-emerald-500">
-              <Boxes className="h-5 w-5" />
+            <div className="rounded-lg bg-surface-2 p-2.5 text-accent-text border border-border">
+              <Clock className="h-5 w-5" />
             </div>
             <div>
-              <div className="text-sm font-semibold text-slate-900 dark:text-white">
-                Equipment Fleet
+              <div className="text-sm font-semibold text-foreground">
+                Partner Profile
               </div>
-              <div className="text-xs text-slate-500 dark:text-slate-400">
-                Edit pricing, specs & availability
+              <div className="text-xs text-muted-foreground">
+                Operating details & depot location
               </div>
             </div>
           </div>
-          <ArrowUpRight className="h-4 w-4 text-slate-400 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-emerald-500" />
+          <ArrowUpRight className="h-4 w-4 text-muted-foreground transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-accent-text" />
         </Link>
       </div>
     </div>

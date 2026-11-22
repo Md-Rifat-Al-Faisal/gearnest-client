@@ -169,3 +169,11 @@ npm run build
 # Start production server
 npm start
 ```
+
+
+---
+
+## Photography & Asset Credits
+
+- **Landing Page Hero Photo**: Komatsu autonomous trenching excavator retrofitted with the Built Robotics Exosystem by [Built Robotics](https://unsplash.com/@built) on [Unsplash](https://images.unsplash.com/photo-1649829809465-d358fce60ebd).
+- **Category & Fleet Photography**: Commercial equipment photography licensed via Unsplash (Caterpillar, Sony Alpha, Ford Super Duty, John Deere, DJI Enterprise, and Chauvet Professional).

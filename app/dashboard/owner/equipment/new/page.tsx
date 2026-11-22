@@ -10,11 +10,11 @@ import {
   ArrowLeft,
   Image as ImageIcon,
   CheckCircle,
-  HelpCircle,
 } from "lucide-react"
 import { apiRequest } from "@/lib/api-client"
 import { uploadImageToImgBB } from "@/lib/upload"
 import { toast } from "sonner"
+import { Button } from "@/components/ui/button"
 
 const CATEGORIES = [
   "Construction",
@@ -126,17 +126,21 @@ export default function NewEquipmentPage() {
     <div className="max-w-4xl mx-auto space-y-6">
       {/* Header */}
       <div className="flex items-center gap-4">
-        <Link
-          href="/dashboard/owner/equipment"
-          className="p-2 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+        <Button
+          variant="outline"
+          size="icon"
+          asChild
+          className="size-9"
         >
-          <ArrowLeft className="h-4 w-4" />
-        </Link>
+          <Link href="/dashboard/owner/equipment">
+            <ArrowLeft className="h-4 w-4" />
+          </Link>
+        </Button>
         <div>
-          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+          <h1 className="text-2xl font-extrabold tracking-tight font-heading text-foreground">
             List New Equipment
           </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+          <p className="text-xs text-muted-foreground mt-0.5">
             Add a machine or production tool to your rentable inventory.
           </p>
         </div>
@@ -144,9 +148,9 @@ export default function NewEquipmentPage() {
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Core Information Card */}
-        <div className="p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 space-y-5 shadow-xs">
-          <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <PackagePlus className="h-4 w-4 text-amber-500" />
+        <div className="p-6 rounded-xl border border-border bg-surface space-y-5 shadow-xs">
+          <h2 className="text-base font-bold font-heading text-foreground flex items-center gap-2">
+            <PackagePlus className="h-4 w-4 text-accent-text" />
             General Specifications
           </h2>
 
@@ -154,7 +158,7 @@ export default function NewEquipmentPage() {
             <div className="md:col-span-2">
               <label
                 htmlFor="new-equipment-name"
-                className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+                className="block text-xs font-semibold text-foreground mb-1.5"
               >
                 Equipment Title / Name *
               </label>
@@ -166,14 +170,14 @@ export default function NewEquipmentPage() {
                 placeholder="e.g. Caterpillar 308 CR Mini Excavator"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+                className="w-full px-3.5 py-2.5 rounded-lg border border-border bg-surface text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
               />
             </div>
 
             <div>
               <label
                 htmlFor="new-equipment-category"
-                className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+                className="block text-xs font-semibold text-foreground mb-1.5"
               >
                 Category *
               </label>
@@ -182,7 +186,7 @@ export default function NewEquipmentPage() {
                 name="category"
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+                className="w-full px-3.5 py-2.5 rounded-lg border border-border bg-surface text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
               >
                 {CATEGORIES.map((cat) => (
                   <option key={cat} value={cat}>
@@ -195,7 +199,7 @@ export default function NewEquipmentPage() {
             <div>
               <label
                 htmlFor="new-equipment-location"
-                className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+                className="block text-xs font-semibold text-foreground mb-1.5"
               >
                 Location (City, State / Metro) *
               </label>
@@ -207,14 +211,14 @@ export default function NewEquipmentPage() {
                 placeholder="e.g. Austin, TX"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+                className="w-full px-3.5 py-2.5 rounded-lg border border-border bg-surface text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
               />
             </div>
 
             <div>
               <label
                 htmlFor="new-equipment-brand"
-                className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+                className="block text-xs font-semibold text-foreground mb-1.5"
               >
                 Manufacturer / Brand
               </label>
@@ -225,14 +229,14 @@ export default function NewEquipmentPage() {
                 placeholder="e.g. Caterpillar, Sony, John Deere"
                 value={brand}
                 onChange={(e) => setBrand(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+                className="w-full px-3.5 py-2.5 rounded-lg border border-border bg-surface text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
               />
             </div>
 
             <div>
               <label
                 htmlFor="new-equipment-model"
-                className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+                className="block text-xs font-semibold text-foreground mb-1.5"
               >
                 Model Number / Variant
               </label>
@@ -243,14 +247,14 @@ export default function NewEquipmentPage() {
                 placeholder="e.g. 308 CR / FX6 / S650"
                 value={model}
                 onChange={(e) => setModel(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+                className="w-full px-3.5 py-2.5 rounded-lg border border-border bg-surface text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
               />
             </div>
 
             <div>
               <label
                 htmlFor="new-equipment-condition"
-                className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+                className="block text-xs font-semibold text-foreground mb-1.5"
               >
                 Condition
               </label>
@@ -259,7 +263,7 @@ export default function NewEquipmentPage() {
                 name="condition"
                 value={condition}
                 onChange={(e) => setCondition(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+                className="w-full px-3.5 py-2.5 rounded-lg border border-border bg-surface text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
               >
                 {CONDITIONS.map((cond) => (
                   <option key={cond} value={cond}>
@@ -272,7 +276,7 @@ export default function NewEquipmentPage() {
             <div>
               <label
                 htmlFor="new-equipment-quantity"
-                className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+                className="block text-xs font-semibold text-foreground mb-1.5"
               >
                 Units Available for Rent *
               </label>
@@ -284,14 +288,14 @@ export default function NewEquipmentPage() {
                 required
                 value={availableQuantity}
                 onChange={(e) => setAvailableQuantity(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+                className="w-full px-3.5 py-2.5 rounded-lg border border-border bg-surface text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
               />
             </div>
 
             <div className="md:col-span-2">
               <label
                 htmlFor="new-equipment-description"
-                className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+                className="block text-xs font-semibold text-foreground mb-1.5"
               >
                 Detailed Description & Features
               </label>
@@ -302,16 +306,16 @@ export default function NewEquipmentPage() {
                 placeholder="Describe horsepower, included accessories, boom reach, lenses, attachments, or operating specs..."
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+                className="w-full px-3.5 py-2.5 rounded-lg border border-border bg-surface text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
               />
             </div>
           </div>
         </div>
 
         {/* Pricing & Terms Card */}
-        <div className="p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 space-y-5 shadow-xs">
-          <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <span className="text-amber-500 font-extrabold text-lg">$</span>
+        <div className="p-6 rounded-xl border border-border bg-surface space-y-5 shadow-xs">
+          <h2 className="text-base font-bold font-heading text-foreground flex items-center gap-2">
+            <span className="text-accent-text font-extrabold text-lg">$</span>
             Rental Pricing & Terms
           </h2>
 
@@ -319,12 +323,12 @@ export default function NewEquipmentPage() {
             <div>
               <label
                 htmlFor="new-equipment-price"
-                className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+                className="block text-xs font-semibold text-foreground mb-1.5"
               >
                 Rental Price (USD) *
               </label>
               <div className="relative">
-                <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 font-semibold text-slate-400">
+                <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 font-semibold text-muted-foreground">
                   $
                 </span>
                 <input
@@ -337,7 +341,7 @@ export default function NewEquipmentPage() {
                   placeholder="150.00"
                   value={rentalPrice}
                   onChange={(e) => setRentalPrice(e.target.value)}
-                  className="w-full pl-9 pr-4 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50 font-semibold"
+                  className="w-full pl-9 pr-4 py-2.5 rounded-lg border border-border bg-surface text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 font-semibold"
                 />
               </div>
             </div>
@@ -345,7 +349,7 @@ export default function NewEquipmentPage() {
             <div>
               <label
                 htmlFor="new-equipment-rental-type"
-                className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+                className="block text-xs font-semibold text-foreground mb-1.5"
               >
                 Rental Billing Period *
               </label>
@@ -354,7 +358,7 @@ export default function NewEquipmentPage() {
                 name="rentalType"
                 value={rentalType}
                 onChange={(e) => setRentalType(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+                className="w-full px-3.5 py-2.5 rounded-lg border border-border bg-surface text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
               >
                 {RENTAL_TYPES.map((type) => (
                   <option key={type} value={type}>
@@ -367,7 +371,7 @@ export default function NewEquipmentPage() {
             <div className="md:col-span-2">
               <label
                 htmlFor="new-equipment-rental-terms"
-                className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+                className="block text-xs font-semibold text-foreground mb-1.5"
               >
                 Rental Terms & Handover Requirements
               </label>
@@ -378,16 +382,16 @@ export default function NewEquipmentPage() {
                 placeholder="e.g. Valid operator license required. Fuel tank full upon handover. Return in clean working condition."
                 value={rentalTerms}
                 onChange={(e) => setRentalTerms(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+                className="w-full px-3.5 py-2.5 rounded-lg border border-border bg-surface text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
               />
             </div>
           </div>
         </div>
 
         {/* Image Upload Card */}
-        <div className="p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 space-y-4 shadow-xs">
-          <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <ImageIcon className="h-4 w-4 text-amber-500" />
+        <div className="p-6 rounded-xl border border-border bg-surface space-y-4 shadow-xs">
+          <h2 className="text-base font-bold font-heading text-foreground flex items-center gap-2">
+            <ImageIcon className="h-4 w-4 text-accent-text" />
             Equipment Photo (ImgBB Hosted)
           </h2>
 
@@ -395,13 +399,13 @@ export default function NewEquipmentPage() {
             <div className="space-y-3">
               <label
                 htmlFor="new-equipment-file-input"
-                className="block text-xs font-semibold text-slate-700 dark:text-slate-300"
+                className="block text-xs font-semibold text-foreground"
               >
                 Upload Image File
               </label>
               <label
                 htmlFor="new-equipment-file-input"
-                className="border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-amber-500 rounded-xl p-6 flex flex-col items-center justify-center cursor-pointer transition-colors text-center group"
+                className="border-2 border-dashed border-border hover:border-primary rounded-xl p-6 flex flex-col items-center justify-center cursor-pointer transition-colors text-center group bg-surface-2/30"
               >
                 <input
                   id="new-equipment-file-input"
@@ -413,15 +417,15 @@ export default function NewEquipmentPage() {
                   className="hidden"
                 />
                 {uploadingImage ? (
-                  <div className="flex flex-col items-center gap-2 text-amber-500">
+                  <div className="flex flex-col items-center gap-2 text-primary">
                     <Loader2 className="h-8 w-8 animate-spin" />
                     <span className="text-xs font-semibold">Uploading to ImgBB CDN...</span>
                   </div>
                 ) : (
-                  <div className="flex flex-col items-center gap-2 text-slate-500 group-hover:text-amber-500">
+                  <div className="flex flex-col items-center gap-2 text-muted-foreground group-hover:text-primary">
                     <Upload className="h-8 w-8" />
                     <span className="text-xs font-medium">Click to select photo or drag here</span>
-                    <span className="text-[10px] text-slate-400">PNG, JPG, WebP up to 10MB</span>
+                    <span className="text-[10px] text-muted-foreground">PNG, JPG, WebP up to 10MB</span>
                   </div>
                 )}
               </label>
@@ -429,7 +433,7 @@ export default function NewEquipmentPage() {
               <div className="pt-2">
                 <label
                   htmlFor="new-equipment-image-url"
-                  className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1"
+                  className="block text-xs font-semibold text-foreground mb-1"
                 >
                   Or enter Direct Image URL
                 </label>
@@ -440,21 +444,21 @@ export default function NewEquipmentPage() {
                   placeholder="https://..."
                   value={image}
                   onChange={(e) => setImage(e.target.value)}
-                  className="w-full px-3.5 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-xs focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+                  className="w-full px-3.5 py-2 rounded-lg border border-border bg-surface text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-primary/50"
                 />
               </div>
             </div>
 
             {/* Preview */}
             <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-3">
+              <label className="block text-xs font-semibold text-foreground mb-3">
                 Live Preview
               </label>
-              <div className="aspect-video w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-950 overflow-hidden flex items-center justify-center">
+              <div className="aspect-video w-full rounded-xl border border-border bg-surface-2 overflow-hidden flex items-center justify-center">
                 {image ? (
                   <img src={image} alt="Preview" className="w-full h-full object-cover" />
                 ) : (
-                  <div className="flex flex-col items-center gap-1.5 text-slate-400">
+                  <div className="flex flex-col items-center gap-1.5 text-muted-foreground">
                     <ImageIcon className="h-8 w-8" />
                     <span className="text-xs">No image provided yet</span>
                   </div>
@@ -466,16 +470,18 @@ export default function NewEquipmentPage() {
 
         {/* Submit Actions */}
         <div className="flex items-center justify-end gap-3 pt-2">
-          <Link
-            href="/dashboard/owner/equipment"
-            className="px-5 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 text-sm font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+          <Button
+            type="button"
+            variant="outline"
+            asChild
           >
-            Cancel
-          </Link>
-          <button
+            <Link href="/dashboard/owner/equipment">
+              Cancel
+            </Link>
+          </Button>
+          <Button
             type="submit"
             disabled={submitting || uploadingImage}
-            className="px-6 py-2.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 text-sm font-bold flex items-center gap-2 shadow-sm shadow-amber-500/20 transition-all disabled:opacity-50"
           >
             {submitting ? (
               <>
@@ -488,7 +494,7 @@ export default function NewEquipmentPage() {
                 <span>Publish Listing for Moderation</span>
               </>
             )}
-          </button>
+          </Button>
         </div>
       </form>
     </div>

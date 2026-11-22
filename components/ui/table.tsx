@@ -22,7 +22,7 @@ export function TableHeader({
   return (
     <thead
       className={cn(
-        "bg-slate-50 dark:bg-slate-900/80 text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200 dark:border-slate-800",
+        "sticky top-0 z-10 bg-surface-2 text-[11px] font-bold text-muted-foreground uppercase tracking-wider border-b border-border",
         className
       )}
       {...props}
@@ -36,7 +36,7 @@ export function TableBody({
 }: React.HTMLAttributes<HTMLTableSectionElement>) {
   return (
     <tbody
-      className={cn("divide-y divide-slate-200 dark:divide-slate-800/80", className)}
+      className={cn("divide-y divide-border", className)}
       {...props}
     />
   )
@@ -49,7 +49,7 @@ export function TableFooter({
   return (
     <tfoot
       className={cn(
-        "border-t border-slate-200 bg-slate-50/50 font-medium dark:border-slate-800 dark:bg-slate-900/50",
+        "border-t border-border bg-surface-2/60 font-medium text-foreground",
         className
       )}
       {...props}
@@ -64,7 +64,7 @@ export function TableRow({
   return (
     <tr
       className={cn(
-        "hover:bg-slate-50/60 dark:hover:bg-slate-900/60 transition-colors",
+        "odd:bg-surface even:bg-surface-2/40 hover:bg-surface-2 transition-colors",
         className
       )}
       {...props}
@@ -78,7 +78,7 @@ export function TableHead({
 }: React.ThHTMLAttributes<HTMLTableCellElement>) {
   return (
     <th
-      className={cn("py-3.5 px-4 font-bold align-middle", className)}
+      className={cn("py-3 px-3.5 font-bold align-middle text-muted-foreground", className)}
       {...props}
     />
   )
@@ -90,7 +90,7 @@ export function TableCell({
 }: React.TdHTMLAttributes<HTMLTableCellElement>) {
   return (
     <td
-      className={cn("py-4 px-4 align-middle text-xs", className)}
+      className={cn("py-3 px-3.5 align-middle text-xs text-foreground", className)}
       {...props}
     />
   )
@@ -102,7 +102,7 @@ export function TableCaption({
 }: React.HTMLAttributes<HTMLTableCaptionElement>) {
   return (
     <caption
-      className={cn("mt-4 text-xs text-slate-500 dark:text-slate-400", className)}
+      className={cn("mt-4 text-xs text-muted-foreground", className)}
       {...props}
     />
   )

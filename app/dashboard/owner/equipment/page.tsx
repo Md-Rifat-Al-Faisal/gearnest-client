@@ -20,6 +20,16 @@ import {
 } from "lucide-react"
 import { apiRequest } from "@/lib/api-client"
 import { toast } from "sonner"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableHead,
+  TableRow,
+  TableCell,
+} from "@/components/ui/table"
 
 interface EquipmentItem {
   _id: string
@@ -119,44 +129,43 @@ export default function OwnerEquipmentPage() {
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight font-heading text-foreground">
             Equipment Fleet
           </h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-sm text-muted-foreground mt-1">
             Manage your machinery inventory, listing status, and rental terms.
           </p>
         </div>
 
-        <Link
-          href="/dashboard/owner/equipment/new"
-          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold text-sm shadow-sm shadow-amber-500/20 transition-all shrink-0"
-        >
-          <Plus className="h-4 w-4 stroke-[2.5]" />
-          <span>Add Equipment</span>
-        </Link>
+        <Button asChild size="sm">
+          <Link href="/dashboard/owner/equipment/new" className="flex items-center gap-2">
+            <Plus className="h-4 w-4 stroke-[2.5]" />
+            <span>Add Equipment</span>
+          </Link>
+        </Button>
       </div>
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs">
-          <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+        <div className="spec-line-kpi p-5 rounded-xl border border-border bg-surface shadow-xs">
+          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
             Total Inventory
           </p>
-          <p className="text-2xl font-bold text-slate-900 dark:text-white mt-1">{totalCount}</p>
+          <p className="text-2xl sm:text-3xl font-bold font-heading text-foreground mt-1">{totalCount}</p>
         </div>
-        <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs">
-          <p className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
+        <div className="spec-line-kpi p-5 rounded-xl border border-border bg-surface shadow-xs">
+          <p className="text-xs font-semibold text-success uppercase tracking-wider flex items-center gap-1.5">
             <CheckCircle2 className="h-3.5 w-3.5" />
             Approved & Live
           </p>
-          <p className="text-2xl font-bold text-slate-900 dark:text-white mt-1">{approvedCount}</p>
+          <p className="text-2xl sm:text-3xl font-bold font-heading text-foreground mt-1">{approvedCount}</p>
         </div>
-        <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs">
-          <p className="text-xs font-semibold text-amber-600 dark:text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
+        <div className="spec-line-kpi p-5 rounded-xl border border-border bg-surface shadow-xs">
+          <p className="text-xs font-semibold text-warning-text uppercase tracking-wider flex items-center gap-1.5">
             <Clock className="h-3.5 w-3.5" />
             Pending Approval
           </p>
-          <p className="text-2xl font-bold text-slate-900 dark:text-white mt-1">{pendingCount}</p>
+          <p className="text-2xl sm:text-3xl font-bold font-heading text-foreground mt-1">{pendingCount}</p>
         </div>
       </div>
 
@@ -166,7 +175,7 @@ export default function OwnerEquipmentPage() {
           <label htmlFor="owner-equipment-search" className="sr-only">
             Search my equipment
           </label>
-          <Search className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+          <Search className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <input
             id="owner-equipment-search"
             name="search"
@@ -174,12 +183,12 @@ export default function OwnerEquipmentPage() {
             placeholder="Search by equipment name, brand, or category..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-11 pr-4 py-2 rounded-lg border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+            className="w-full pl-10 pr-4 py-2 rounded-lg border border-border bg-surface text-foreground placeholder:text-muted-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
           />
         </div>
 
         <div className="flex items-center gap-2">
-          <label htmlFor="owner-status-filter" className="text-xs font-medium text-slate-500 dark:text-slate-400">
+          <label htmlFor="owner-status-filter" className="text-xs font-medium text-muted-foreground">
             Status:
           </label>
           <select
@@ -187,7 +196,7 @@ export default function OwnerEquipmentPage() {
             name="statusFilter"
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="py-2 px-3 rounded-lg border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50 text-slate-700 dark:text-slate-200"
+            className="py-2 px-3 rounded-lg border border-border bg-surface text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
           >
             <option value="all">All Statuses</option>
             <option value="Approved">Approved</option>
@@ -198,56 +207,52 @@ export default function OwnerEquipmentPage() {
       </div>
 
       {/* Equipment Table */}
-      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-xs">
+      <div className="rounded-xl border border-border bg-surface overflow-hidden shadow-xs">
         {loading ? (
-          <div className="py-20 flex flex-col items-center justify-center gap-3 text-slate-500">
-            <Loader2 className="h-8 w-8 animate-spin text-amber-500" />
+          <div className="py-20 flex flex-col items-center justify-center gap-3 text-muted-foreground">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
             <p className="text-sm font-medium">Loading your equipment inventory...</p>
           </div>
         ) : filteredEquipment.length === 0 ? (
           <div className="py-20 px-4 text-center">
-            <div className="h-14 w-14 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center mx-auto mb-4">
+            <div className="h-14 w-14 rounded-xl bg-primary/10 text-primary flex items-center justify-center mx-auto mb-4">
               <Boxes className="h-7 w-7" />
             </div>
-            <h3 className="text-base font-bold text-slate-900 dark:text-white">No equipment found</h3>
-            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 max-w-sm mx-auto">
+            <h3 className="text-base font-bold font-heading text-foreground">No equipment found</h3>
+            <p className="text-sm text-muted-foreground mt-1 max-w-sm mx-auto">
               {equipment.length === 0
                 ? "You haven't listed any equipment yet. Click below to add your first machine."
                 : "No items match your active search or filter criteria."}
             </p>
             {equipment.length === 0 && (
-              <Link
-                href="/dashboard/owner/equipment/new"
-                className="mt-5 inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-amber-500 text-slate-950 font-semibold text-sm hover:bg-amber-400 transition-colors"
-              >
-                <Plus className="h-4 w-4 stroke-[2.5]" />
-                <span>List Equipment Now</span>
-              </Link>
+              <Button asChild className="mt-5">
+                <Link href="/dashboard/owner/equipment/new" className="flex items-center gap-2">
+                  <Plus className="h-4 w-4 stroke-[2.5]" />
+                  <span>List Equipment Now</span>
+                </Link>
+              </Button>
             )}
           </div>
         ) : (
           <>
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm">
-                <thead className="bg-slate-50 dark:bg-slate-950/60 border-b border-slate-200 dark:border-slate-800 text-xs uppercase font-semibold text-slate-500 dark:text-slate-400">
-                  <tr>
-                    <th className="py-3.5 px-4">Equipment</th>
-                    <th className="py-3.5 px-4">Category</th>
-                    <th className="py-3.5 px-4">Rental Rate</th>
-                    <th className="py-3.5 px-4 text-center">Stock</th>
-                    <th className="py-3.5 px-4 text-center">Status</th>
-                    <th className="py-3.5 px-4 text-right">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-200 dark:divide-slate-800/80">
+              <Table className="text-sm">
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="py-3 px-3">Equipment</TableHead>
+                    <TableHead className="py-3 px-3">Category</TableHead>
+                    <TableHead className="py-3 px-3">Rental Rate</TableHead>
+                    <TableHead className="py-3 px-3 text-center">Stock</TableHead>
+                    <TableHead className="py-3 px-3 text-center">Status</TableHead>
+                    <TableHead className="py-3 px-3 text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
                   {paginatedEquipment.map((item) => (
-                    <tr
-                      key={item._id}
-                      className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors"
-                    >
-                      <td className="py-4 px-4">
+                    <TableRow key={item._id}>
+                      <TableCell className="py-3.5 px-3">
                         <div className="flex items-center gap-3">
-                          <div className="h-14 w-14 rounded-lg bg-slate-100 dark:bg-slate-800 overflow-hidden shrink-0 border border-slate-200 dark:border-slate-700">
+                          <div className="h-12 w-12 rounded-lg bg-surface-2 overflow-hidden shrink-0 border border-border">
                             {item.image ? (
                               <img
                                 src={item.image}
@@ -255,138 +260,150 @@ export default function OwnerEquipmentPage() {
                                 className="h-full w-full object-cover"
                               />
                             ) : (
-                              <div className="h-full w-full flex items-center justify-center text-slate-400">
-                                <Package className="h-6 w-6" />
+                              <div className="h-full w-full flex items-center justify-center text-muted-foreground">
+                                <Package className="h-5 w-5" />
                               </div>
                             )}
                           </div>
-                          <div className="min-w-0">
-                            <p className="font-semibold text-slate-900 dark:text-white truncate max-w-xs">
+                          <div className="min-w-0 max-w-[220px] sm:max-w-[280px]">
+                            <p className="font-semibold text-foreground line-clamp-2 leading-snug">
                               {item.name}
                             </p>
-                            <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
+                            <p className="text-xs text-muted-foreground line-clamp-2 mt-0.5">
                               {item.brand} {item.model && `• ${item.model}`}
                             </p>
                           </div>
                         </div>
-                      </td>
+                      </TableCell>
 
-                      <td className="py-4 px-4 text-slate-600 dark:text-slate-300">
-                        <span className="inline-block px-2 py-0.5 rounded text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+                      <TableCell className="py-3.5 px-3 text-muted-foreground">
+                        <Badge variant="outline">
                           {item.category}
-                        </span>
-                      </td>
+                        </Badge>
+                      </TableCell>
 
-                      <td className="py-4 px-4 font-semibold text-slate-900 dark:text-white">
+                      <TableCell className="py-3.5 px-3 font-semibold text-foreground">
                         ${item.rentalPrice}{" "}
-                        <span className="text-xs font-normal text-slate-500">
+                        <span className="text-xs font-normal text-muted-foreground">
                           / {(item.rentalType || "day").toLowerCase()}
                         </span>
-                      </td>
+                      </TableCell>
 
-                      <td className="py-4 px-4 text-center">
-                        <span
-                          className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-bold ${
-                            item.availableQuantity > 0
-                              ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-                              : "bg-rose-500/10 text-rose-600 dark:text-rose-400"
-                          }`}
-                        >
-                          {item.availableQuantity} available
-                        </span>
-                      </td>
+                      <TableCell className="py-3.5 px-3 text-center">
+                        {item.availableQuantity > 0 ? (
+                          <Badge variant="success">
+                            {item.availableQuantity} available
+                          </Badge>
+                        ) : (
+                          <Badge variant="destructive">
+                            Out of stock
+                          </Badge>
+                        )}
+                      </TableCell>
 
-                      <td className="py-4 px-4 text-center">
+                      <TableCell className="py-3.5 px-3 text-center">
                         {item.status === "Approved" ? (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                          <Badge variant="success">
                             <CheckCircle2 className="h-3 w-3" />
                             Approved
-                          </span>
+                          </Badge>
                         ) : item.status === "Pending" ? (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                          <Badge variant="warning">
                             <Clock className="h-3 w-3" />
                             Pending
-                          </span>
+                          </Badge>
                         ) : (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20">
+                          <Badge variant="destructive">
                             <XCircle className="h-3 w-3" />
                             Rejected
-                          </span>
+                          </Badge>
                         )}
-                      </td>
+                      </TableCell>
 
-                      <td className="py-4 px-4 text-right">
-                        <div className="flex items-center justify-end gap-1.5">
-                          <Link
-                            href={`/equipment/${item._id}`}
+                      <TableCell className="py-3.5 px-3 text-right">
+                        <div className="flex items-center justify-end gap-1">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            asChild
                             title="View Catalog Page"
-                            className="p-1.5 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+                            className="size-8 text-muted-foreground hover:text-foreground"
                           >
-                            <Eye className="h-4 w-4" />
-                          </Link>
-                          <Link
-                            href={`/dashboard/owner/equipment/${item._id}/edit`}
+                            <Link href={`/equipment/${item._id}`}>
+                              <Eye className="h-4 w-4" />
+                            </Link>
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            asChild
                             title="Edit Equipment"
-                            className="p-1.5 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-amber-500 dark:hover:text-amber-400 transition-colors"
+                            className="size-8 text-muted-foreground hover:text-accent-text"
                           >
-                            <Edit2 className="h-4 w-4" />
-                          </Link>
-                          <button
+                            <Link href={`/dashboard/owner/equipment/${item._id}/edit`}>
+                              <Edit2 className="h-4 w-4" />
+                            </Link>
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
                             onClick={() => setItemToDelete(item)}
                             title="Delete Equipment"
-                            className="p-1.5 rounded-md hover:bg-rose-500/10 text-slate-500 hover:text-rose-600 dark:hover:text-rose-400 transition-colors"
+                            className="size-8 text-muted-foreground hover:text-danger"
                           >
                             <Trash2 className="h-4 w-4" />
-                          </button>
+                          </Button>
                         </div>
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   ))}
-                </tbody>
-              </table>
+                </TableBody>
+              </Table>
             </div>
 
             {/* Pagination Controls */}
             {totalPages > 1 && (
-              <div className="px-4 py-3.5 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3 bg-slate-50/50 dark:bg-slate-900/50">
-                <p className="text-xs text-slate-500 dark:text-slate-400">
+              <div className="px-4 py-3.5 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-3 bg-surface-2/40">
+                <p className="text-xs text-muted-foreground">
                   Showing{" "}
-                  <span className="font-semibold text-slate-700 dark:text-slate-300">
+                  <span className="font-semibold text-foreground">
                     {(currentPage - 1) * itemsPerPage + 1}
                   </span>{" "}
                   to{" "}
-                  <span className="font-semibold text-slate-700 dark:text-slate-300">
+                  <span className="font-semibold text-foreground">
                     {Math.min(currentPage * itemsPerPage, filteredEquipment.length)}
                   </span>{" "}
                   of{" "}
-                  <span className="font-semibold text-slate-700 dark:text-slate-300">
+                  <span className="font-semibold text-foreground">
                     {filteredEquipment.length}
                   </span>{" "}
                   equipment listings
                 </p>
 
                 <div className="flex items-center gap-2">
-                  <button
+                  <Button
+                    variant="outline"
+                    size="sm"
                     onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                     disabled={currentPage === 1}
-                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                   >
                     <ChevronLeft className="h-3.5 w-3.5" />
                     <span>Previous</span>
-                  </button>
+                  </Button>
 
-                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400 px-1">
+                  <span className="text-xs font-medium text-muted-foreground px-1">
                     Page {currentPage} of {totalPages}
                   </span>
 
-                  <button
+                  <Button
+                    variant="outline"
+                    size="sm"
                     onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                     disabled={currentPage === totalPages}
-                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                   >
                     <span>Next</span>
                     <ChevronRight className="h-3.5 w-3.5" />
-                  </button>
+                  </Button>
                 </div>
               </div>
             )}
@@ -396,36 +413,36 @@ export default function OwnerEquipmentPage() {
 
       {/* Delete Confirmation Modal */}
       {itemToDelete && (
-        <div className="fixed inset-0 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-4 z-50">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-xl space-y-4">
-            <div className="flex items-center gap-3 text-rose-600 dark:text-rose-400">
-              <div className="h-10 w-10 rounded-full bg-rose-500/10 flex items-center justify-center shrink-0">
+        <div className="fixed inset-0 bg-band/75 backdrop-blur-xs flex items-center justify-center p-4 z-50">
+          <div className="bg-surface border border-border rounded-xl max-w-md w-full p-6 shadow-xl space-y-4">
+            <div className="flex items-center gap-3 text-danger">
+              <div className="h-10 w-10 rounded-lg bg-danger/10 border border-danger/20 flex items-center justify-center shrink-0">
                 <AlertTriangle className="h-5 w-5" />
               </div>
               <div>
-                <h3 className="font-bold text-lg text-slate-900 dark:text-white">Delete Equipment?</h3>
-                <p className="text-xs text-slate-500">This action cannot be undone.</p>
+                <h3 className="font-bold font-heading text-lg text-foreground">Delete Equipment?</h3>
+                <p className="text-xs text-muted-foreground">This action cannot be undone.</p>
               </div>
             </div>
 
-            <p className="text-sm text-slate-600 dark:text-slate-300">
+            <p className="text-sm text-muted-foreground leading-relaxed">
               Are you sure you want to permanently delete{" "}
-              <strong className="text-slate-900 dark:text-white">&quot;{itemToDelete.name}&quot;</strong>? If there are any
+              <strong className="text-foreground">&quot;{itemToDelete.name}&quot;</strong>? If there are any
               active rental bookings for this equipment, deletion will be blocked to protect ongoing rentals.
             </p>
 
             <div className="flex items-center justify-end gap-3 pt-2">
-              <button
+              <Button
+                variant="outline"
                 onClick={() => setItemToDelete(null)}
                 disabled={deletingId === itemToDelete._id}
-                className="px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-700 text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               >
                 Cancel
-              </button>
-              <button
+              </Button>
+              <Button
+                variant="danger"
                 onClick={() => handleDelete(itemToDelete)}
                 disabled={deletingId === itemToDelete._id}
-                className="px-4 py-2 rounded-lg bg-rose-600 hover:bg-rose-500 text-white text-sm font-semibold flex items-center gap-2 shadow-sm transition-colors"
               >
                 {deletingId === itemToDelete._id ? (
                   <>
@@ -435,7 +452,7 @@ export default function OwnerEquipmentPage() {
                 ) : (
                   <span>Confirm Delete</span>
                 )}
-              </button>
+              </Button>
             </div>
           </div>
         </div>

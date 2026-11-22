@@ -14,6 +14,7 @@ import {
 import { apiRequest } from "@/lib/api-client"
 import { uploadImageToImgBB } from "@/lib/upload"
 import { toast } from "sonner"
+import { Button } from "@/components/ui/button"
 
 const CATEGORIES = [
   "Construction",
@@ -170,8 +171,8 @@ export default function AdminEditEquipmentPage({
 
   if (loading) {
     return (
-      <div className="py-24 flex flex-col items-center justify-center gap-3 text-slate-500">
-        <Loader2 className="h-8 w-8 animate-spin text-amber-500" />
+      <div className="py-24 flex flex-col items-center justify-center gap-3 text-muted-foreground">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
         <p className="text-sm font-medium">Loading equipment for moderation...</p>
       </div>
     )
@@ -181,17 +182,21 @@ export default function AdminEditEquipmentPage({
     <div className="max-w-4xl mx-auto space-y-6">
       {/* Header */}
       <div className="flex items-center gap-4">
-        <Link
-          href="/dashboard/admin/equipment"
-          className="p-2 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+        <Button
+          variant="outline"
+          size="icon"
+          asChild
+          className="size-9"
         >
-          <ArrowLeft className="h-4 w-4" />
-        </Link>
+          <Link href="/dashboard/admin/equipment">
+            <ArrowLeft className="h-4 w-4" />
+          </Link>
+        </Button>
         <div>
-          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+          <h1 className="text-2xl font-extrabold tracking-tight font-heading text-foreground">
             Admin Equipment Override
           </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+          <p className="text-xs text-muted-foreground mt-0.5">
             Modify equipment specifications or moderation status. Partner: {ownerName} ({ownerEmail})
           </p>
         </div>
@@ -199,9 +204,9 @@ export default function AdminEditEquipmentPage({
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Moderation Status Card */}
-        <div className="p-6 rounded-2xl border border-amber-500/20 bg-amber-50/50 dark:bg-amber-950/10 space-y-3">
-          <h2 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <ShieldCheck className="h-4 w-4 text-amber-500" />
+        <div className="p-6 rounded-xl border border-primary/20 bg-surface space-y-3 shadow-xs">
+          <h2 className="text-sm font-bold font-heading text-foreground flex items-center gap-2">
+            <ShieldCheck className="h-4 w-4 text-accent-text" />
             Moderation Status
           </h2>
           <div className="flex items-center gap-4">
@@ -210,8 +215,8 @@ export default function AdminEditEquipmentPage({
                 key={st}
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg border cursor-pointer text-sm font-semibold transition-all ${
                   status === st
-                    ? "bg-amber-500 text-slate-950 border-amber-500 shadow-xs"
-                    : "bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300"
+                    ? "bg-primary text-primary-foreground border-primary shadow-xs"
+                    : "bg-surface border-border text-foreground hover:bg-surface-2"
                 }`}
               >
                 <input
@@ -229,8 +234,8 @@ export default function AdminEditEquipmentPage({
         </div>
 
         {/* Specifications */}
-        <div className="p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 space-y-5 shadow-xs">
-          <h2 className="text-base font-bold text-slate-900 dark:text-white">
+        <div className="p-6 rounded-xl border border-border bg-surface space-y-5 shadow-xs">
+          <h2 className="text-base font-bold font-heading text-foreground">
             General Specifications
           </h2>
 
@@ -238,7 +243,7 @@ export default function AdminEditEquipmentPage({
             <div className="md:col-span-2">
               <label
                 htmlFor="admin-edit-name"
-                className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+                className="block text-xs font-semibold text-foreground mb-1.5"
               >
                 Equipment Title / Name *
               </label>
@@ -249,14 +254,14 @@ export default function AdminEditEquipmentPage({
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+                className="w-full px-3.5 py-2.5 rounded-lg border border-border bg-surface text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
               />
             </div>
 
             <div>
               <label
                 htmlFor="admin-edit-category"
-                className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+                className="block text-xs font-semibold text-foreground mb-1.5"
               >
                 Category *
               </label>
@@ -265,7 +270,7 @@ export default function AdminEditEquipmentPage({
                 name="category"
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+                className="w-full px-3.5 py-2.5 rounded-lg border border-border bg-surface text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
               >
                 {CATEGORIES.map((cat) => (
                   <option key={cat} value={cat}>
@@ -278,7 +283,7 @@ export default function AdminEditEquipmentPage({
             <div>
               <label
                 htmlFor="admin-edit-location"
-                className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+                className="block text-xs font-semibold text-foreground mb-1.5"
               >
                 Location *
               </label>
@@ -289,14 +294,14 @@ export default function AdminEditEquipmentPage({
                 required
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+                className="w-full px-3.5 py-2.5 rounded-lg border border-border bg-surface text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
               />
             </div>
 
             <div>
               <label
                 htmlFor="admin-edit-brand"
-                className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+                className="block text-xs font-semibold text-foreground mb-1.5"
               >
                 Brand
               </label>
@@ -306,14 +311,14 @@ export default function AdminEditEquipmentPage({
                 type="text"
                 value={brand}
                 onChange={(e) => setBrand(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+                className="w-full px-3.5 py-2.5 rounded-lg border border-border bg-surface text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
               />
             </div>
 
             <div>
               <label
                 htmlFor="admin-edit-model"
-                className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+                className="block text-xs font-semibold text-foreground mb-1.5"
               >
                 Model
               </label>
@@ -323,14 +328,14 @@ export default function AdminEditEquipmentPage({
                 type="text"
                 value={model}
                 onChange={(e) => setModel(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+                className="w-full px-3.5 py-2.5 rounded-lg border border-border bg-surface text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
               />
             </div>
 
             <div>
               <label
                 htmlFor="admin-edit-condition"
-                className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+                className="block text-xs font-semibold text-foreground mb-1.5"
               >
                 Condition
               </label>
@@ -339,7 +344,7 @@ export default function AdminEditEquipmentPage({
                 name="condition"
                 value={condition}
                 onChange={(e) => setCondition(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+                className="w-full px-3.5 py-2.5 rounded-lg border border-border bg-surface text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
               >
                 {CONDITIONS.map((cond) => (
                   <option key={cond} value={cond}>
@@ -352,7 +357,7 @@ export default function AdminEditEquipmentPage({
             <div>
               <label
                 htmlFor="admin-edit-quantity"
-                className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+                className="block text-xs font-semibold text-foreground mb-1.5"
               >
                 Available Units
               </label>
@@ -364,14 +369,14 @@ export default function AdminEditEquipmentPage({
                 required
                 value={availableQuantity}
                 onChange={(e) => setAvailableQuantity(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+                className="w-full px-3.5 py-2.5 rounded-lg border border-border bg-surface text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
               />
             </div>
 
             <div className="md:col-span-2">
               <label
                 htmlFor="admin-edit-description"
-                className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+                className="block text-xs font-semibold text-foreground mb-1.5"
               >
                 Description
               </label>
@@ -381,15 +386,15 @@ export default function AdminEditEquipmentPage({
                 rows={4}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+                className="w-full px-3.5 py-2.5 rounded-lg border border-border bg-surface text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
               />
             </div>
           </div>
         </div>
 
         {/* Pricing */}
-        <div className="p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 space-y-5 shadow-xs">
-          <h2 className="text-base font-bold text-slate-900 dark:text-white">
+        <div className="p-6 rounded-xl border border-border bg-surface space-y-5 shadow-xs">
+          <h2 className="text-base font-bold font-heading text-foreground">
             Pricing & Terms
           </h2>
 
@@ -397,7 +402,7 @@ export default function AdminEditEquipmentPage({
             <div>
               <label
                 htmlFor="admin-edit-price"
-                className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+                className="block text-xs font-semibold text-foreground mb-1.5"
               >
                 Rental Price ($)
               </label>
@@ -410,14 +415,14 @@ export default function AdminEditEquipmentPage({
                 required
                 value={rentalPrice}
                 onChange={(e) => setRentalPrice(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+                className="w-full px-3.5 py-2.5 rounded-lg border border-border bg-surface text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
               />
             </div>
 
             <div>
               <label
                 htmlFor="admin-edit-rental-type"
-                className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+                className="block text-xs font-semibold text-foreground mb-1.5"
               >
                 Billing Period
               </label>
@@ -426,7 +431,7 @@ export default function AdminEditEquipmentPage({
                 name="rentalType"
                 value={rentalType}
                 onChange={(e) => setRentalType(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+                className="w-full px-3.5 py-2.5 rounded-lg border border-border bg-surface text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
               >
                 {RENTAL_TYPES.map((type) => (
                   <option key={type} value={type}>
@@ -439,7 +444,7 @@ export default function AdminEditEquipmentPage({
             <div className="md:col-span-2">
               <label
                 htmlFor="admin-edit-terms"
-                className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
+                className="block text-xs font-semibold text-foreground mb-1.5"
               >
                 Rental Terms
               </label>
@@ -449,20 +454,20 @@ export default function AdminEditEquipmentPage({
                 rows={3}
                 value={rentalTerms}
                 onChange={(e) => setRentalTerms(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+                className="w-full px-3.5 py-2.5 rounded-lg border border-border bg-surface text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
               />
             </div>
           </div>
         </div>
 
         {/* Photo */}
-        <div className="p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 space-y-4 shadow-xs">
-          <h2 className="text-base font-bold text-slate-900 dark:text-white">Photo</h2>
+        <div className="p-6 rounded-xl border border-border bg-surface space-y-4 shadow-xs">
+          <h2 className="text-base font-bold font-heading text-foreground">Photo</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5 items-start">
             <div className="space-y-3">
               <label
                 htmlFor="admin-edit-file-input"
-                className="border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-amber-500 rounded-xl p-5 flex flex-col items-center justify-center cursor-pointer transition-colors text-center"
+                className="border-2 border-dashed border-border hover:border-primary rounded-xl p-5 flex flex-col items-center justify-center cursor-pointer transition-colors text-center bg-surface-2/30"
               >
                 <input
                   id="admin-edit-file-input"
@@ -474,12 +479,12 @@ export default function AdminEditEquipmentPage({
                   className="hidden"
                 />
                 {uploadingImage ? (
-                  <div className="flex flex-col items-center gap-2 text-amber-500">
+                  <div className="flex flex-col items-center gap-2 text-primary">
                     <Loader2 className="h-6 w-6 animate-spin" />
                     <span className="text-xs font-semibold">Uploading to ImgBB...</span>
                   </div>
                 ) : (
-                  <div className="flex flex-col items-center gap-1.5 text-slate-500">
+                  <div className="flex flex-col items-center gap-1.5 text-muted-foreground">
                     <Upload className="h-6 w-6" />
                     <span className="text-xs font-medium">Click to replace photo</span>
                   </div>
@@ -496,15 +501,15 @@ export default function AdminEditEquipmentPage({
                 value={image}
                 onChange={(e) => setImage(e.target.value)}
                 placeholder="Or paste image URL"
-                className="w-full px-3.5 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-xs focus:outline-none"
+                className="w-full px-3.5 py-2 rounded-lg border border-border bg-surface text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-primary/50"
               />
             </div>
 
-            <div className="aspect-video w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-950 overflow-hidden flex items-center justify-center">
+            <div className="aspect-video w-full rounded-xl border border-border bg-surface-2 overflow-hidden flex items-center justify-center">
               {image ? (
                 <img src={image} alt="Preview" className="w-full h-full object-cover" />
               ) : (
-                <ImageIcon className="h-8 w-8 text-slate-400" />
+                <ImageIcon className="h-8 w-8 text-muted-foreground" />
               )}
             </div>
           </div>
@@ -512,16 +517,18 @@ export default function AdminEditEquipmentPage({
 
         {/* Buttons */}
         <div className="flex items-center justify-end gap-3 pt-2">
-          <Link
-            href="/dashboard/admin/equipment"
-            className="px-5 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 text-sm font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+          <Button
+            type="button"
+            variant="outline"
+            asChild
           >
-            Cancel
-          </Link>
-          <button
+            <Link href="/dashboard/admin/equipment">
+              Cancel
+            </Link>
+          </Button>
+          <Button
             type="submit"
             disabled={submitting || uploadingImage}
-            className="px-6 py-2.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 text-sm font-bold flex items-center gap-2 shadow-sm shadow-amber-500/20 transition-all disabled:opacity-50"
           >
             {submitting ? (
               <>
@@ -534,7 +541,7 @@ export default function AdminEditEquipmentPage({
                 <span>Save Admin Overrides</span>
               </>
             )}
-          </button>
+          </Button>
         </div>
       </form>
     </div>

@@ -46,14 +46,14 @@ export default async function EquipmentDetailsPage({
   if (!equipment) {
     return (
       <div className="max-w-4xl mx-auto py-24 px-4 text-center">
-        <Package className="h-12 w-12 text-slate-400 mx-auto mb-4" />
-        <h2 className="text-xl font-bold text-slate-900 dark:text-white">Equipment Listing Not Found</h2>
-        <p className="text-sm text-slate-500 mt-2">
+        <Package className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+        <h2 className="text-xl font-bold text-foreground font-heading">Equipment Listing Not Found</h2>
+        <p className="text-sm text-muted-foreground mt-2">
           The requested machinery listing does not exist or is currently inactive.
         </p>
         <Link
           href="/equipment"
-          className="mt-6 inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-amber-500 text-slate-950 font-bold text-xs shadow-xs"
+          className="mt-6 inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary text-primary-foreground font-bold text-xs shadow-xs hover:bg-primary-hover transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
           <span>Return to Catalog</span>

@@ -2,174 +2,100 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { usePathname, useRouter } from "next/navigation"
+import { usePathname } from "next/navigation"
 import {
-  Wrench,
-  LayoutDashboard,
-  PackagePlus,
   Boxes,
-  CalendarCheck2,
+  Plus,
+  ClipboardList,
+  User,
+  Heart,
+  BarChart3,
   Users,
+  ShieldAlert,
   LogOut,
-  ChevronRight,
+  ExternalLink,
   Menu,
   X,
-  ShieldAlert,
   ArrowLeft,
-  ExternalLink,
-  Heart,
-  User,
 } from "lucide-react"
+import { signOut, useSession } from "@/lib/auth-client"
 import { ThemeToggle } from "@/components/theme-toggle"
-import { authClient } from "@/lib/auth-client"
-import { toast } from "sonner"
+import { Logo } from "@/components/logo"
+
+interface NavLink {
+  title: string
+  href: string
+  icon: React.ComponentType<{ className?: string }>
+  badge?: string
+}
 
 interface DashboardSidebarProps {
-  user: {
+  user?: {
     id: string
     name: string
     email: string
     role?: string
     image?: string | null
   }
+  role?: "admin" | "owner" | "customer"
 }
 
-interface NavLinkItem {
-  title: string
-  href: string
-  icon: any
-  badge?: string
-}
-
-export function DashboardSidebar({ user }: DashboardSidebarProps) {
+export function DashboardSidebar({ user, role: roleProp }: DashboardSidebarProps) {
   const pathname = usePathname()
-  const router = useRouter()
+  const { data: session } = useSession()
   const [mobileOpen, setMobileOpen] = useState(false)
-  const role = user.role || "customer"
 
-  const handleSignOut = async () => {
-    try {
-      await authClient.signOut()
-      toast.success("Signed out successfully")
-      router.push("/login")
-      router.refresh()
-    } catch {
-      toast.error("Failed to sign out")
-    }
-  }
+  const activeUser = user || session?.user
+  const role = (roleProp || (activeUser as any)?.role || "customer") as "admin" | "owner" | "customer"
+  const userImage = activeUser?.image
+  const userName = activeUser?.name || "GearNest User"
+  const userEmail = activeUser?.email || "user@gearnest.com"
 
-  const ownerLinks: NavLinkItem[] = [
-    {
-      title: "Overview Analytics",
-      href: "/dashboard/owner",
-      icon: LayoutDashboard,
-    },
-    {
-      title: "My Equipment",
-      href: "/dashboard/owner/equipment",
-      icon: Boxes,
-      badge: "Fleet",
-    },
-    {
-      title: "Add Equipment",
-      href: "/dashboard/owner/equipment/new",
-      icon: PackagePlus,
-    },
-    {
-      title: "Rental Orders",
-      href: "/dashboard/owner/rentals",
-      icon: CalendarCheck2,
-    },
-    {
-      title: "Partner Profile",
-      href: "/dashboard/owner/profile",
-      icon: User,
-    },
+  // Explicit, distinct routes for each role
+  const customerLinks: NavLink[] = [
+    { title: "Rental History", href: "/dashboard/customer/rentals", icon: ClipboardList },
+    { title: "Saved Wishlist", href: "/dashboard/customer/favorites", icon: Heart },
+    { title: "My Profile", href: "/dashboard/customer/profile", icon: User },
   ]
 
-  const adminLinks: NavLinkItem[] = [
-    {
-      title: "Master Analytics",
-      href: "/dashboard/admin",
-      icon: LayoutDashboard,
-    },
-    {
-      title: "Equipment Moderation",
-      href: "/dashboard/admin/equipment",
-      icon: Boxes,
-      badge: "Review",
-    },
-    {
-      title: "All Platform Rentals",
-      href: "/dashboard/admin/rentals",
-      icon: CalendarCheck2,
-    },
-    {
-      title: "Platform Users",
-      href: "/dashboard/admin/users",
-      icon: Users,
-    },
-    {
-      title: "Admin Profile",
-      href: "/dashboard/admin/profile",
-      icon: User,
-    },
+  const ownerLinks: NavLink[] = [
+    { title: "Overview Analytics", href: "/dashboard/owner", icon: BarChart3 },
+    { title: "My Equipment", href: "/dashboard/owner/equipment", icon: Boxes, badge: "Fleet" },
+    { title: "Add Equipment", href: "/dashboard/owner/equipment/new", icon: Plus },
+    { title: "Rental Orders", href: "/dashboard/owner/rentals", icon: ClipboardList },
+    { title: "Partner Profile", href: "/dashboard/owner/profile", icon: User },
   ]
 
-  const renterLinks: NavLinkItem[] = [
-    {
-      title: "My Rentals",
-      href: "/dashboard/customer/rentals",
-      icon: CalendarCheck2,
-      badge: "Bookings",
-    },
-    {
-      title: "My Favorites",
-      href: "/dashboard/customer/favorites",
-      icon: Heart,
-    },
-    {
-      title: "My Profile",
-      href: "/dashboard/customer/profile",
-      icon: User,
-    },
-    {
-      title: "Browse Catalog",
-      href: "/equipment",
-      icon: Boxes,
-    },
+  const adminLinks: NavLink[] = [
+    { title: "Master Analytics", href: "/dashboard/admin", icon: BarChart3 },
+    { title: "Equipment Moderation", href: "/dashboard/admin/equipment", icon: Boxes, badge: "Review" },
+    { title: "All Platform Rentals", href: "/dashboard/admin/rentals", icon: ClipboardList },
+    { title: "Platform Users", href: "/dashboard/admin/users", icon: Users },
+    { title: "Admin Profile", href: "/dashboard/admin/profile", icon: User },
   ]
 
-  const navLinks = role === "admin" ? adminLinks : role === "owner" ? ownerLinks : renterLinks
+  const links =
+    role === "admin" ? adminLinks : role === "owner" ? ownerLinks : customerLinks
 
   const roleLabel =
-    role === "admin" ? "Platform Administrator" : role === "owner" ? "Equipment Partner" : "Equipment Renter"
+    role === "admin"
+      ? "Platform Administrator"
+      : role === "owner"
+        ? "Equipment Partner"
+        : "Verified Renter"
 
   const roleBadgeColor =
     role === "admin"
-      ? "bg-rose-500/10 text-rose-500 border-rose-500/20"
+      ? "bg-danger/10 text-danger border-danger/20"
       : role === "owner"
-        ? "bg-amber-500/10 text-amber-500 border-amber-500/20"
-        : "bg-blue-500/10 text-blue-500 border-blue-500/20"
+        ? "bg-primary/10 text-accent-text border-primary/20"
+        : "bg-surface-2 text-foreground border-border"
 
   const sidebarContent = (
-    <div className="flex flex-col h-full bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 border-r border-slate-200 dark:border-slate-800 transition-colors">
+    <div className="flex flex-col h-full bg-surface text-foreground border-r border-border transition-colors">
       {/* Brand Header */}
-      <div className="p-6 border-b border-slate-200 dark:border-slate-800/80">
-        <Link href="/" className="flex items-center gap-2.5">
-          <div className="h-9 w-9 rounded-lg bg-amber-500 flex items-center justify-center text-slate-950 shadow-md shadow-amber-500/20">
-            <Wrench className="h-5 w-5 stroke-[2.5]" />
-          </div>
-          <div className="flex flex-col">
-            <span className="font-extrabold tracking-tight text-lg text-slate-900 dark:text-white">
-              Gear<span className="text-amber-500">Nest</span>
-            </span>
-            <span className="text-[10px] uppercase tracking-wider font-semibold text-slate-500 dark:text-slate-400">
-              Workspace Console
-            </span>
-          </div>
-        </Link>
-
+      <div className="p-6 border-b border-border">
+        <Logo href="/" />
         <div className="mt-4 flex items-center gap-2">
           <span className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-full border ${roleBadgeColor}`}>
             {roleLabel}
@@ -177,26 +103,26 @@ export function DashboardSidebar({ user }: DashboardSidebarProps) {
         </div>
       </div>
 
-      {/* Nav links */}
-      <div className="flex-1 overflow-y-auto px-4 py-6 space-y-1.5">
-        <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 px-3 mb-2">
+      {/* Navigation Links */}
+      <div className="flex-1 overflow-y-auto px-4 py-6 space-y-1">
+        <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground px-3 mb-2">
           Navigation
         </div>
-        {navLinks.map((link) => {
+
+        {links.map((link) => {
+          // Precise active match
           const isExact = pathname === link.href
-          const isLongestPrefix =
-            !isExact &&
-            link.href !== "/dashboard/owner" &&
-            link.href !== "/dashboard/admin" &&
-            link.href !== "/dashboard/customer" &&
-            link.href !== "/equipment" &&
-            pathname.startsWith(link.href + "/") &&
-            !navLinks.some(
-              (other) =>
-                other.href !== link.href &&
-                other.href.length > link.href.length &&
-                pathname.startsWith(other.href)
+          const isOverviewLink = link.href === "/dashboard/owner" || link.href === "/dashboard/admin"
+          const isChild = !isOverviewLink && pathname.startsWith(link.href)
+
+          let isLongestPrefix = false
+          if (isChild) {
+            const hasMoreSpecificSibling = links.some(
+              (other) => other.href !== link.href && other.href.length > link.href.length && pathname.startsWith(other.href)
             )
+            isLongestPrefix = !hasMoreSpecificSibling
+          }
+
           const isActive = isExact || isLongestPrefix
           const Icon = link.icon
 
@@ -207,20 +133,20 @@ export function DashboardSidebar({ user }: DashboardSidebarProps) {
               onClick={() => setMobileOpen(false)}
               className={`flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
                 isActive
-                  ? "bg-amber-500 text-slate-950 font-bold shadow-xs shadow-amber-500/30"
-                  : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60"
+                  ? "bg-surface-2 text-foreground font-bold border-l-[3px] border-l-primary shadow-xs"
+                  : "text-muted-foreground hover:text-foreground hover:bg-surface-2/60"
               }`}
             >
               <div className="flex items-center gap-3">
-                <Icon className={`h-4 w-4 ${isActive ? "text-slate-950 font-bold" : "text-slate-400"}`} />
+                <Icon className={`h-4 w-4 ${isActive ? "text-accent-text font-bold" : "text-muted-foreground"}`} />
                 <span>{link.title}</span>
               </div>
               {link.badge && (
                 <span
                   className={`text-[10px] px-1.5 py-0.5 rounded font-bold uppercase ${
                     isActive
-                      ? "bg-slate-950/20 text-slate-950"
-                      : "bg-slate-100 dark:bg-slate-800 text-amber-600 dark:text-amber-400 border border-slate-200 dark:border-slate-700/60"
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-surface-2 text-muted-foreground border border-border"
                   }`}
                 >
                   {link.badge}
@@ -231,46 +157,57 @@ export function DashboardSidebar({ user }: DashboardSidebarProps) {
         })}
 
         <div className="pt-6">
-          <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 px-3 mb-2">
+          <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground px-3 mb-2">
             Quick Actions
           </div>
           <Link
             href="/equipment"
-            className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-colors"
+            className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-surface-2/60 transition-colors"
           >
-            <ExternalLink className="h-4 w-4 text-slate-400" />
+            <ExternalLink className="h-4 w-4 text-muted-foreground" />
             <span>Public Catalog</span>
           </Link>
           <Link
             href="/"
-            className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-colors"
+            className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-surface-2/60 transition-colors"
           >
-            <ArrowLeft className="h-4 w-4 text-slate-400" />
+            <ArrowLeft className="h-4 w-4 text-muted-foreground" />
             <span>Back to Home</span>
           </Link>
         </div>
       </div>
 
-      {/* User info & Logout footer */}
-      <div className="p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-950/40 transition-colors">
-        <div className="flex items-center gap-3 mb-3">
-          <div className="h-10 w-10 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center font-bold text-amber-600 dark:text-amber-400 overflow-hidden shrink-0">
-            {user.image ? (
-              <img src={user.image} alt={user.name} className="h-full w-full object-cover" />
+      {/* User Footer Card */}
+      <div className="p-4 border-t border-border bg-surface-2/40">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2.5 min-w-0">
+            {userImage ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={userImage}
+                alt={userName}
+                className="h-8 w-8 rounded-full border border-border object-cover"
+              />
             ) : (
-              user.name.charAt(0).toUpperCase()
+              <div className="h-8 w-8 rounded-full bg-surface-2 flex items-center justify-center font-bold text-xs text-foreground shrink-0 border border-border">
+                {userName.charAt(0).toUpperCase()}
+              </div>
             )}
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-slate-900 dark:text-white truncate">{user.name}</p>
-            <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{user.email}</p>
+            <div className="min-w-0 flex-1">
+              <p className="text-xs font-bold text-foreground truncate">
+                {userName}
+              </p>
+              <p className="text-[11px] text-muted-foreground truncate">
+                {userEmail}
+              </p>
+            </div>
           </div>
           <ThemeToggle />
         </div>
 
         <button
-          onClick={handleSignOut}
-          className="w-full flex items-center justify-center gap-2 py-2 px-3 text-xs font-semibold rounded-lg bg-slate-200/70 dark:bg-slate-800/80 hover:bg-rose-500/10 dark:hover:bg-rose-500/20 text-slate-700 dark:text-slate-300 hover:text-rose-600 dark:hover:text-rose-400 transition-colors border border-slate-300/50 dark:border-transparent cursor-pointer"
+          onClick={() => signOut({ fetchOptions: { onSuccess: () => { window.location.href = "/" } } })}
+          className="mt-3 w-full flex items-center justify-center gap-2 px-3 py-1.5 rounded-lg border border-border bg-surface hover:bg-surface-2 text-muted-foreground hover:text-foreground text-xs font-semibold transition-colors cursor-pointer"
         >
           <LogOut className="h-3.5 w-3.5" />
           <span>Sign Out</span>
@@ -282,23 +219,16 @@ export function DashboardSidebar({ user }: DashboardSidebarProps) {
   return (
     <>
       {/* Mobile Bar */}
-      <div className="lg:hidden flex items-center justify-between p-4 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white sticky top-0 z-40 transition-colors">
+      <div className="lg:hidden flex items-center justify-between p-4 bg-surface border-b border-border text-foreground sticky top-0 z-40 transition-colors">
         <div className="flex items-center gap-2">
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
+            className="p-1.5 rounded-lg bg-surface-2 text-foreground"
             aria-label="Toggle Navigation"
           >
             {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
-          <Link href="/" className="flex items-center gap-2">
-            <div className="h-7 w-7 rounded bg-amber-500 flex items-center justify-center text-slate-950 font-bold">
-              <Wrench className="h-4 w-4" />
-            </div>
-            <span className="font-bold text-base text-slate-900 dark:text-white">
-              Gear<span className="text-amber-500">Nest</span>
-            </span>
-          </Link>
+          <Logo href="/" />
         </div>
 
         <div className="flex items-center gap-2">
@@ -312,11 +242,11 @@ export function DashboardSidebar({ user }: DashboardSidebarProps) {
       {/* Mobile Drawer Overlay */}
       {mobileOpen && (
         <div
-          className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 lg:hidden"
+          className="fixed inset-0 bg-band/80 backdrop-blur-sm z-50 lg:hidden"
           onClick={() => setMobileOpen(false)}
         >
           <div
-            className="w-72 h-full bg-white dark:bg-slate-900"
+            className="w-72 h-full bg-surface"
             onClick={(e) => e.stopPropagation()}
           >
             {sidebarContent}

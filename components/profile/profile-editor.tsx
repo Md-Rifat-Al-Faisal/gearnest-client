@@ -8,26 +8,14 @@ import {
   Phone,
   MapPin,
   Shield,
-  Upload,
   Loader2,
-  CheckCircle2,
   Camera,
   Save,
 } from "lucide-react"
 import { apiRequest } from "@/lib/api-client"
 import { authClient } from "@/lib/auth-client"
 import { toast } from "sonner"
-
-interface ProfileData {
-  id: string
-  name: string
-  email: string
-  role: string
-  image?: string
-  phone?: string
-  address?: string
-  createdAt?: string
-}
+import { Button } from "@/components/ui/button"
 
 interface ProfileEditorProps {
   initialUser?: {
@@ -158,18 +146,18 @@ export function ProfileEditor({ initialUser }: ProfileEditorProps) {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center py-24 space-y-3">
-        <Loader2 className="h-8 w-8 animate-spin text-amber-500" />
-        <p className="text-xs text-slate-500 dark:text-slate-400">Loading profile data...</p>
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <p className="text-xs text-muted-foreground">Loading profile data...</p>
       </div>
     )
   }
 
   const roleBadgeStyle =
     role === "admin"
-      ? "bg-rose-500/10 text-rose-500 border-rose-500/20"
+      ? "bg-danger/10 text-danger border-danger/20"
       : role === "owner"
-        ? "bg-amber-500/10 text-amber-500 border-amber-500/20"
-        : "bg-blue-500/10 text-blue-500 border-blue-500/20"
+        ? "bg-primary/10 text-accent-text border-primary/20"
+        : "bg-surface-2 text-foreground border-border"
 
   const roleTitle =
     role === "admin" ? "Platform Administrator" : role === "owner" ? "Equipment Fleet Partner" : "Equipment Renter"
@@ -177,22 +165,22 @@ export function ProfileEditor({ initialUser }: ProfileEditorProps) {
   return (
     <div className="space-y-6">
       {/* Header Banner */}
-      <div className="relative overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 sm:p-8 shadow-xs">
+      <div className="relative overflow-hidden rounded-xl border border-border bg-surface p-6 sm:p-8 shadow-xs">
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
           {/* Avatar with Camera Overlay */}
           <div className="relative group shrink-0">
-            <div className="size-20 sm:size-24 rounded-2xl overflow-hidden border-2 border-amber-500 bg-slate-100 dark:bg-slate-800 flex items-center justify-center shadow-md">
+            <div className="size-20 sm:size-24 rounded-xl overflow-hidden border-2 border-primary bg-surface-2 flex items-center justify-center shadow-md">
               {image ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={image} alt={name || "Avatar"} className="size-full object-cover" />
               ) : (
-                <User className="size-10 sm:size-12 text-slate-400" />
+                <User className="size-10 sm:size-12 text-muted-foreground" />
               )}
             </div>
 
             <label
               htmlFor="avatar-file-upload"
-              className="absolute -bottom-2 -right-2 p-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-md cursor-pointer transition-transform hover:scale-105"
+              className="absolute -bottom-2 -right-2 p-2 rounded-lg bg-primary hover:bg-primary-hover text-primary-foreground shadow-md cursor-pointer transition-transform hover:scale-105"
               title="Upload new photo"
             >
               {uploadingImage ? (
@@ -215,7 +203,7 @@ export function ProfileEditor({ initialUser }: ProfileEditorProps) {
           {/* User Info & Role Badge */}
           <div className="space-y-1.5 flex-1 min-w-0">
             <div className="flex flex-wrap items-center gap-2.5">
-              <h1 className="text-xl sm:text-2xl font-bold font-heading text-slate-900 dark:text-white truncate">
+              <h1 className="text-xl sm:text-2xl font-bold font-heading text-foreground truncate">
                 {name || "Your Profile"}
               </h1>
               <span
@@ -225,9 +213,9 @@ export function ProfileEditor({ initialUser }: ProfileEditorProps) {
                 {roleTitle}
               </span>
             </div>
-            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
-              <Mail className="size-3.5" />
-              {email}
+            <p className="text-xs sm:text-sm text-muted-foreground flex items-center gap-1.5">
+              <Mail className="size-3.5 text-accent-text" />
+              <span>{email}</span>
             </p>
           </div>
         </div>
@@ -235,12 +223,12 @@ export function ProfileEditor({ initialUser }: ProfileEditorProps) {
 
       {/* Profile Form Card */}
       <form onSubmit={handleSaveProfile} className="space-y-6">
-        <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 sm:p-8 space-y-6 shadow-xs">
-          <div className="border-b border-slate-200 dark:border-slate-800 pb-4">
-            <h2 className="text-base font-bold text-slate-900 dark:text-white">
+        <div className="rounded-xl border border-border bg-surface p-6 sm:p-8 space-y-6 shadow-xs">
+          <div className="border-b border-border pb-4">
+            <h2 className="text-base font-bold text-foreground font-heading">
               Account & Profile Information
             </h2>
-            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+            <p className="mt-1 text-xs text-muted-foreground">
               Manage your display name, photo, and job-site contact details.
             </p>
           </div>
@@ -250,12 +238,12 @@ export function ProfileEditor({ initialUser }: ProfileEditorProps) {
             <div>
               <label
                 htmlFor="profile-name"
-                className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5"
+                className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1.5"
               >
-                Full Name <span className="text-rose-500">*</span>
+                Full Name <span className="text-danger">*</span>
               </label>
               <div className="relative">
-                <User className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-slate-400" />
+                <User className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                 <input
                   id="profile-name"
                   name="name"
@@ -265,7 +253,7 @@ export function ProfileEditor({ initialUser }: ProfileEditorProps) {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Your Full Name"
-                  className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+                  className="w-full pl-10 pr-4 py-2 rounded-lg border border-border bg-surface-2 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
                 />
               </div>
             </div>
@@ -274,19 +262,19 @@ export function ProfileEditor({ initialUser }: ProfileEditorProps) {
             <div>
               <label
                 htmlFor="profile-email"
-                className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5"
+                className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1.5"
               >
-                Email Address <span className="text-slate-400 font-normal">(Primary Auth ID)</span>
+                Email Address <span className="text-muted-foreground font-normal">(Primary Auth ID)</span>
               </label>
               <div className="relative">
-                <Mail className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-slate-400" />
+                <Mail className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                 <input
                   id="profile-email"
                   name="email"
                   type="email"
                   disabled
                   value={email}
-                  className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 text-sm cursor-not-allowed"
+                  className="w-full pl-10 pr-4 py-2 rounded-lg border border-border bg-surface-2/40 text-muted-foreground text-xs cursor-not-allowed"
                 />
               </div>
             </div>
@@ -295,12 +283,12 @@ export function ProfileEditor({ initialUser }: ProfileEditorProps) {
             <div>
               <label
                 htmlFor="profile-phone"
-                className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5"
+                className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1.5"
               >
                 Phone Number
               </label>
               <div className="relative">
-                <Phone className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-slate-400" />
+                <Phone className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                 <input
                   id="profile-phone"
                   name="phone"
@@ -309,7 +297,7 @@ export function ProfileEditor({ initialUser }: ProfileEditorProps) {
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="+1 (555) 000-0000"
-                  className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+                  className="w-full pl-10 pr-4 py-2 rounded-lg border border-border bg-surface-2 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
                 />
               </div>
             </div>
@@ -318,12 +306,12 @@ export function ProfileEditor({ initialUser }: ProfileEditorProps) {
             <div>
               <label
                 htmlFor="profile-address"
-                className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5"
+                className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1.5"
               >
                 City / Operating Location
               </label>
               <div className="relative">
-                <MapPin className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-slate-400" />
+                <MapPin className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                 <input
                   id="profile-address"
                   name="address"
@@ -332,7 +320,7 @@ export function ProfileEditor({ initialUser }: ProfileEditorProps) {
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
                   placeholder="Austin, TX"
-                  className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+                  className="w-full pl-10 pr-4 py-2 rounded-lg border border-border bg-surface-2 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
                 />
               </div>
             </div>
@@ -341,9 +329,9 @@ export function ProfileEditor({ initialUser }: ProfileEditorProps) {
             <div className="sm:col-span-2">
               <label
                 htmlFor="profile-image-url"
-                className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5"
+                className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1.5"
               >
-                Photo Direct URL <span className="text-slate-400 font-normal">(Or use the camera upload button above)</span>
+                Photo Direct URL <span className="text-muted-foreground font-normal">(Or use the camera upload button above)</span>
               </label>
               <input
                 id="profile-image-url"
@@ -352,30 +340,30 @@ export function ProfileEditor({ initialUser }: ProfileEditorProps) {
                 value={image}
                 onChange={(e) => setImage(e.target.value)}
                 placeholder="https://i.ibb.co/... or https://..."
-                className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-xs focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+                className="w-full px-3 py-2 rounded-lg border border-border bg-surface-2 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
               />
             </div>
           </div>
 
           {/* Form Actions */}
-          <div className="flex items-center justify-end pt-4 border-t border-slate-200 dark:border-slate-800">
-            <button
+          <div className="flex items-center justify-end pt-4 border-t border-border">
+            <Button
               type="submit"
               disabled={saving}
-              className="px-6 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-sm flex items-center gap-2 shadow-lg shadow-amber-500/20 transition-all disabled:opacity-50 cursor-pointer"
+              className="font-bold text-xs flex items-center gap-2"
             >
               {saving ? (
                 <>
-                  <Loader2 className="size-4 animate-spin" />
+                  <Loader2 className="size-4 animate-spin mr-1.5" />
                   <span>Saving Changes...</span>
                 </>
               ) : (
                 <>
-                  <Save className="size-4" />
+                  <Save className="size-4 mr-1.5" />
                   <span>Save Profile</span>
                 </>
               )}
-            </button>
+            </Button>
           </div>
         </div>
       </form>

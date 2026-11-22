@@ -4,21 +4,16 @@ import { useEffect, useState } from "react"
 import {
   CalendarCheck2,
   Package,
-  Clock,
-  CheckCircle2,
-  XCircle,
-  Loader2,
-  Calendar,
-  CreditCard,
   Search,
   User,
-  ShieldCheck,
   Building,
   ChevronLeft,
   ChevronRight,
+  Loader2,
 } from "lucide-react"
 import { apiRequest } from "@/lib/api-client"
 import { toast } from "sonner"
+import { Button } from "@/components/ui/button"
 
 interface AdminRental {
   _id: string
@@ -108,30 +103,30 @@ export default function AdminRentalsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="font-heading text-2xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
-            <CalendarCheck2 className="h-6 w-6 text-amber-500" />
+          <h1 className="font-heading text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
+            <CalendarCheck2 className="h-6 w-6 text-accent-text" />
             Platform Rental Operations
           </h1>
-          <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+          <p className="mt-1 text-sm text-muted-foreground">
             Real-time oversight of all machinery bookings, equipment returns, and Stripe payment transactions
           </p>
         </div>
 
-        {/* Quick KPI stats */}
+        {/* Quick KPI stats with .spec-line-kpi */}
         <div className="flex items-center gap-3">
-          <div className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-right">
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 block">
+          <div className="px-4 py-2 rounded-xl bg-surface border border-border text-right spec-line-kpi">
+            <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground block">
               Active Leases
             </span>
-            <span className="text-base font-extrabold text-emerald-600 dark:text-emerald-400">
+            <span className="text-base font-bold text-success font-heading">
               {activeCount} Active
             </span>
           </div>
-          <div className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-right">
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 block">
+          <div className="px-4 py-2 rounded-xl bg-surface border border-border text-right spec-line-kpi">
+            <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground block">
               Gross Volume
             </span>
-            <span className="text-base font-extrabold text-amber-600 dark:text-amber-400">
+            <span className="text-base font-bold text-accent-text font-heading">
               ${totalVolume.toLocaleString()}
             </span>
           </div>
@@ -144,7 +139,7 @@ export default function AdminRentalsPage() {
           <label htmlFor="admin-rentals-search" className="sr-only">
             Search all rentals
           </label>
-          <Search className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+          <Search className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <input
             id="admin-rentals-search"
             name="search"
@@ -152,12 +147,12 @@ export default function AdminRentalsPage() {
             placeholder="Search by equipment, customer, or fleet owner..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-11 pr-4 py-2 rounded-xl border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+            className="w-full pl-10 pr-4 py-2 rounded-lg border border-border bg-surface text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
           />
         </div>
 
         <div className="flex items-center gap-2">
-          <label htmlFor="admin-rentals-status" className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+          <label htmlFor="admin-rentals-status" className="text-xs font-semibold text-muted-foreground">
             Booking Status:
           </label>
           <select
@@ -165,7 +160,7 @@ export default function AdminRentalsPage() {
             name="statusFilter"
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="py-2 px-3 rounded-xl border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-amber-500/50 text-slate-700 dark:text-slate-200"
+            className="py-2 px-3 rounded-lg border border-border bg-surface text-xs font-medium focus:outline-none focus:ring-2 focus:ring-primary/40 text-foreground cursor-pointer"
           >
             <option value="all">All Statuses ({rentals.length})</option>
             <option value="active">Active Rentals</option>
@@ -177,183 +172,183 @@ export default function AdminRentalsPage() {
       </div>
 
       {/* Rentals Table */}
-      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-xs">
+      <div className="rounded-xl border border-border bg-surface overflow-hidden shadow-xs">
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20 space-y-3">
-            <Loader2 className="h-8 w-8 animate-spin text-amber-500" />
-            <p className="text-xs text-slate-500 dark:text-slate-400">Loading system reservations...</p>
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <p className="text-xs text-muted-foreground">Loading system reservations...</p>
           </div>
         ) : filteredRentals.length === 0 ? (
           <div className="p-12 text-center space-y-3">
-            <Package className="size-10 mx-auto text-slate-400" />
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white">No Rentals Recorded</h3>
-            <p className="text-xs text-slate-500">No rental reservations match the selected search or filter.</p>
+            <Package className="size-10 mx-auto text-muted-foreground" />
+            <h3 className="text-sm font-bold text-foreground font-heading">No Rentals Recorded</h3>
+            <p className="text-xs text-muted-foreground">No rental reservations match the selected search or filter.</p>
           </div>
         ) : (
           <>
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 dark:bg-slate-800/60 text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider border-b border-slate-200 dark:border-slate-800">
-                <tr>
-                  <th className="py-3 px-4">Equipment Listing</th>
-                  <th className="py-3 px-4">Customer</th>
-                  <th className="py-3 px-4">Fleet Owner</th>
-                  <th className="py-3 px-4">Duration & Units</th>
-                  <th className="py-3 px-4">Total & Payment</th>
-                  <th className="py-3 px-4 text-right">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
-                {paginatedRentals.map((rental) => {
-                  const startFmt = new Date(rental.startDate).toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                    year: "numeric",
-                    timeZone: "UTC",
-                  })
-                  const endFmt = new Date(rental.endDate).toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                    year: "numeric",
-                    timeZone: "UTC",
-                  })
+            <div className="w-full">
+              <table className="w-full text-left text-xs border-collapse">
+                <thead className="sticky top-0 z-10 bg-surface-2 text-muted-foreground font-bold text-[11px] uppercase tracking-wider border-b border-border">
+                  <tr>
+                    <th className="py-3 px-4">Equipment Listing</th>
+                    <th className="py-3 px-4">Customer</th>
+                    <th className="py-3 px-4">Fleet Owner</th>
+                    <th className="py-3 px-4 whitespace-nowrap">Duration & Units</th>
+                    <th className="py-3 px-4 whitespace-nowrap">Total & Payment</th>
+                    <th className="py-3 px-4 text-right whitespace-nowrap">Status</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border">
+                  {paginatedRentals.map((rental) => {
+                    const startFmt = new Date(rental.startDate).toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                      timeZone: "UTC",
+                    })
+                    const endFmt = new Date(rental.endDate).toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                      timeZone: "UTC",
+                    })
 
-                  const statusStyle =
-                    rental.bookingStatus === "active"
-                      ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20"
-                      : rental.bookingStatus === "completed"
-                        ? "bg-blue-500/10 text-blue-600 border-blue-500/20"
-                        : rental.bookingStatus === "cancelled"
-                          ? "bg-rose-500/10 text-rose-600 border-rose-500/20"
-                          : "bg-amber-500/10 text-amber-600 border-amber-500/20"
+                    const statusStyle =
+                      rental.bookingStatus === "active"
+                        ? "bg-success/10 text-success border-success/20"
+                        : rental.bookingStatus === "completed"
+                          ? "bg-primary/10 text-accent-text border-primary/20"
+                          : rental.bookingStatus === "cancelled"
+                            ? "bg-danger/10 text-danger border-danger/20"
+                            : "bg-surface-2 text-muted-foreground border-border"
 
-                  return (
-                    <tr key={rental._id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
-                      {/* Equipment */}
-                      <td className="py-3.5 px-4 align-top">
-                        <div className="flex items-start gap-2.5">
-                          <div className="size-11 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-800 shrink-0 border border-slate-200 dark:border-slate-700">
-                            {rental.equipmentImage ? (
-                              // eslint-disable-next-line @next/next/no-img-element
-                              <img
-                                src={rental.equipmentImage}
-                                alt={rental.equipmentName}
-                                className="size-full object-cover"
-                              />
-                            ) : (
-                              <Package className="size-full p-2 text-slate-400" />
-                            )}
+                    return (
+                      <tr
+                        key={rental._id}
+                        className="odd:bg-surface even:bg-surface-2/40 hover:bg-surface-2 transition-colors"
+                      >
+                        {/* Equipment */}
+                        <td className="py-3.5 px-4 align-top">
+                          <div className="flex items-start gap-2.5">
+                            <div className="size-10 rounded-lg overflow-hidden bg-surface-2 shrink-0 border border-border">
+                              {rental.equipmentImage ? (
+                                // eslint-disable-next-line @next/next/no-img-element
+                                <img
+                                  src={rental.equipmentImage}
+                                  alt={rental.equipmentName}
+                                  className="size-full object-cover"
+                                />
+                              ) : (
+                                <Package className="size-full p-2 text-muted-foreground" />
+                              )}
+                            </div>
+                            <div className="min-w-0">
+                              <span className="font-bold text-foreground line-clamp-2 leading-snug">
+                                {rental.equipmentName}
+                              </span>
+                              <span className="text-[10px] text-muted-foreground font-medium">
+                                {rental.category}
+                              </span>
+                            </div>
                           </div>
-                          <div>
-                            <span className="font-bold text-slate-900 dark:text-white line-clamp-1">
-                              {rental.equipmentName}
-                            </span>
-                            <span className="text-[10px] text-slate-400 font-medium">
-                              {rental.category}
-                            </span>
+                        </td>
+
+                        {/* Customer */}
+                        <td className="py-3.5 px-4 align-top space-y-0.5">
+                          <div className="font-semibold text-foreground flex items-center gap-1.5">
+                            <User className="size-3 text-muted-foreground" />
+                            <span>{rental.customerName || "Customer"}</span>
                           </div>
-                        </div>
-                      </td>
+                          <div className="text-muted-foreground text-[11px]">{rental.customerEmail}</div>
+                        </td>
 
-                      {/* Customer */}
-                      <td className="py-3.5 px-4 align-top space-y-0.5">
-                        <div className="font-semibold text-slate-900 dark:text-white flex items-center gap-1.5">
-                          <User className="size-3 text-slate-400" />
-                          <span>{rental.customerName || "Customer"}</span>
-                        </div>
-                        <div className="text-slate-500 text-[11px]">{rental.customerEmail}</div>
-                      </td>
+                        {/* Owner */}
+                        <td className="py-3.5 px-4 align-top space-y-0.5">
+                          <div className="font-semibold text-foreground flex items-center gap-1.5">
+                            <Building className="size-3 text-muted-foreground" />
+                            <span>{rental.ownerName || "Partner"}</span>
+                          </div>
+                          <div className="text-muted-foreground text-[11px]">{rental.ownerEmail || "owner@gearnest.com"}</div>
+                        </td>
 
-                      {/* Owner */}
-                      <td className="py-3.5 px-4 align-top space-y-0.5">
-                        <div className="font-semibold text-slate-900 dark:text-white flex items-center gap-1.5">
-                          <Building className="size-3 text-slate-400" />
-                          <span>{rental.ownerName || "Partner"}</span>
-                        </div>
-                        <div className="text-slate-500 text-[11px]">{rental.ownerEmail || "owner@gearnest.com"}</div>
-                      </td>
+                        {/* Duration */}
+                        <td className="py-3.5 px-4 align-top space-y-0.5 whitespace-nowrap">
+                          <div className="font-medium text-foreground">
+                            {startFmt} – {endFmt}
+                          </div>
+                          <div className="text-[11px] text-muted-foreground">
+                            {rental.days} days ({rental.quantity} {rental.quantity === 1 ? "unit" : "units"})
+                          </div>
+                        </td>
 
-                      {/* Duration */}
-                      <td className="py-3.5 px-4 align-top space-y-0.5">
-                        <div className="font-medium text-slate-900 dark:text-white">
-                          {startFmt} – {endFmt}
-                        </div>
-                        <div className="text-[11px] text-slate-500">
-                          {rental.days} days ({rental.quantity} {rental.quantity === 1 ? "unit" : "units"})
-                        </div>
-                      </td>
+                        {/* Total & Payment */}
+                        <td className="py-3.5 px-4 align-top space-y-1 whitespace-nowrap">
+                          <div className="font-bold text-foreground text-sm font-heading">
+                            ${rental.totalAmount.toLocaleString()}
+                          </div>
+                          <span
+                            className={`inline-block px-1.5 py-0.5 rounded text-[10px] font-bold border ${
+                              rental.paymentStatus === "paid"
+                                ? "bg-success/10 text-success border-success/20"
+                                : "bg-primary/10 text-accent-text border-primary/20"
+                            }`}
+                          >
+                            {(rental.paymentStatus || "pending").toUpperCase()}
+                          </span>
+                        </td>
 
-                      {/* Total & Payment */}
-                      <td className="py-3.5 px-4 align-top space-y-1">
-                        <div className="font-bold text-amber-600 dark:text-amber-400 text-sm">
-                          ${rental.totalAmount.toLocaleString()}
-                        </div>
-                        <span
-                          className={`inline-block px-1.5 py-0.2 rounded text-[10px] font-semibold ${
-                            rental.paymentStatus === "paid"
-                              ? "bg-emerald-500/10 text-emerald-600 border border-emerald-500/20"
-                              : "bg-amber-500/10 text-amber-600 border border-amber-500/20"
-                          }`}
-                        >
-                          {(rental.paymentStatus || "pending").toUpperCase()}
-                        </span>
-                      </td>
-
-                      {/* Status */}
-                      <td className="py-3.5 px-4 align-top text-right">
-                        <span
-                          className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold border ${statusStyle}`}
-                        >
-                          {rental.bookingStatus === "active" && <CheckCircle2 className="size-3" />}
-                          {rental.bookingStatus === "completed" && <ShieldCheck className="size-3" />}
-                          {rental.bookingStatus === "cancelled" && <XCircle className="size-3" />}
-                          <span className="capitalize">{rental.bookingStatus || "pending"}</span>
-                        </span>
-                      </td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Pagination Controls */}
-          {totalPages > 1 && (
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-slate-200 dark:border-slate-800 px-4 py-3.5 bg-slate-50/50 dark:bg-slate-900/50">
-              <p className="text-xs text-slate-500 dark:text-slate-400">
-                Showing <span className="font-semibold text-slate-900 dark:text-white">{(page - 1) * limit + 1}</span> to{" "}
-                <span className="font-semibold text-slate-900 dark:text-white">
-                  {Math.min(page * limit, filteredRentals.length)}
-                </span>{" "}
-                of <span className="font-semibold text-slate-900 dark:text-white">{filteredRentals.length}</span> platform bookings
-              </p>
-              <div className="flex items-center gap-1.5">
-                <button
-                  type="button"
-                  onClick={() => setPage((p) => Math.max(1, p - 1))}
-                  disabled={page <= 1}
-                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-                >
-                  <ChevronLeft className="h-3.5 w-3.5" />
-                  <span>Previous</span>
-                </button>
-                <div className="px-3 py-1.5 text-xs font-bold text-slate-700 dark:text-slate-300">
-                  Page {page} of {totalPages}
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                  disabled={page >= totalPages}
-                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-                >
-                  <span>Next</span>
-                  <ChevronRight className="h-3.5 w-3.5" />
-                </button>
-              </div>
+                        {/* Status */}
+                        <td className="py-3.5 px-4 align-top text-right whitespace-nowrap">
+                          <span
+                            className={`inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold border capitalize ${statusStyle}`}
+                          >
+                            {rental.bookingStatus}
+                          </span>
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
             </div>
-          )}
-        </>
-      )}
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-border px-4 py-3 bg-surface-2/40">
+                <p className="text-xs text-muted-foreground">
+                  Showing <span className="font-semibold text-foreground">{(page - 1) * limit + 1}</span> to{" "}
+                  <span className="font-semibold text-foreground">
+                    {Math.min(page * limit, filteredRentals.length)}
+                  </span>{" "}
+                  of <span className="font-semibold text-foreground">{filteredRentals.length}</span> rental records
+                </p>
+                <div className="flex items-center gap-1.5">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setPage((p) => Math.max(1, p - 1))}
+                    disabled={page <= 1}
+                  >
+                    <ChevronLeft className="h-3.5 w-3.5 mr-1" />
+                    <span>Previous</span>
+                  </Button>
+                  <div className="px-3 py-1.5 text-xs font-bold text-foreground">
+                    Page {page} of {totalPages}
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                    disabled={page >= totalPages}
+                  >
+                    <span>Next</span>
+                    <ChevronRight className="h-3.5 w-3.5 ml-1" />
+                  </Button>
+                </div>
+              </div>
+            )}
+          </>
+        )}
       </div>
     </div>
   )

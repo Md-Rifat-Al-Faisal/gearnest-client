@@ -13,8 +13,11 @@ import {
   ChevronLeft,
   Loader2,
   AlertTriangle,
+  X,
 } from "lucide-react"
 import { useSession } from "@/lib/auth-client"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 
 interface EquipmentItem {
   _id: string
@@ -68,7 +71,7 @@ function EquipmentCatalogContent() {
   const FALLBACK_API = "https://gearnest-server.vercel.app"
   const apiBase = process.env.NEXT_PUBLIC_API_URL || FALLBACK_API
 
-  // Sync state whenever external searchParams change (e.g., clicking footer category links)
+  // Sync state whenever external searchParams change
   useEffect(() => {
     const urlCategory = searchParams.get("category") || "All"
     const urlSearch = searchParams.get("search") || ""
@@ -185,33 +188,41 @@ function EquipmentCatalogContent() {
     }
   }
 
+  // Active filters list for chip display
+  const activeFilters = [
+    category !== "All" && { label: `Category: ${category}`, clear: () => setCategory("All") },
+    rentalType !== "All" && { label: `Period: ${rentalType}`, clear: () => setRentalType("All") },
+    search.trim() && { label: `Search: "${search.trim()}"`, clear: () => setSearch("") },
+    minPrice && { label: `Min: $${minPrice}`, clear: () => setMinPrice("") },
+    maxPrice && { label: `Max: $${maxPrice}`, clear: () => setMaxPrice("") },
+    availableOnly && { label: "In Stock Only", clear: () => setAvailableOnly(false) },
+  ].filter(Boolean) as { label: string; clear: () => void }[]
+
   return (
     <div className="space-y-8">
-      {/* Header Banner - Adaptive Light / Dark Theme */}
-      <div className="bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-10 text-slate-900 dark:text-white relative overflow-hidden transition-colors shadow-xs">
+      {/* Header Banner */}
+      <div className="bg-surface border border-border rounded-xl p-6 sm:p-10 text-foreground relative overflow-hidden shadow-xs">
         <div className="max-w-2xl relative z-10">
-          <span className="text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">
-            Certified Inventory
-          </span>
-          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight mt-1 text-slate-900 dark:text-white">
-            Browse Equipment Catalog
+          <div className="spec-line-heading" />
+          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground font-heading">
+            Equipment Fleet Catalog
           </h1>
-          <p className="text-sm text-slate-600 dark:text-slate-300 mt-2">
-            Filter through commercial machinery, cinema kits, tractors, and production tools.
-            Instant online reservations with secure card checkout powered by Stripe.
+          <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
+            Commercial machinery, cinema packages, utility tractors, and diagnostic tools.
+            Instant online reservations with secure Stripe checkout.
           </p>
         </div>
 
         {/* Search input in banner */}
         <form
           onSubmit={handleSearchSubmit}
-          className="mt-6 max-w-xl flex items-center gap-2 bg-white dark:bg-slate-950/80 border border-slate-200 dark:border-slate-700 p-1.5 rounded-xl shadow-xs"
+          className="mt-6 max-w-xl flex items-center gap-2 bg-surface-2 border border-border p-1.5 rounded-lg shadow-xs"
         >
           <div className="relative flex-1">
             <label htmlFor="catalog-search" className="sr-only">
               Search equipment catalog
             </label>
-            <Search className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+            <Search className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <input
               id="catalog-search"
               name="search"
@@ -220,15 +231,12 @@ function EquipmentCatalogContent() {
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search by equipment name, location, or brand..."
               aria-label="Search equipment catalog"
-              className="w-full bg-transparent pl-11 pr-3 py-2 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none"
+              className="w-full bg-transparent pl-10 pr-3 py-1.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
             />
           </div>
-          <button
-            type="submit"
-            className="px-5 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold transition-colors cursor-pointer"
-          >
+          <Button type="submit" size="sm">
             Search
-          </button>
+          </Button>
         </form>
       </div>
 
@@ -236,130 +244,131 @@ function EquipmentCatalogContent() {
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         {/* Filters Sidebar */}
         <aside className="lg:col-span-1 space-y-6">
-          <div className="p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 space-y-6 shadow-xs sticky top-24">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
-              <h2 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                <SlidersHorizontal className="h-4 w-4 text-amber-500" />
+          <div className="p-5 rounded-xl border border-border bg-surface space-y-6 shadow-xs sticky top-24">
+            <div className="flex items-center justify-between pb-3 border-b border-border">
+              <h2 className="text-sm font-bold text-foreground font-heading flex items-center gap-2">
+                <SlidersHorizontal className="h-4 w-4 text-accent-text" />
                 Filters
               </h2>
-              <button
-                onClick={handleReset}
-                className="text-xs font-semibold text-slate-500 hover:text-amber-500 flex items-center gap-1 transition-colors"
-              >
-                <RotateCcw className="h-3 w-3" />
-                Reset
-              </button>
+              {activeFilters.length > 0 && (
+                <button
+                  onClick={handleReset}
+                  className="text-xs font-semibold text-accent-text hover:underline flex items-center gap-1 transition-colors cursor-pointer"
+                >
+                  <RotateCcw className="h-3 w-3" />
+                  Reset all
+                </button>
+              )}
             </div>
 
             {/* Category Filter */}
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
+              <label className="block text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">
                 Category
               </label>
               <div className="space-y-1">
-                {CATEGORIES.map((cat) => (
-                  <button
-                    key={cat}
-                    onClick={() => {
-                      setCategory(cat)
-                      setPage(1)
-                    }}
-                    className={`w-full text-left px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                      category === cat
-                        ? "bg-amber-500 text-slate-950 font-bold"
-                        : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
-                    }`}
-                  >
-                    {cat}
-                  </button>
-                ))}
+                {CATEGORIES.map((cat) => {
+                  const isActive = category === cat
+                  return (
+                    <button
+                      key={cat}
+                      onClick={() => {
+                        setCategory(cat)
+                        setPage(1)
+                      }}
+                      className={`w-full text-left px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
+                        isActive
+                          ? "bg-surface-2 text-foreground font-bold border-l-[3px] border-l-primary"
+                          : "text-muted-foreground hover:text-foreground hover:bg-surface-2/60"
+                      }`}
+                    >
+                      {cat}
+                    </button>
+                  )
+                })}
               </div>
             </div>
 
             {/* Rental Billing Type */}
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
+              <label className="block text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">
                 Rental Period
               </label>
               <div className="grid grid-cols-2 gap-1.5">
-                {RENTAL_TYPES.map((type) => (
-                  <button
-                    key={type}
-                    onClick={() => {
-                      setRentalType(type)
-                      setPage(1)
-                    }}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-medium border text-center transition-colors ${
-                      rentalType === type
-                        ? "border-amber-500 bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold"
-                        : "border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50"
-                    }`}
-                  >
-                    {type}
-                  </button>
-                ))}
+                {RENTAL_TYPES.map((type) => {
+                  const isActive = rentalType === type
+                  return (
+                    <button
+                      key={type}
+                      onClick={() => {
+                        setRentalType(type)
+                        setPage(1)
+                      }}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-medium border text-center transition-colors cursor-pointer ${
+                        isActive
+                          ? "border-primary/60 bg-primary/10 text-accent-text font-bold"
+                          : "border-border text-muted-foreground hover:bg-surface-2"
+                      }`}
+                    >
+                      {type}
+                    </button>
+                  )
+                })}
               </div>
             </div>
 
             {/* Price Range */}
             <div>
-              <span className="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
+              <span className="block text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">
                 Price Range ($)
               </span>
               <div className="flex items-center gap-2">
-                <label htmlFor="catalog-min-price" className="sr-only">
-                  Minimum price
-                </label>
                 <input
                   id="catalog-min-price"
-                  name="minPrice"
                   type="number"
                   placeholder="Min"
                   value={minPrice}
                   onChange={(e) => setMinPrice(e.target.value)}
-                  className="w-full px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-xs focus:outline-none focus:ring-1 focus:ring-amber-500"
+                  className="w-full px-3 py-1.5 rounded-lg border border-border bg-surface-2 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
                 />
-                <span className="text-slate-400 text-xs">-</span>
-                <label htmlFor="catalog-max-price" className="sr-only">
-                  Maximum price
-                </label>
+                <span className="text-muted-foreground text-xs">-</span>
                 <input
                   id="catalog-max-price"
-                  name="maxPrice"
                   type="number"
                   placeholder="Max"
                   value={maxPrice}
                   onChange={(e) => setMaxPrice(e.target.value)}
-                  className="w-full px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-xs focus:outline-none focus:ring-1 focus:ring-amber-500"
+                  className="w-full px-3 py-1.5 rounded-lg border border-border bg-surface-2 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
                 />
               </div>
-              <button
+              <Button
                 type="button"
+                variant="secondary"
+                size="sm"
                 onClick={() => {
                   setPage(1)
                   fetchCatalog()
                 }}
-                className="mt-2 w-full py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-amber-500 hover:text-slate-950 text-xs font-semibold transition-colors cursor-pointer"
+                className="mt-2 w-full text-xs"
               >
                 Apply Price
-              </button>
+              </Button>
             </div>
 
             {/* In Stock Only Checkbox */}
-            <div className="pt-2 border-t border-slate-200 dark:border-slate-800">
+            <div className="pt-2 border-t border-border">
               <label htmlFor="catalog-available-only" className="flex items-center gap-2.5 cursor-pointer">
                 <input
                   id="catalog-available-only"
-                  name="availableOnly"
                   type="checkbox"
                   checked={availableOnly}
                   onChange={(e) => {
                     setAvailableOnly(e.target.checked)
                     setPage(1)
                   }}
-                  className="rounded border-slate-300 text-amber-500 focus:ring-amber-500 h-4 w-4"
+                  className="rounded border-border text-primary focus:ring-primary h-4 w-4 accent-primary cursor-pointer"
                 />
-                <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                <span className="text-xs font-semibold text-foreground">
                   Available in Stock Only
                 </span>
               </label>
@@ -369,22 +378,50 @@ function EquipmentCatalogContent() {
 
         {/* Catalog 3-Column Grid Area */}
         <section className="lg:col-span-3 space-y-6">
+          {/* Active filter chip row */}
+          {activeFilters.length > 0 && (
+            <div className="flex flex-wrap items-center gap-2 p-3 rounded-xl border border-border bg-surface">
+              <span className="text-xs font-bold text-foreground">Active:</span>
+              {activeFilters.map((f, i) => (
+                <span
+                  key={i}
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs bg-surface-2 border border-border text-foreground"
+                >
+                  <span>{f.label}</span>
+                  <button
+                    onClick={f.clear}
+                    className="hover:text-danger text-muted-foreground transition-colors cursor-pointer"
+                    aria-label={`Remove filter ${f.label}`}
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </span>
+              ))}
+              <button
+                onClick={handleReset}
+                className="text-xs font-semibold text-accent-text hover:underline ml-auto cursor-pointer"
+              >
+                Clear all
+              </button>
+            </div>
+          )}
+
           {/* Toolbar: Count & Sorting */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-slate-200 dark:border-slate-800">
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              Showing <strong className="text-slate-900 dark:text-white">{items.length}</strong> of{" "}
-              <strong className="text-slate-900 dark:text-white">{totalCount}</strong> equipment listings
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-border">
+            <p className="text-xs text-muted-foreground">
+              Showing <strong className="text-foreground">{items.length}</strong> of{" "}
+              <strong className="text-foreground">{totalCount}</strong> equipment listings
             </p>
 
             <div className="flex items-center gap-2">
-              <label className="text-xs font-medium text-slate-500">Sort by:</label>
+              <label className="text-xs font-medium text-muted-foreground">Sort by:</label>
               <select
                 value={sort}
                 onChange={(e) => {
                   setSort(e.target.value)
                   setPage(1)
                 }}
-                className="py-1.5 px-3 rounded-lg border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                className="py-1.5 px-3 rounded-lg border border-border bg-surface-2 text-xs font-semibold text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 cursor-pointer"
               >
                 <option value="newest">Recently Added</option>
                 <option value="price-asc">Price: Low to High</option>
@@ -395,118 +432,140 @@ function EquipmentCatalogContent() {
 
           {/* Cards Grid / Graceful Error / Empty State */}
           {fetchError ? (
-            <div className="py-20 text-center rounded-2xl border border-rose-200 dark:border-rose-900/50 bg-rose-50/50 dark:bg-rose-950/20 p-8 space-y-3">
-              <div className="h-12 w-12 rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400 flex items-center justify-center mx-auto mb-2">
+            <div className="py-20 text-center rounded-xl border border-danger/30 bg-danger/5 p-8 space-y-3">
+              <div className="h-12 w-12 rounded-lg bg-danger/10 text-danger flex items-center justify-center mx-auto mb-2">
                 <AlertTriangle className="h-6 w-6" />
               </div>
-              <h3 className="text-base font-bold text-slate-900 dark:text-white">Connection Notice</h3>
-              <p className="text-xs text-slate-600 dark:text-slate-300 max-w-sm mx-auto">{fetchError}</p>
-              <button
+              <h3 className="text-base font-bold text-foreground font-heading">Connection Notice</h3>
+              <p className="text-xs text-muted-foreground max-w-sm mx-auto">{fetchError}</p>
+              <Button
                 onClick={() => fetchCatalog()}
-                className="mt-4 px-5 py-2.5 rounded-lg bg-amber-500 text-slate-950 font-bold text-xs hover:bg-amber-400 transition-colors cursor-pointer shadow-sm"
+                size="sm"
+                className="mt-4"
               >
                 Retry Connecting
-              </button>
+              </Button>
             </div>
           ) : loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[1, 2, 3, 4, 5, 6].map((n) => (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 min-h-[900px]">
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => (
                 <div
                   key={n}
-                  className="rounded-2xl border border-slate-200 dark:border-slate-800 p-4 space-y-4 animate-pulse bg-slate-50 dark:bg-slate-900/50"
+                  className="rounded-xl border border-border p-5 space-y-4 bg-surface animate-pulse flex flex-col justify-between h-[420px]"
                 >
-                  <div className="aspect-video w-full rounded-xl bg-slate-200 dark:bg-slate-800" />
-                  <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded w-3/4" />
-                  <div className="h-3 bg-slate-200 dark:bg-slate-800 rounded w-1/2" />
+                  <div className="aspect-[4/3] w-full rounded-lg bg-surface-2" />
+                  <div className="space-y-2">
+                    <div className="h-4 bg-surface-2 rounded w-3/4" />
+                    <div className="h-3 bg-surface-2 rounded w-1/2" />
+                  </div>
+                  <div className="pt-3 border-t border-border flex justify-between items-center">
+                    <div className="h-3 bg-surface-2 rounded w-1/4" />
+                    <div className="h-8 bg-surface-2 rounded w-1/3" />
+                  </div>
                 </div>
               ))}
             </div>
           ) : items.length === 0 ? (
-            <div className="py-24 text-center rounded-2xl border border-dashed border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 p-8">
-              <Package className="h-12 w-12 text-slate-400 mx-auto mb-3" />
-              <h3 className="text-base font-bold text-slate-900 dark:text-white">
+            <div className="py-24 text-center rounded-xl border border-dashed border-border bg-surface p-8">
+              <Package className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
+              <h3 className="text-base font-bold text-foreground font-heading">
                 No matching equipment found
               </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-sm mx-auto">
+              <p className="text-xs text-muted-foreground mt-1 max-w-sm mx-auto">
                 Try expanding your search query, selecting another category, or resetting price limits.
               </p>
-              <button
+              <Button
                 onClick={handleReset}
-                className="mt-4 px-4 py-2 rounded-lg bg-amber-500 text-slate-950 font-bold text-xs hover:bg-amber-400 transition-colors cursor-pointer"
+                variant="outline"
+                size="sm"
+                className="mt-4"
               >
                 Reset All Filters
-              </button>
+              </Button>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {items.map((item) => (
                 <div
                   key={item._id}
-                  className="group flex flex-col h-full rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-xs hover:shadow-xl transition-all duration-300"
+                  className="group flex flex-col h-full rounded-xl border border-border bg-surface overflow-hidden shadow-xs hover:border-primary/50 transition-colors"
                 >
-                  {/* Photo with category badge */}
-                  <div className="relative aspect-video w-full bg-slate-100 dark:bg-slate-950 overflow-hidden shrink-0">
+                  {/* Photo with real 4:3 Aspect Ratio */}
+                  <div className="relative aspect-[4/3] w-full bg-surface-2 overflow-hidden shrink-0">
                     {item.image ? (
+                      // eslint-disable-next-line @next/next/no-img-element
                       <img
                         src={item.image}
                         alt={item.name}
-                        className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        loading="lazy"
+                        decoding="async"
+                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-104"
                       />
                     ) : (
-                      <div className="h-full w-full flex items-center justify-center text-slate-400">
+                      <div className="h-full w-full flex items-center justify-center text-muted-foreground">
                         <Package className="h-10 w-10" />
                       </div>
                     )}
-                    <span className="absolute top-3 left-3 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-slate-950/80 text-amber-400 backdrop-blur-xs border border-amber-500/30">
+
+                    {/* Category badge */}
+                    <span className="absolute top-3 left-3 px-2.5 py-0.5 rounded text-[11px] font-semibold bg-surface/90 text-foreground border border-border backdrop-blur-xs">
                       {item.category}
                     </span>
-                    <span
-                      className={`absolute bottom-3 right-3 px-2 py-0.5 rounded text-[10px] font-bold ${
-                        item.availableQuantity > 0
-                          ? "bg-emerald-500/90 text-slate-950"
-                          : "bg-rose-500/90 text-white"
-                      }`}
-                    >
-                      {item.availableQuantity > 0 ? `${item.availableQuantity} available` : "Out of stock"}
-                    </span>
+
+                    {/* Out of stock badge if 0 quantity */}
+                    {item.availableQuantity === 0 ? (
+                      <span className="absolute bottom-3 left-3 px-2 py-0.5 rounded text-[10px] font-bold bg-danger text-band-foreground dark:text-primary-foreground">
+                        Out of stock
+                      </span>
+                    ) : null}
+
+                    {/* Gold Price Tag Pill top-right */}
+                    <div className="absolute top-3 right-3">
+                      <Badge variant="gold" className="text-xs shadow-sm">
+                        ${item.rentalPrice} / {item.rentalType?.toLowerCase()}
+                      </Badge>
+                    </div>
                   </div>
 
                   {/* Body - equal height flex */}
                   <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
                     <div>
-                      <div className="flex items-center gap-1.5 text-xs text-slate-400 mb-1">
-                        <MapPin className="h-3 w-3 text-amber-500" />
+                      {/* Specs Row: Brand · Condition · Location */}
+                      <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-1.5">
+                        <MapPin className="h-3.5 w-3.5 text-accent-text shrink-0" />
                         <span className="truncate">{item.location || "USA Metro"}</span>
-                        {item.brand && <span>• {item.brand}</span>}
+                        {item.brand && <span>· {item.brand}</span>}
+                        {item.condition && <span>· {item.condition}</span>}
                       </div>
 
-                      <h3 className="text-base font-bold text-slate-900 dark:text-white line-clamp-2 group-hover:text-amber-500 transition-colors">
+                      <h3 className="text-base font-bold text-foreground font-heading line-clamp-2 group-hover:text-accent-text transition-colors">
                         {item.name}
                       </h3>
 
-                      <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 mt-2 leading-relaxed">
+                      <p className="text-xs text-muted-foreground line-clamp-2 mt-2 leading-relaxed">
                         {item.description}
                       </p>
                     </div>
 
-                    <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
-                      <div>
-                        <span className="text-[11px] text-slate-400">Rental:</span>
-                        <p className="text-lg font-black text-slate-900 dark:text-white">
-                          ${item.rentalPrice}{" "}
-                          <span className="text-xs font-normal text-slate-500">
-                            /{item.rentalType?.toLowerCase()}
+                    <div className="pt-3 border-t border-border flex items-center justify-between">
+                      <div className="text-xs text-muted-foreground">
+                        {item.availableQuantity > 0 ? (
+                          <span className="text-success font-medium">
+                            {item.availableQuantity} available
                           </span>
-                        </p>
+                        ) : (
+                          <span className="text-danger font-medium">Currently rented</span>
+                        )}
                       </div>
 
-                      <button
+                      <Button
+                        size="sm"
                         onClick={() => handleCardClick(item._id)}
-                        className="inline-flex items-center gap-1 px-3.5 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold transition-all shadow-xs cursor-pointer"
+                        className="text-xs font-semibold"
                       >
                         <span>View Details</span>
-                        <ChevronRight className="h-3.5 w-3.5" />
-                      </button>
+                        <ChevronRight className="h-3.5 w-3.5 ml-1" />
+                      </Button>
                     </div>
                   </div>
                 </div>
@@ -517,33 +576,35 @@ function EquipmentCatalogContent() {
           {/* Pagination Controls */}
           {totalPages > 1 && (
             <div className="flex items-center justify-center gap-2 pt-6">
-              <button
+              <Button
+                variant="outline"
+                size="sm"
                 onClick={() => {
                   setPage((p) => Math.max(1, p - 1))
                   window.scrollTo({ top: 0, behavior: "smooth" })
                 }}
                 disabled={page <= 1}
-                className="p-2 rounded-lg border border-slate-200 dark:border-slate-800 disabled:opacity-40 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 transition-colors cursor-pointer"
                 aria-label="Previous Page"
               >
                 <ChevronLeft className="h-4 w-4" />
-              </button>
+              </Button>
 
-              <span className="px-4 py-2 text-xs font-bold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 rounded-lg">
+              <span className="px-4 py-1.5 text-xs font-bold text-foreground bg-surface-2 rounded-lg border border-border">
                 Page {page} of {totalPages}
               </span>
 
-              <button
+              <Button
+                variant="outline"
+                size="sm"
                 onClick={() => {
                   setPage((p) => Math.min(totalPages, p + 1))
                   window.scrollTo({ top: 0, behavior: "smooth" })
                 }}
                 disabled={page >= totalPages}
-                className="p-2 rounded-lg border border-slate-200 dark:border-slate-800 disabled:opacity-40 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 transition-colors cursor-pointer"
                 aria-label="Next Page"
               >
                 <ChevronRight className="h-4 w-4" />
-              </button>
+              </Button>
             </div>
           )}
         </section>
@@ -554,11 +615,11 @@ function EquipmentCatalogContent() {
 
 export default function EquipmentCatalogPage() {
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 min-h-[1600px]">
       <Suspense
         fallback={
-          <div className="py-24 flex flex-col items-center justify-center gap-3 text-slate-500">
-            <Loader2 className="h-8 w-8 animate-spin text-amber-500" />
+          <div className="py-24 flex flex-col items-center justify-center gap-3 text-muted-foreground min-h-[1200px]">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
             <p className="text-sm font-medium">Loading catalog...</p>
           </div>
         }

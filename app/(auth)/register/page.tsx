@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation"
 import { signUp, signIn } from "@/lib/auth-client"
 import { toast } from "sonner"
 import { Lock, Mail, User, Phone, MapPin, Upload, Loader2, ArrowRight, CheckCircle2, XCircle } from "lucide-react"
+import { Logo } from "@/components/logo"
+import { Button } from "@/components/ui/button"
 
 export default function RegisterPage() {
   const router = useRouter()
@@ -119,28 +121,30 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="gn-card p-8">
-      <div className="text-center">
-        <h1 className="font-heading text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+    <div className="rounded-xl border border-border bg-surface p-8 shadow-md">
+      <div className="flex flex-col items-center text-center">
+        <Logo href="/" className="mb-4" />
+        <h1 className="font-heading text-2xl font-bold tracking-tight text-foreground">
           Create GearNest Account
         </h1>
-        <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
-          Join thousands of equipment renters and owners worldwide
+        <p className="mt-1.5 text-xs text-muted-foreground">
+          Join verified equipment renters and machinery owners
         </p>
       </div>
 
       {/* Google OAuth Button */}
       <div className="mt-6">
-        <button
+        <Button
           type="button"
+          variant="outline"
           onClick={handleGoogleSignUp}
           disabled={googleLoading}
-          className="gn-btn-secondary w-full"
+          className="w-full text-xs font-semibold"
         >
           {googleLoading ? (
-            <Loader2 className="size-4 animate-spin" />
+            <Loader2 className="size-4 animate-spin mr-2" />
           ) : (
-            <svg className="size-4" viewBox="0 0 24 24">
+            <svg className="size-4 mr-2" viewBox="0 0 24 24">
               <path
                 fill="#4285F4"
                 d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -160,16 +164,16 @@ export default function RegisterPage() {
             </svg>
           )}
           <span>Continue with Google</span>
-        </button>
+        </Button>
       </div>
 
       {/* Divider */}
       <div className="relative my-6">
         <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-slate-200 dark:border-slate-800" />
+          <div className="w-full border-t border-border" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-white px-2 text-slate-500 dark:bg-slate-900 dark:text-slate-400">
+          <span className="bg-surface px-2 text-muted-foreground">
             Or register with email
           </span>
         </div>
@@ -180,12 +184,12 @@ export default function RegisterPage() {
         <div>
           <label
             htmlFor="register-name"
-            className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300"
+            className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground"
           >
-            Full Name <span className="text-rose-500">*</span>
+            Full Name <span className="text-danger">*</span>
           </label>
           <div className="relative mt-1.5">
-            <User className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
+            <User className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
             <input
               id="register-name"
               name="name"
@@ -195,7 +199,7 @@ export default function RegisterPage() {
               onChange={(e) => setName(e.target.value)}
               placeholder="Alex Walker"
               required
-              className="gn-input pl-11"
+              className="w-full rounded-lg border border-border bg-surface-2 pl-10 pr-3.5 py-2 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
             />
           </div>
         </div>
@@ -204,12 +208,12 @@ export default function RegisterPage() {
         <div>
           <label
             htmlFor="register-email"
-            className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300"
+            className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground"
           >
-            Email Address <span className="text-rose-500">*</span>
+            Email Address <span className="text-danger">*</span>
           </label>
           <div className="relative mt-1.5">
-            <Mail className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
+            <Mail className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
             <input
               id="register-email"
               name="email"
@@ -219,7 +223,7 @@ export default function RegisterPage() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="alex@example.com"
               required
-              className="gn-input pl-11"
+              className="w-full rounded-lg border border-border bg-surface-2 pl-10 pr-3.5 py-2 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
             />
           </div>
         </div>
@@ -228,9 +232,9 @@ export default function RegisterPage() {
         <div>
           <label
             htmlFor="register-file-input"
-            className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300"
+            className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground"
           >
-            Profile Photo (ImgBB Upload or Direct URL)
+            Profile Photo (Upload or Image URL)
           </label>
           <div className="mt-1.5 flex items-center gap-3">
             {image ? (
@@ -238,27 +242,27 @@ export default function RegisterPage() {
               <img
                 src={image}
                 alt="Profile Preview"
-                className="size-11 rounded-lg border border-slate-200 object-cover dark:border-slate-700"
+                className="size-10 rounded-lg border border-border object-cover"
               />
             ) : (
-              <div className="flex size-11 items-center justify-center rounded-lg border border-dashed border-slate-300 text-slate-400 dark:border-slate-700">
-                <User className="size-5" />
+              <div className="flex size-10 items-center justify-center rounded-lg border border-dashed border-border text-muted-foreground bg-surface-2">
+                <User className="size-4" />
               </div>
             )}
             <div className="flex flex-1 items-center gap-2">
               <label
                 htmlFor="register-file-input"
-                className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-medium text-slate-700 shadow-sm transition-colors hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
+                className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-border bg-surface-2 px-3 py-2 text-xs font-semibold text-foreground hover:bg-surface-2/80 transition-colors shrink-0"
               >
                 {uploadingImage ? (
                   <>
                     <Loader2 className="size-3.5 animate-spin" />
-                    Uploading...
+                    <span>Uploading...</span>
                   </>
                 ) : (
                   <>
                     <Upload className="size-3.5" />
-                    Upload Photo
+                    <span>Upload</span>
                   </>
                 )}
                 <input
@@ -278,7 +282,7 @@ export default function RegisterPage() {
                 value={image}
                 onChange={(e) => setImage(e.target.value)}
                 placeholder="Or paste direct image URL"
-                className="gn-input flex-1 text-xs"
+                className="w-full rounded-lg border border-border bg-surface-2 px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
               />
             </div>
           </div>
@@ -289,12 +293,12 @@ export default function RegisterPage() {
           <div>
             <label
               htmlFor="register-phone"
-              className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300"
+              className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground"
             >
               Phone Number
             </label>
             <div className="relative mt-1.5">
-              <Phone className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
+              <Phone className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
               <input
                 id="register-phone"
                 name="phone"
@@ -303,19 +307,19 @@ export default function RegisterPage() {
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="+1 (555) 000-0000"
-                className="gn-input pl-11 text-xs"
+                className="w-full rounded-lg border border-border bg-surface-2 pl-10 pr-3.5 py-2 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
               />
             </div>
           </div>
           <div>
             <label
               htmlFor="register-address"
-              className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300"
+              className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground"
             >
               City / Address
             </label>
             <div className="relative mt-1.5">
-              <MapPin className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
+              <MapPin className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
               <input
                 id="register-address"
                 name="address"
@@ -324,7 +328,7 @@ export default function RegisterPage() {
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
                 placeholder="Dallas, TX"
-                className="gn-input pl-11 text-xs"
+                className="w-full rounded-lg border border-border bg-surface-2 pl-10 pr-3.5 py-2 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
               />
             </div>
           </div>
@@ -334,12 +338,12 @@ export default function RegisterPage() {
         <div>
           <label
             htmlFor="register-password"
-            className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300"
+            className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground"
           >
-            Password <span className="text-rose-500">*</span>
+            Password <span className="text-danger">*</span>
           </label>
           <div className="relative mt-1.5">
-            <Lock className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
+            <Lock className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
             <input
               id="register-password"
               name="password"
@@ -349,40 +353,40 @@ export default function RegisterPage() {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
               required
-              className="gn-input pl-11"
+              className="w-full rounded-lg border border-border bg-surface-2 pl-10 pr-3.5 py-2 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
             />
           </div>
 
           {/* Real-time validation indicators */}
           {password.length > 0 && (
-            <div className="mt-2 space-y-1 rounded-lg bg-slate-50 p-2.5 text-xs dark:bg-slate-800/60">
+            <div className="mt-2 space-y-1 rounded-lg bg-surface-2 p-2.5 text-xs border border-border">
               <div className="flex items-center gap-1.5">
                 {hasUpperCase ? (
-                  <CheckCircle2 className="size-3.5 text-emerald-600 dark:text-emerald-400" />
+                  <CheckCircle2 className="size-3.5 text-success" />
                 ) : (
-                  <XCircle className="size-3.5 text-slate-400" />
+                  <XCircle className="size-3.5 text-muted-foreground" />
                 )}
-                <span className={hasUpperCase ? "text-emerald-700 dark:text-emerald-300" : "text-slate-500"}>
+                <span className={hasUpperCase ? "text-success font-medium" : "text-muted-foreground"}>
                   At least one uppercase letter (A-Z)
                 </span>
               </div>
               <div className="flex items-center gap-1.5">
                 {hasLowerCase ? (
-                  <CheckCircle2 className="size-3.5 text-emerald-600 dark:text-emerald-400" />
+                  <CheckCircle2 className="size-3.5 text-success" />
                 ) : (
-                  <XCircle className="size-3.5 text-slate-400" />
+                  <XCircle className="size-3.5 text-muted-foreground" />
                 )}
-                <span className={hasLowerCase ? "text-emerald-700 dark:text-emerald-300" : "text-slate-500"}>
+                <span className={hasLowerCase ? "text-success font-medium" : "text-muted-foreground"}>
                   At least one lowercase letter (a-z)
                 </span>
               </div>
               <div className="flex items-center gap-1.5">
                 {hasMinLength ? (
-                  <CheckCircle2 className="size-3.5 text-emerald-600 dark:text-emerald-400" />
+                  <CheckCircle2 className="size-3.5 text-success" />
                 ) : (
-                  <XCircle className="size-3.5 text-slate-400" />
+                  <XCircle className="size-3.5 text-muted-foreground" />
                 )}
-                <span className={hasMinLength ? "text-emerald-700 dark:text-emerald-300" : "text-slate-500"}>
+                <span className={hasMinLength ? "text-success font-medium" : "text-muted-foreground"}>
                   Minimum 6 characters
                 </span>
               </div>
@@ -391,31 +395,31 @@ export default function RegisterPage() {
         </div>
 
         {/* Submit */}
-        <button
+        <Button
           type="submit"
           disabled={submitting || uploadingImage}
-          className="gn-btn-primary mt-2 w-full disabled:cursor-not-allowed disabled:opacity-50"
+          className="w-full text-xs font-bold mt-2"
         >
           {submitting ? (
             <>
-              <Loader2 className="size-4 animate-spin" />
+              <Loader2 className="size-4 animate-spin mr-1.5" />
               <span>Creating Account...</span>
             </>
           ) : (
             <>
               <span>Create Account</span>
-              <ArrowRight className="size-4" />
+              <ArrowRight className="size-4 ml-1.5" />
             </>
           )}
-        </button>
+        </Button>
       </form>
 
       {/* Switch to Login */}
-      <div className="mt-6 text-center text-xs text-slate-600 dark:text-slate-400">
+      <div className="mt-6 text-center text-xs text-muted-foreground">
         Already have an account?{" "}
         <Link
           href="/login"
-          className="font-semibold text-amber-600 hover:underline dark:text-amber-500"
+          className="font-semibold text-accent-text hover:underline"
         >
           Sign in here
         </Link>
